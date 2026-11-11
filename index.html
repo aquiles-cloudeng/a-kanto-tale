@@ -493,6 +493,8 @@ function shipRun(s){
   return {title:'Viaje en barco',lines,seasons:4};
 }
 const evoLvl=m=>mon(m.sp).evo.some(e=>e[1]==='l');
+const evoLvlTargets=m=>mon(m.sp).evo.filter(e=>e[1]==='l').map(e=>e[0]);
+const evoNewDex=(s,m)=>evoLvlTargets(m).some(t=>!s.dex[t]); // al evolucionar te daría una especie que todavía no tenés en la Pokédex
 // Entrenar. Sin argumento: entrenamiento automático (todo el equipo + hasta 8 que evolucionan por nivel).
 // Con una lista de ids: entrenamiento específico (solo esos, hasta 6, estén o no en el equipo).
 function train(s,ids){
@@ -1547,7 +1549,7 @@ function resolveOption(s,ev,idx){
     }
   }
   s.seen[ev.id]=true;s.recent.push(ev.id);if(s.recent.length>8)s.recent.shift();
-  return {band,text,lines,odds:od.p,sure:!!opt.sure,roll:opt.sure?null:lastRoll};
+  return {band,text,lines,odds:od.p,sure:!!opt.sure,duel:!!opt.duel,roll:opt.sure?null:lastRoll};
 }
 
 // ---------- Finales ----------
@@ -1731,7 +1733,7 @@ const RIVAL_B=['Blue te gana con claridad y se va sin darte importancia. Te qued
 RIVAL_T.forEach((T,i)=>EV.push({id:'rival_'+(i+1),pool:'story',kind:'Rival',forced:true,extra:true,once:true,req:s=>s.t>=T,title:'Tu rival Blue: duelo '+(i+1)+' de 4',
  build:s=>{
   const foe=rivalFoe(s,i);const pv=gymPreview(s,foe);const near=0; // sin grises: o ganás o perdés
-  const opt=O('⚔️ Aceptar el duelo',[pv.win,near,100-pv.win-near],[],[RIVAL_G[i][0],RIVAL_G[i][1]],[RIVAL_B[i],{rep:-1,inc:{rivalFights:1}}],[RIVAL_B[i],{rep:-1,inc:{rivalFights:1}}]);
+  const opt=O('⚔️ Aceptar el duelo',[pv.win,near,100-pv.win-near],[],[RIVAL_G[i][0],RIVAL_G[i][1]],[RIVAL_B[i],{rep:-1,inc:{rivalFights:1}}],[RIVAL_B[i],{rep:-1,inc:{rivalFights:1}}],{duel:true});
   return Object.assign({},EV.find(e=>e.id==='rival_'+(i+1)),{text:()=>RIVAL_TXT[i][0].replace('Ey,','Ey'+(s.name?', '+s.name+',':',')).replace('Mirá quién anda por acá.',s.name?'Mirá quién anda por acá, '+s.name+'.':'Mirá quién anda por acá.')+' (Su equipo ronda el poder '+foe.pw+'; el tuyo, '+Math.round(teamPower(s))+'.)',opts:[opt]});
  },
  text:()=>'',opts:[S('Seguir','',{})]}));
@@ -2008,16 +2010,17 @@ function view(){
     <button class="btn" onclick="G.trainPick()"><div class="t">🎯 Entrenamiento específico</div><div class="d">Elegís hasta 6 Pokémon de toda tu colección, estén o no en el equipo, y solo esos entrenan: ganan +${XP_TRAIN} de poder y tienen chance de evolucionar. Más control, pero los que no elijas no mejoran esta estación.</div></button>
     <button class="btn" onclick="G.back()">← Volver</button>`;
   }else if(phase==='trainpick'){
-    const sel=new Set(ctx.tsel||[]);const f=ctx.tpf=ctx.tpf||{q:'',lvl:false};
+    const sel=new Set(ctx.tsel||[]);const f=ctx.tpf=ctx.tpf||{q:'',lvl:false,nw:false};
     let st=stacks(s).map(e=>e.best);
     const q=f.q.trim().toLowerCase();
     if(q)st=st.filter(m=>mon(m.sp).name.toLowerCase().includes(q));
     if(f.lvl)st=st.filter(evoLvl);
-    st.sort((a,b)=>(sel.has(b.id)-sel.has(a.id))||(evoLvl(b)-evoLvl(a))||pw(b)-pw(a));
+    if(f.nw)st=st.filter(m=>evoLvl(m)&&evoNewDex(s,m));
+    st.sort((a,b)=>(sel.has(b.id)-sel.has(a.id))||(evoNewDex(s,b)-evoNewDex(s,a))||(evoLvl(b)-evoLvl(a))||pw(b)-pw(a));
     M.innerHTML=`<div class="card"><div class="kicker">Entrenamiento específico</div><h2>Elegí hasta 6 (${sel.size}/6)</h2><p class="sub">Solo los elegidos ganan +${XP_TRAIN} de poder de entrenamiento y tienen chance de evolucionar por nivel (${Math.round(clamp(0.40+0.02*s.st.cuidado,0.40,0.65)*100)}% cada uno). Los elegidos aparecen primero. Poner a un Pokémon en el equipo se hace aparte, desde Equipo.</p>
-    <div class="flt"><input type="search" id="tpq" placeholder="Buscar por nombre…" value="${esc(f.q)}" oninput="G.tpf('q',this.value)"><button class="fchip ${f.lvl?'on':''}" onclick="G.tpf('lvl',${!f.lvl})">Solo los que evolucionan por nivel</button></div></div>
+    <div class="flt"><input type="search" id="tpq" placeholder="Buscar por nombre…" value="${esc(f.q)}" oninput="G.tpf('q',this.value)"><button class="fchip ${f.nw?'on':''}" onclick="G.tpf('nw',${!f.nw})">Su evolución es nueva en mi Pokédex</button><button class="fchip ${f.lvl?'on':''}" onclick="G.tpf('lvl',${!f.lvl})">Todos los que evolucionan por nivel</button></div></div>
     <button class="btn primary" ${sel.size?'':'disabled'} onclick="G.trainGo()">Entrenar a los ${sel.size} elegidos</button>
-    <div>${st.map(m=>{const on=sel.has(m.id);const lv=evoLvl(m);return monRow(m,0,`<button style="${on?'border-color:var(--acc);background:#2a3b5a':''}" ${(!on&&sel.size>=6)?'disabled':''} onclick="G.tpt(${m.id})">${on?'✔ Elegido':'Elegir'}</button>`).replace('</div></div></div>',`</div></div></div>`).replace('<span class="sub">Poder',`${s.team.includes(m.id)?'<span class="tag-own">en el equipo</span> ':''}${lv?'<span class="tag-new" style="background:#2e7bd6">evoluciona por nivel</span> ':''}<span class="sub">Poder`);}).join('')||'<p class="sub">Ningún Pokémon coincide.</p>'}</div>
+    <div>${st.map(m=>{const on=sel.has(m.id);const lv=evoLvl(m);return monRow(m,0,`<button style="${on?'border-color:var(--acc);background:#2a3b5a':''}" ${(!on&&sel.size>=6)?'disabled':''} onclick="G.tpt(${m.id})">${on?'✔ Elegido':'Elegir'}</button>`).replace('</div></div></div>',`</div></div></div>`).replace('<span class="sub">Poder',`${s.team.includes(m.id)?'<span class="tag-own">en el equipo</span> ':''}${lv?(evoNewDex(s,m)?'<span class="tag-new">evoluciona a '+esc(evoLvlTargets(m).filter(t=>!s.dex[t]).map(t=>mon(t).name).join('/'))+' · NUEVO</span> ':'<span class="tag-own">evoluciona a '+esc(evoLvlTargets(m).map(t=>mon(t).name).join('/'))+' · ya la tenés</span> '):''}<span class="sub">Poder`);}).join('')||'<p class="sub">Ningún Pokémon coincide.</p>'}</div>
     <button class="btn" onclick="G.act('train')">← Volver</button>`;
   }else if(phase==='zone'){
     M.innerHTML=`<div class="card"><div class="kicker">Explorar</div><h2>¿Adónde vas?</h2><p class="sub">${powerOnly(s)?'Tu vocación no depende de las medallas: las zonas se abren solo con un equipo lo bastante fuerte (poder de equipo).':'Las zonas se abren con medallas o con un equipo lo bastante fuerte (poder de equipo).'} Tu poder actual: <b>${Math.round(teamPower(s))}</b>. Ves cuántas especies nuevas podrías encontrar.</p></div>`+
@@ -2090,13 +2093,13 @@ function view(){
         else{
           const [g,n,b]=od.p;
           extra=`<div class="odds"><span class="g" style="width:${g}%">${g>=12?g+'%':''}</span><span class="n" style="width:${n}%">${n>=12?n+'%':''}</span><span class="b" style="width:${b}%">${b>=12?b+'%':''}</span></div>`;
-          extra+=`<div class="mods">Buena ${g}% · Neutral ${n}% · Mala ${b}%${od.mods.length?' — '+od.mods.map(m=>esc(m[0])+' '+(m[1]>0?'+':'')+m[1]+'%').join(' · '):''}</div>`;
+          extra+=`<div class="mods">${n===0?(o.duel?'Victoria '+g+'% · Derrota '+b+'%':'Buena '+g+'% · Mala '+b+'%'):'Buena '+g+'% · Neutral '+n+'% · Mala '+b+'%'}${od.mods.length?' — '+od.mods.map(m=>esc(m[0])+' '+(m[1]>0?'+':'')+m[1]+'%').join(' · '):''}</div>`;
         }
         if(o.irrev)extra+=`<div class="irrev">⚠ Punto sin retorno (te pedimos confirmar antes de aplicar)</div>`;
         return `<button class="btn ${armed?'armed':''}" onclick="G.opt(${i})"><div class="t">${esc(o.label)}</div>${extra}</button>`;
       }).join('');
   }else if(phase==='eventres'){
-    const r=ctx.res;const bn={g:'Buen resultado',n:'Resultado neutral',b:'Mal resultado'};
+    const r=ctx.res;const bn=r.duel?{g:'¡Victoria!',n:'Resultado neutral',b:'Derrota'}:{g:'Buen resultado',n:'Resultado neutral',b:'Mal resultado'};
     const reduced=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
     const anim=!r.sure&&!r.shown&&!reduced&&r.roll!=null;
     const pr=r.odds.map(x=>Math.round(x));
@@ -2259,7 +2262,7 @@ const G={
     const n=$('gnone');if(n)n.style.display=any?'none':'';},
   trainPick(){const own=new Set(S_.box.map(m=>m.id));let sel=(S_.trainSel||[]).filter(id=>own.has(id));if(!sel.length)sel=[...S_.team];ctx.tsel=sel.slice(0,6);phase='trainpick';view();window.scrollTo(0,0);},
   tpt(id){const a=ctx.tsel=ctx.tsel||[];const i=a.indexOf(id);if(i>=0)a.splice(i,1);else if(a.length<6)a.push(id);view();},
-  tpf(k,v){ctx.tpf=ctx.tpf||{q:'',lvl:false};ctx.tpf[k]=v;view();if(k==='q'){const i=$('tpq');if(i){i.focus();i.setSelectionRange(v.length,v.length);}}},
+  tpf(k,v){ctx.tpf=ctx.tpf||{q:'',lvl:false,nw:false};ctx.tpf[k]=v;view();if(k==='q'){const i=$('tpq');if(i){i.focus();i.setSelectionRange(v.length,v.length);}}},
   trainGo(){const ids=(ctx.tsel||[]).slice(0,6);if(!ids.length)return;G.exec('train',ids);},
   back(){phase='menu';view();window.scrollTo(0,0);},
   // mercado
