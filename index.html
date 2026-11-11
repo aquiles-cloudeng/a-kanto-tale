@@ -795,7 +795,7 @@ function leagueRun(s){
     if(R()*100<pv.win){lines.push(`✅ Derrotaste a ${st.leader} (${st.type}) — chance era ${pv.win}%`);}
     else{lines.push(`❌ Caíste ante ${st.leader} (${st.type}) — chance era ${pv.win}%`);all=false;break;}
   }
-  if(all){s.leagueWon=true;lines.push('🏆 ¡Sos el nuevo Campeón de la Liga Pokémon!');}
+  if(all){s.leagueWon=true;s.leagueTeam=teamMons(s).map(m=>m.sp);s.leagueMoral=s.moral;lines.push('🏆 ¡Sos el nuevo Campeón de la Liga Pokémon!');}
   else{s.leagueFails++;lines.push('Caíste en la Liga. No hay bonus por intentos anteriores: para volver a intentarlo necesitás un equipo mejor. Cada intento te cuesta una estación.');}
   return {title:'Liga Pokémon',lines,seasons:1};
 }
@@ -1587,7 +1587,7 @@ function endOffers(s){
   if(s.rocketBoss)o.push('rocket_boss');
   if(s.fame>=FAME_MAX)o.push('gym_leader');
   if(dexN(s)>=151)o.push('dex_complete');
-  if(dexN(s)>=151&&!s.rocket)o.push('profesor');
+  if(s.pubs>=3&&dexN(s)>=PUB_REQ[2].dex&&!s.rocket)o.push('profesor');
   return END_PRIO.filter(k=>o.includes(k));
 }
 const END_OFFER_TEXT={
@@ -1595,7 +1595,7 @@ const END_OFFER_TEXT={
   rocket_boss:['Quedarte al mando del Equipo Rocket','Giovanni se retira y la organización es tuya.'],
   gym_leader:['Quedarte como Líder de tu gimnasio','Tu gimnasio ya es una institución en la región.'],
   dex_complete:['Cerrar tu historia como Maestro Pokémon','Completaste la Pokédex: las 151 especies.'],
-  profesor:['Aceptar el puesto de Profesor del Profesor Oak','Con tu Pokédex completa, Oak te cede su propio laboratorio.']};
+  profesor:['Aceptar el puesto de Profesor del Profesor Oak','Tus 3 publicaciones y tu Pokédex avanzada convencen a Oak: te cede su propio laboratorio.']};
 function checkEnding(s){
   if(s.forcedEnd)return s.forcedEnd;
   if(s.heat>=5)return 'arrested';
@@ -1654,8 +1654,16 @@ const ACHS=[
  {id:'barco',e:'🚢',n:'Marinero',d:'Hacer el viaje en el barco S.S.',f:s=>!!s.counters.shipDone},
  {id:'rocketboss',e:'🅡',n:'El jefe',d:'Convertirte en el líder del Equipo Rocket.',f:s=>!!s.rocketBoss},
  {id:'profe3',e:'🔬',n:'Investigador',d:'Conseguir las 3 publicaciones científicas.',f:s=>s.pubs>=3},
- {id:'lider',e:'🏟️',n:'Líder consagrado',d:'Alcanzar la fama máxima de tu propio gimnasio.',f:s=>s.fame>=FAME_MAX}
+ {id:'lider',e:'🏟️',n:'Líder consagrado',d:'Alcanzar la fama máxima de tu propio gimnasio.',f:s=>s.fame>=FAME_MAX},
+ // Logros ocultos: no muestran su condición hasta conseguirlos (solo una pista). Se evalúan con el equipo que tenías al ganar la Liga.
+ {id:'favorito',hid:true,h:'Hay un Pokémon que al creador le cae especialmente bien.',e:'🦆',n:'El favorito del creador',d:'Ganar la Liga Pokémon con Farfetch’d en el equipo.',f:s=>s.leagueWon&&(s.leagueTeam||[]).includes(83)},
+ {id:'pika',hid:true,h:'Un clásico que no necesita evolucionar.',e:'⚡',n:'Un amigo amarillo',d:'Ganar la Liga con un Pikachu (sin evolucionar) en el equipo.',f:s=>s.leagueWon&&(s.leagueTeam||[]).includes(25)},
+ {id:'trio',hid:true,h:'Tres compañeros de Kanto que arrancaron todo.',e:'🔥',n:'Trío fundador',d:'Ganar la Liga con Venusaur, Charizard y Blastoise en el equipo.',f:s=>s.leagueWon&&[3,6,9].every(n=>(s.leagueTeam||[]).includes(n))},
+ {id:'hermanos',hid:true,h:'Una familia de ocho caminos… y tres de ellos juntos.',e:'🦊',n:'Hermanos Eevee',d:'Ganar la Liga con Vaporeon, Jolteon y Flareon en el equipo.',f:s=>s.leagueWon&&[134,135,136].every(n=>(s.leagueTeam||[]).includes(n))},
+ {id:'corazon',hid:true,h:'Se puede llegar a la cima sin ensuciarse las manos.',e:'💖',n:'Campeón de buen corazón',d:'Ganar la Liga con la conciencia muy tranquila (moral 8 o más).',f:s=>s.leagueWon&&(s.leagueMoral||0)>=8},
+ {id:'perfecto',hid:true,h:'Sin una sola mancha en el camino.',e:'💠',n:'Camino perfecto',d:'Ganar la Liga a la primera, sin perder ningún combate de gimnasio y ganándole a Blue en sus 4 duelos.',f:s=>s.leagueWon&&s.leagueFails===0&&!(s.counters.gymLoss>0)&&(s.counters.rivalWin||0)>=4}
 ];
+const ACH_HID=ACHS.filter(a=>a.hid).length;
 const achievementsOf=s=>ACHS.filter(a=>{try{return a.f(s);}catch(e){return false;}});
 function scoreOf(s){
   const ach=achievementsOf(s);const tp=teamPower(s);
@@ -1744,7 +1752,7 @@ const END_COND={
  rocket_boss:'Llegar al rango de Alto mando del Equipo Rocket y vencer a Giovanni.',
  gym_leader:'Fundar tu gimnasio y llegar a '+FAME_MAX+' de fama.',
  dex_complete:'Registrar las 151 especies.',
- profesor:'Con la Pokédex completa (sin ser del Equipo Rocket), o siendo Profesor con 3 publicaciones, y aceptar el puesto.',
+ profesor:'Tener las 3 publicaciones científicas (que piden Pokédex de 40, 85 y 115 especies, e Ingenio 9, 14 y 18), no ser del Equipo Rocket y aceptar el puesto. Completar la Pokédex solo no alcanza: eso da el final de Maestro Pokémon.',
  arrested:'Llegar a 5 de Heat. Es inmediato.',
  rocket_alto:'Al llegar a las 100 estaciones siendo del Equipo Rocket con rango máximo sin haber vencido a Giovanni.',
  rocket_vet:'Al llegar a las 100 estaciones siendo del Equipo Rocket con 30 o más puntos de rango.',
@@ -1805,7 +1813,7 @@ function guideSections(){
   S.push(['⭐ Reputación, conciencia y Heat',`${li(['<b>Reputación</b> (de −10 a 20): sube cuando ayudás o resolvés bien frente a otros, baja cuando fallás o hacés el ridículo. Suma o resta hasta +10 / −6 puntos en los eventos sociales. A los 5, 10 y 15 la gente te hace un regalo (una piedra, un Pokémon y el Amuleto de la Suerte). Rangos: '+REP_RANKS.slice().reverse().map(r=>r[1]).join(', ')+'.','<b>Conciencia</b> (de −10 a 10): sube con decisiones buenas y baja con robos y trabajos turbios. Abre algunas ofertas (como la del Equipo Rocket) y cuenta en la historia final.','<b>Heat</b> (de 0 a 5): ver Equipo Rocket.'])}`]);
   S.push(['🎒 Objetos',li(Object.keys(ITEMS).filter(k=>!ITEMS[k].stone&&k!=='corona').map(k=>`<b>${esc(ITEMS[k].name)}</b>: ${esc(ITEMS[k].desc)}`))+`<p><b>Piedras evolutivas</b> (Fuego, Hoja, Lunar, Trueno, Agua): hacen evolucionar a ciertos Pokémon. Las encontrás explorando, en eventos y en el mercado. Se usan desde la Mochila.</p>`]);
   S.push(['🏁 Finales',`<p>Cuando cumplís la condición de uno o más finales, el juego te deja <b>elegir cuál cerrar</b> (o seguir jugando por otro). No depende de tu vocación. Si llegás a las ${MAXT} estaciones, se cierra solo el de mayor prioridad entre los que cumplís: Campeón, jefe Rocket, Líder de gimnasio, Maestro Pokémon, Profesor.</p>`+li(Object.keys(ENDINGS).map(k=>`<b>${ENDINGS[k].e} ${esc(ENDINGS[k].t)}</b>: ${esc(END_COND[k]||'')}`))]);
-  S.push(['⭐ Puntaje y logros',`<p>Al terminar recibís un puntaje que se suma así:</p>${li(['Final: '+Object.keys(END_BASE).map(k=>(ENDINGS[k]?ENDINGS[k].t:k)+' '+END_BASE[k]).join(' · '),'4 puntos por especie en la Pokédex','10 por especie shiny','25 por medalla','3 por cada punto de stat por encima de los 10 iniciales','Poder del equipo: (poder − 300) × 0,8','40 por logro','3 por cada estación que te sobra si cerrás antes del tiempo límite'])}<p>Calificación: ${GRADES.slice(0,-1).map(g=>g[1]+' desde '+g[0]).join(' · ')}.</p><p><b>Logros</b> (se guardan en tu navegador):</p>`+li(ACHS.map(a=>`${a.e} <b>${esc(a.n)}</b>: ${esc(a.d)}`))]);
+  S.push(['⭐ Puntaje y logros',`<p>Al terminar recibís un puntaje que se suma así:</p>${li(['Final: '+Object.keys(END_BASE).map(k=>(ENDINGS[k]?ENDINGS[k].t:k)+' '+END_BASE[k]).join(' · '),'4 puntos por especie en la Pokédex','10 por especie shiny','25 por medalla','3 por cada punto de stat por encima de los 10 iniciales','Poder del equipo: (poder − 300) × 0,8','40 por logro','3 por cada estación que te sobra si cerrás antes del tiempo límite'])}<p>Calificación: ${GRADES.slice(0,-1).map(g=>g[1]+' desde '+g[0]).join(' · ')}.</p><p><b>Logros</b> (se guardan en tu navegador):</p>`+li(ACHS.filter(a=>!a.hid).map(a=>`${a.e} <b>${esc(a.n)}</b>: ${esc(a.d)}`))+`<p>Además hay <b>${ACH_HID} logros ocultos</b>: difíciles y específicos, que no muestran su condición hasta que los conseguís (solo una pista). Cuentan igual para el puntaje.</p>`]);
   S.push(['📖 Glosario',li([
    '<b>Estación:</b> una unidad de tiempo (3 meses). El juego dura '+MAXT+'.',
    '<b>Poder:</b> la fuerza de un Pokémon o de tu equipo (promedio).',
@@ -2119,7 +2127,7 @@ function view(){
       <button class="btn sm" style="margin-top:8px;text-align:center" onclick="G.share()">📋 Copiar mi resultado para compartir</button><div class="sub" id="shmsg"></div></div>
     <div class="card"><h3 class="mb">🏅 Logros (${sc.ach.length}/${ACHS.length})</h3>
       <div class="lines">${ACHS.filter(a=>earned.has(a.id)).map(a=>`<div><span style="font-size:20px">${a.e}</span><div><b>${esc(a.n)}</b>${fresh.has(a.id)?' <span class="tag-new">NUEVO</span>':''}<div class="sub">${esc(a.d)}</div></div></div>`).join('')||'<div class="sub">No conseguiste ningún logro esta vez.</div>'}</div>
-      <details style="margin-top:8px"><summary class="sub" style="cursor:pointer">Ver los que te faltaron (${ACHS.length-sc.ach.length})</summary><div class="lines">${ACHS.filter(a=>!earned.has(a.id)).map(a=>`<div style="opacity:.6"><span style="font-size:20px">🔒</span><div><b>${esc(a.n)}</b><div class="sub">${esc(a.d)}</div></div></div>`).join('')}</div></details></div>
+      <details style="margin-top:8px"><summary class="sub" style="cursor:pointer">Ver los que te faltaron (${ACHS.length-sc.ach.length}, de los cuales ${ACHS.filter(a=>a.hid&&!earned.has(a.id)).length} ocultos)</summary><div class="lines">${ACHS.filter(a=>!earned.has(a.id)).map(a=>a.hid?`<div style="opacity:.6"><span style="font-size:20px">🔒</span><div><b>Logro oculto</b><div class="sub">Pista: ${esc(a.h)}</div></div></div>`:`<div style="opacity:.6"><span style="font-size:20px">🔒</span><div><b>${esc(a.n)}</b><div class="sub">${esc(a.d)}</div></div></div>`).join('')}</div></details></div>
     <div class="card"><h3 class="mb">Resumen</h3><div class="lines"><div>Edad: ${Math.min(35,10+Math.floor(s.t/4))} años · ${s.t} estaciones jugadas</div><div>Pokédex: ${dexN(s)}/151 · Shinies: ${shinyN(s)}</div><div>Medallas: ${s.badges.length}/8${s.leagueWon?' · Campeón de la Liga':''} · Reputación ${s.rep} (${repRank(s)})</div><div>${STATS.map(k=>SL[k]+' '+s.st[k]).join(' · ')}</div>${s.voc?`<div>Vocación: ${esc(VOCS[s.voc].name)}</div>`:''}${s.rocket?`<div>Equipo Rocket: ${rocketRank(s)}</div>`:''}${s.gymOwner?`<div>Gimnasio propio de tipo ${TES[s.gymType]} · Fama ${s.fame}</div>`:''}${s.voc==='profesor'?`<div>Publicaciones: ${s.pubs}/3 · Puntos de investigación: ${s.rp}</div>`:''}</div></div>
     <button class="btn" onclick="G.modal('logros')">🏅 Ver todos los logros y mis récords</button>
     <button class="btn primary" onclick="G.new()">Jugar otra vez</button>`;
@@ -2206,7 +2214,7 @@ function modal(kind){
     const endKeys=Object.keys(ENDINGS);const nEnd=endKeys.filter(k=>m.endings[k]).length;
     h=`<h3>🏅 Logros y récords</h3><p class="sub mb">Se guardan en este navegador. Conseguiste <b>${n}</b> de ${ACHS.length} logros y descubriste <b>${nEnd}</b> de ${endKeys.length} finales.</p>
     <button class="btn sm" onclick="G.modal('hall')">🏛️ Ver el Salón de la Fama</button>`+`
-    <h3 style="margin-top:12px">Logros</h3><div class="lines">${ACHS.map(a=>{const got=m.ach[a.id];return `<div style="${got?'':'opacity:.55'}"><span style="font-size:20px">${got?a.e:'🔒'}</span><div><b>${esc(a.n)}</b>${got?` <span class="sub">· ${fmtDate(got)}</span>`:''}<div class="sub">${esc(a.d)}</div></div></div>`;}).join('')}</div>
+    <h3 style="margin-top:12px">Logros</h3><div class="lines">${ACHS.map(a=>{const got=m.ach[a.id];return `<div style="${got?'':'opacity:.55'}"><span style="font-size:20px">${got?a.e:'🔒'}</span><div><b>${(a.hid&&!got)?'Logro oculto':esc(a.n)}</b>${got?` <span class="sub">· ${fmtDate(got)}</span>`:''}<div class="sub">${(a.hid&&!got)?'Pista: '+esc(a.h):esc(a.d)}</div></div></div>`;}).join('')}</div>
     <h3 style="margin-top:12px">Finales descubiertos</h3><div class="lines">${endKeys.map(k=>`<div style="${m.endings[k]?'':'opacity:.55'}"><span style="font-size:20px">${m.endings[k]?ENDINGS[k].e:'❔'}</span><div><b>${m.endings[k]?esc(ENDINGS[k].t):'Final sin descubrir'}</b>${m.endings[k]?` <span class="sub">· ×${m.endings[k]}</span>`:''}</div></div>`).join('')}</div>`;
   }else if(kind==='log'){
     h=`<h3>📜 Diario</h3>`+(s.log.length?[...s.log].reverse().map(l=>`<div class="logline">${esc(l)}</div>`).join(''):'<p class="sub">Todavía no pasó nada.</p>');
