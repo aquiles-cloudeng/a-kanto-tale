@@ -2,7 +2,7 @@
 
 Un juego de aventura por elecciones, hecho por fans y sin fines de lucro, que se juega directo en el navegador. Vivís la vida de un entrenador desde los **10 hasta los 35 años**, a lo largo de **100 estaciones**, y cada decisión te lleva a un final distinto.
 
-👉 **Jugar:** `https://aquiles-cloudeng/a-kanto-tale.github.io/`
+👉 **Jugar:** `https://aquiles-cloudeng/a-kanto-tale`
 
 ## Qué podés hacer
 
