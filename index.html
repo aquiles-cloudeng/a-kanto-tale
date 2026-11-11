@@ -58,7 +58,10 @@ body{background:radial-gradient(1100px 600px at 50% -10%,#1b2c4a,#0d1420 62%) fi
 .center{text-align:center}
 .mb{margin-bottom:8px}
 .spr{image-rendering:pixelated;flex:none}
+.achic{display:inline-flex;align-items:center;justify-content:center;flex:none}.achic.lock img{filter:brightness(0) opacity(.45)}
 .fb{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;font-size:11px;font-weight:800;flex:none}
+#fnav{position:fixed;right:14px;bottom:14px;display:none;gap:8px;z-index:15}
+#fnav button{background:var(--panel2);border:1px solid var(--acc);color:var(--tx);border-radius:999px;padding:10px 14px;font:inherit;font-weight:700;cursor:pointer;box-shadow:0 4px 14px #0008}
 #modal{position:fixed;inset:0;background:#050a12e8;display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:16px;z-index:20}
 #modal.on{display:flex}
 #modal .box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;width:100%;max-width:560px}
@@ -115,6 +118,18 @@ img.em{height:1.15em;width:auto;vertical-align:-.22em;image-rendering:pixelated}
 .rbar span{display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden}
 .rbar .g{background:var(--good);border-radius:8px 0 0 8px}.rbar .n{background:var(--neu)}.rbar .b{background:var(--bad);color:#fff;border-radius:0 8px 8px 0}
 .rbar .rmark{position:absolute;top:-7px;bottom:-7px;width:4px;margin-left:-2px;background:#fff;border-radius:3px;box-shadow:0 0 8px #fff,0 0 0 1px #000a;pointer-events:none}
+/* Animación de modificadores: la barra parte de la chance base y cada modificador la empuja con un destello */
+.rbar.building span{transition:width .45s cubic-bezier(.2,.8,.2,1)}
+.rbar.flashg .g{animation:flashg .55s ease}.rbar.flashb .b{animation:flashb .55s ease}
+@keyframes flashg{0%{filter:brightness(1)}30%{filter:brightness(1.7) saturate(1.4);box-shadow:0 0 14px var(--good)}100%{filter:none}}
+@keyframes flashb{0%{filter:brightness(1)}30%{filter:brightness(1.5) saturate(1.3);box-shadow:0 0 14px var(--bad)}100%{filter:none}}
+.rpop{position:absolute;top:-4px;transform:translate(-50%,0);font-weight:900;font-size:15px;pointer-events:none;text-shadow:0 1px 3px #000c;animation:rpop 1s ease-out forwards;z-index:3}
+.rpop.pos{color:#8dffb0}.rpop.neg{color:#ff9a9a}
+@keyframes rpop{0%{opacity:0;transform:translate(-50%,6px) scale(.7)}20%{opacity:1;transform:translate(-50%,-6px) scale(1.25)}100%{opacity:0;transform:translate(-50%,-30px) scale(1)}}
+.rsteps{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 12px;min-height:4px}
+.rchip{font-size:12px;font-weight:700;border-radius:999px;padding:4px 9px;border:1px solid var(--line);background:var(--panel2);animation:chip .35s cubic-bezier(.2,1.4,.4,1) both}
+.rchip.pos{border-color:var(--good);color:#b9f5c9}.rchip.neg{border-color:var(--bad);color:#ffc0c0}.rchip.base{color:var(--mut)}
+@keyframes chip{from{opacity:0;transform:scale(.5) translateY(6px)}to{opacity:1;transform:none}}
 .rhide{opacity:0;pointer-events:none}
 .rshow{animation:rfade .45s ease both}
 @keyframes rfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -137,6 +152,7 @@ img.em{height:1.15em;width:auto;vertical-align:-.22em;image-rendering:pixelated}
 </div>
 <aside class="side" id="sideR"></aside>
 </div>
+<div id="fnav"></div>
 <div id="modal"><div class="box" id="mbox"></div></div>
 
 <script>
@@ -280,19 +296,24 @@ const GYMS=[
  {id:'misty',city:'Ciudad Celeste',leader:'Misty',type:'Agua',team:['Staryu','Starmie'],pw:400},
  {id:'surge',city:'Ciudad Carmín',leader:'Teniente Surge',type:'Eléctrico',team:['Voltorb','Pikachu','Raichu'],pw:435},
  {id:'erika',city:'Ciudad Azulona',leader:'Erika',type:'Planta',team:['Victreebel','Tangela','Vileplume'],pw:470},
- {id:'koga',city:'Ciudad Fucsia',leader:'Koga',type:'Veneno',team:['Koffing','Muk','Koffing','Weezing'],pw:505},
- {id:'sabrina',city:'Ciudad Azafrán',leader:'Sabrina',type:'Psíquico',team:['Kadabra','Mr. Mime','Venomoth','Alakazam'],pw:535},
- {id:'blaine',city:'Isla Canela',leader:'Blaine',type:'Fuego',team:['Growlithe','Ponyta','Rapidash','Arcanine'],pw:560},
- {id:'giovanni',city:'Ciudad Verde',leader:'Giovanni',type:'Tierra',team:['Rhyhorn','Dugtrio','Nidoqueen','Nidoking','Rhydon'],pw:580}
+ {id:'koga',city:'Ciudad Fucsia',leader:'Koga',type:'Veneno',team:['Koffing','Muk','Koffing','Weezing'],pw:510},
+ {id:'sabrina',city:'Ciudad Azafrán',leader:'Sabrina',type:'Psíquico',team:['Kadabra','Mr. Mime','Venomoth','Alakazam'],pw:540},
+ {id:'blaine',city:'Isla Canela',leader:'Blaine',type:'Fuego',team:['Growlithe','Ponyta','Rapidash','Arcanine'],pw:565},
+ {id:'giovanni',city:'Ciudad Verde',leader:'Giovanni',type:'Tierra',team:['Rhyhorn','Dugtrio','Nidoqueen','Nidoking','Rhydon'],pw:585}
 ];
 const GIOVANNI_RK={id:'giovanni_rk',leader:'Giovanni',type:'Tierra',team:['Rhyhorn','Dugtrio','Nidoqueen','Nidoking','Rhydon','Persian'],pw:GIO_PW};
 const LEAGUE=[
- {id:'lorelei',leader:'Lorelei',type:'Hielo',team:['Dewgong','Cloyster','Slowbro','Jynx','Lapras'],pw:530},
- {id:'bruno',leader:'Bruno',type:'Lucha',team:['Onix','Hitmonchan','Hitmonlee','Onix','Machamp'],pw:545},
- {id:'agatha',leader:'Agatha',type:'Fantasma',team:['Gengar','Golbat','Haunter','Arbok','Gengar'],pw:560},
- {id:'lance',leader:'Lance',type:'Dragón',team:['Gyarados','Dragonair','Dragonair','Aerodactyl','Dragonite'],pw:575},
- {id:'blue',leader:'Blue (tu rival)',type:'Mixto',team:['Pidgeot','Alakazam','Rhydon','Exeggutor','Arcanine','Gyarados'],pw:590}
+ {id:'lorelei',leader:'Lorelei',type:'Hielo',team:['Dewgong','Cloyster','Slowbro','Jynx','Lapras'],pw:540},
+ {id:'bruno',leader:'Bruno',type:'Lucha',team:['Onix','Hitmonchan','Hitmonlee','Onix','Machamp'],pw:555},
+ {id:'agatha',leader:'Agatha',type:'Fantasma',team:['Gengar','Golbat','Haunter','Arbok','Gengar'],pw:570},
+ {id:'lance',leader:'Lance',type:'Dragón',team:['Gyarados','Dragonair','Dragonair','Aerodactyl','Dragonite'],pw:585},
+ {id:'blue',leader:'Blue (tu rival)',type:'Mixto',team:['Pidgeot','Alakazam','Rhydon','Exeggutor','Arcanine','Gyarados'],pw:600}
 ];
+// Dificultad: el poder de gimnasios y Liga crece en rampa (Brock queda igual; Giovanni y la Liga reciben el aumento completo).
+// Calibrado con un bot que juega "atento" para que gane la Liga con unas 10 estaciones de sobra. Para suavizar: bajá GYM_RAMP (40 = más holgado, 60 = muy duro).
+const GYM_RAMP=50;
+const GYM_RAMP_F={brock:0,misty:0.15,surge:0.3,erika:0.45,koga:0.6,sabrina:0.75,blaine:0.9,giovanni:1,lorelei:1,bruno:1,agatha:1,lance:1,blue:1};
+for(const g of GYMS.concat(LEAGUE))g.pw+=Math.round(GYM_RAMP*(GYM_RAMP_F[g.id]||0));
 
 // ---------- Estado ----------
 function newGame(originId,starterName){
@@ -318,6 +339,7 @@ const talent=m=>Math.round((m.q-1)*100);
 function addMonX(s,sp,shiny){
   const m={id:s.nextId++,sp,shiny:!!shiny,q:Math.round((0.9+0.2*R())*100)/100};
   s.box.push(m);s.dex[sp]=1;if(shiny)s.shinyDex[sp]=1;
+  s.counters.caught=(s.counters.caught||0)+1;
   let up=false;
   const cur=teamMons(s).find(x=>x.sp===sp&&x.id!==m.id);
   if(cur){if(pw(m)>pw(cur)&&(m.shiny||!cur.shiny)){s.team=s.team.map(id=>id===cur.id?m.id:id);up=true;}} // un shiny en el equipo no lo desplaza uno normal
@@ -430,7 +452,7 @@ function explore(s,zoneId){
       const had=s.box.filter(x=>x.sp===enc.sp);
       const isNew=!s.dex[enc.sp];
       const {m,up}=addMonX(s,enc.sp,shiny);
-      any=true;
+      any=true;s.counters.caughtExplore=(s.counters.caughtExplore||0)+1;
       let tag='';
       if(isNew)tag=' · ¡nuevo en la Pokédex!';
       else if(up)tag=' · ¡mejor ejemplar! Pasa al equipo';
@@ -463,8 +485,8 @@ function giveWild(s){
   const z=open.length?open[Math.floor(R()*open.length)]:ZONES[0];
   return giveFromZone(s,z.id);
 }
-function giveMon(s,sp){
-  const shiny=R()<shinyChance(s);const isNew=!s.dex[sp];
+function giveMon(s,sp,forceShiny){
+  const shiny=!!forceShiny||R()<shinyChance(s);const isNew=!s.dex[sp];
   const {m,up}=addMonX(s,sp,shiny);
   return {t:`${shiny?'✨ ¡SHINY! ':'🎁 '}Se suma ${mon(sp).name} (poder ${pw(m)})${isNew?' · ¡nuevo en la Pokédex!':up?' · ¡mejor ejemplar!':''}`,sp,sh:shiny};
 }
@@ -689,6 +711,16 @@ function oddsFor(s,opt){
   if(!opt.sure&&d<DMIN){mods.push(['Límite de penalización (nunca más de '+(-DMIN)+' puntos en contra)',DMIN-d]);d=DMIN;}
   return {p:opt.sure?[100,0,0]:shiftOdds(opt.base,d),mods,d};
 }
+// Construcción de la barra: parte de la chance base y suma, de a uno, cada modificador (para la animación)
+function buildEv(opt,od){const st=[];let cum=0;for(const m of od.mods){cum+=m[1];st.push({t:m[0],d:Math.round(m[1]*10)/10,a:shiftOdds(opt.base,cum)});}return {start:opt.base.slice(),steps:st};}
+function buildGym(parts,final){
+  const st=[];let cum=0;
+  for(const p of parts){if(!p[1])continue;cum+=p[1];const v=clamp(40+cum,0,100);st.push({t:p[0],d:p[1],a:[v,0,100-v]});}
+  const last=st[st.length-1];const lv=last?last.a[0]:40;
+  if(last&&Math.abs(lv-final)<=2)last.a=[final,0,100-final];
+  else if(lv!==final)st.push({t:'Límite (nunca menos de 5% ni más de 95%)',d:final-Math.round(lv),a:[final,0,100-final]});
+  return {start:[40,0,60],steps:st};
+}
 let lastRoll=0;
 function rollBand(p){const r=R()*100;lastRoll=r;return r<p[0]?'g':r<p[0]+p[1]?'n':'b';}
 
@@ -715,6 +747,10 @@ function applyFx(s,fx){
   if(fx.trade){const l=swapMon(s,fx.trade.give,fx.trade.get);if(l)L.push(l);}
   if(fx.tradeStone){const l=swapForStone(s,fx.tradeStone.give,fx.tradeStone.key);if(l)L.push(l);}
   if(fx.stone)for(let i=0;i<fx.stone;i++){const k=STONE_KEYS[Math.floor(R()*STONE_KEYS.length)];giveItem(s,k,1);L.push({t:'Conseguiste: '+ITEMS[k].name,item:k});}
+  if(fx.gainShiny){const open=ZONES.filter(z=>zoneOpen(s,z)&&(powerOnly(s)||z.need<=Math.max(0,s.badges.length)));const z=open.length?open[Math.floor(R()*open.length)]:ZONES[0];L.push(giveMon(s,rollEncounter(s,z).sp,true));}
+  if(fx.shinyMon){const m=s.box.find(x=>x.id===fx.shinyMon);if(m&&!m.shiny){m.shiny=true;s.shinyDex[m.sp]=1;L.push({t:'✨ ¡'+mon(m.sp).name+' ahora es shiny!',sp:m.sp,sh:true});}}
+  if(fx.freeSeason){s.freeSeason=(s.freeSeason||0)+fx.freeSeason;L.push('⏳ La próxima acción que hagas no te cuesta ninguna estación.');}
+  if(fx.boost){s.boost=Math.max(s.boost||0,fx.boost);L.push('🎯 Tu próxima batalla importante (gimnasio, Liga o duelo) tiene +'+s.boost+'% de chance.');}
   if(fx.item){if(giveItem(s,fx.item,1))L.push({t:'Conseguiste: '+ITEMS[fx.item].name+' ('+ITEMS[fx.item].desc+')',item:fx.item});}
   if(fx.flag)Object.assign(s.flags,fx.flag);
   if(fx.inc)for(const k in fx.inc)s.counters[k]=(s.counters[k]||0)+fx.inc[k];
@@ -754,12 +790,13 @@ function gymPreview(s,gym){
   parts.push(['Valor '+s.st.valor,clamp((s.st.valor-4)*0.6,-5,8)]);
   if(s.items.lucky_charm)parts.push(['Amuleto de la Suerte',3]);
   if(s.voc==='campeon')parts.push(['Vocación: Campeón',3]);
+  if(s.boost)parts.push(['Ventaja del Carisma máximo (un solo uso)',s.boost]);
   const retry=(s.gymRetry[gym.id]||0);if(retry)parts.push(['Experiencia de intentos anteriores',retry]);
   let tot=40;for(const p of parts)tot+=p[1];
   return {win:clamp(Math.round(tot),5,95),parts:parts.map(p=>[p[0],Math.round(p[1])]),cov,weak,tp,oppPower};
 }
 function gymRun(s){
-  const gym=GYMS[s.badges.length];const pv=gymPreview(s,gym);
+  const gym=GYMS[s.badges.length];const pv=gymPreview(s,gym);s.boost=0;
   const band=rollBand([pv.win,0,100-pv.win]); // sin grises: o ganás o perdés
   const lines=[];
   if(band==='g'){
@@ -768,14 +805,14 @@ function gymRun(s){
     lines.push(...applyFx(s,{rep:1,st:{valor:1}}));
   }else{
     s.counters.gymLoss=(s.counters.gymLoss||0)+1;
-    s.gymRetry[gym.id]=Math.min(10,(s.gymRetry[gym.id]||0)+3);
-    lines.push(`${gym.leader} te derrotó. Aprendiste su estilo (+3% la próxima vez).`);
+    s.gymRetry[gym.id]=Math.min(6,(s.gymRetry[gym.id]||0)+2);
+    lines.push(`${gym.leader} te derrotó. Aprendiste su estilo (+2% la próxima vez, hasta +6%).`);
     lines.push(...applyFx(s,{rep:-1}));
   }
-  return {title:'Gimnasio de '+gym.city,lines,seasons:1,band,rollInfo:{odds:[pv.win,0,100-pv.win],roll:lastRoll,labels:['Victoria','','Derrota']}};
+  return {title:'Gimnasio de '+gym.city,lines,seasons:1,band,rollInfo:{odds:[pv.win,0,100-pv.win],roll:lastRoll,labels:['Victoria','','Derrota'],build:buildGym(pv.parts,pv.win)}};
 }
 function giovanniRun(s){
-  const pv=gymPreview(s,GIOVANNI_RK);const lines=[];
+  const pv=gymPreview(s,GIOVANNI_RK);const lines=[];s.boost=0;
   const gr=R()*100;
   if(gr<pv.win){
     s.rocketBoss=true;
@@ -786,18 +823,19 @@ function giovanniRun(s){
     lines.push(`❌ Giovanni te derrotó. Tu chance era ${pv.win}%.`);
     lines.push('«Todavía no estás listo. Volvé cuando lo estés.» Conservás tu rango: podés entrenar, capturar o robar para volver más fuerte. Cada intento te cuesta una estación y no deja bonus.');
   }
-  return {title:'Desafío a Giovanni',lines,seasons:1,rollInfo:{odds:[pv.win,0,100-pv.win],roll:gr,labels:['Victoria','','Derrota']}};
+  return {title:'Desafío a Giovanni',lines,seasons:1,rollInfo:{odds:[pv.win,0,100-pv.win],roll:gr,labels:['Victoria','','Derrota'],build:buildGym(pv.parts,pv.win)}};
 }
 function leagueRun(s){
-  const lines=[];let all=true;
+  const lines=[];let all=true;const boosted=s.boost;
   for(const st of LEAGUE){
     const pv=gymPreview(s,st);
     if(R()*100<pv.win){lines.push(`✅ Derrotaste a ${st.leader} (${st.type}) — chance era ${pv.win}%`);}
     else{lines.push(`❌ Caíste ante ${st.leader} (${st.type}) — chance era ${pv.win}%`);all=false;break;}
   }
-  if(all){s.leagueWon=true;s.leagueTeam=teamMons(s).map(m=>m.sp);s.leagueMoral=s.moral;lines.push('🏆 ¡Sos el nuevo Campeón de la Liga Pokémon!');}
-  else{s.leagueFails++;lines.push('Caíste en la Liga. No hay bonus por intentos anteriores: para volver a intentarlo necesitás un equipo mejor. Cada intento te cuesta una estación.');}
-  return {title:'Liga Pokémon',lines,seasons:1};
+  s.boost=0;if(boosted)lines.push('🎯 Usaste la ventaja de tu Carisma máximo en esta Liga.');
+  if(all){s.leagueWon=true;s.counters.leagueT=s.t;s.leagueTeam=teamMons(s).map(m=>m.sp);s.leagueMoral=s.moral;lines.push('🏆 ¡Sos el nuevo Campeón de la Liga Pokémon!');}
+  else{s.leagueFails++;lines.push('Caíste en la Liga. No hay bonus por intentos anteriores: para volver a intentarlo necesitás un equipo mejor. Caer en la Liga te cuesta dos estaciones: te toca recuperarte.');}
+  return {title:'Liga Pokémon',lines,seasons:all?1:2};
 }
 
 // ---------- Práctica: cada acción entrena su stat afín; con los usos suficientes sube +1 (cada vez cuesta más) ----------
@@ -829,7 +867,7 @@ function getActions(s){
   if(!s.rocket&&!s.gymOwner){
     const ok=s.badges.length<8;
     A.push({id:'gym',icon:'🏅',title:ok?'Desafiar el gimnasio de '+nextGym.city:'Gimnasios completados',desc:ok?nextGym.leader+' · tipo '+nextGym.type+'. Primero ves las probabilidades.':'Ya tenés las 8 medallas.',ok,why:''});
-    if(s.badges.length>=8&&!s.leagueWon)A.push({id:'league',icon:'🏆',title:'Desafiar a la Liga Pokémon',desc:'Cuatro Alto Mando y el Campeón, uno tras otro. Perder te cuesta una estación. La Liga solo acepta aspirantes de '+LEAGUE_AGE+' años o más.',ok:age(s)>=LEAGUE_AGE,why:'Todavía sos muy joven para la Liga: te aceptan a los '+LEAGUE_AGE+' años (tenés '+age(s)+')'});
+    if(s.badges.length>=8&&!s.leagueWon)A.push({id:'league',icon:'🏆',title:'Desafiar a la Liga Pokémon',desc:'Cuatro Alto Mando y el Campeón, uno tras otro. El intento ocupa una estación y, si caés, te cuesta dos (te toca recuperarte). La Liga solo acepta aspirantes de '+LEAGUE_AGE+' años o más.',ok:age(s)>=LEAGUE_AGE,why:'Todavía sos muy joven para la Liga: te aceptan a los '+LEAGUE_AGE+' años (tenés '+age(s)+')'});
     A.push({id:'help',icon:'🤝',title:'Ayudar a la gente',desc:'Siempre pasa algo: ayudás a alguien y, según cómo te vaya, ganás reputación y a veces un premio (piedras, objetos, Pokémon o stats). La reputación mejora tus chances en eventos sociales.',ok:true});
   }
   A.push({id:'study',icon:'📚',title:'Estudiar en la academia',desc:'1 año: +3 en un stat · 2 años: +6 en un stat y +1 Ingenio. Es tiempo que no explorás. Máximo 2 veces ('+s.studied+'/2).',ok:s.studied<2&&s.t+4<=MAXT,why:s.studied>=2?'Ya estudiaste dos veces':'Queda muy poco tiempo'});
@@ -850,6 +888,7 @@ function getActions(s){
 }
 function runAction(s,id,arg){
   const r=runActionCore(s,id,arg);
+  if(s.freeSeason>0&&(r.seasons||1)>0){r.seasons=Math.max(0,(r.seasons||1)-1);s.freeSeason--;r.lines.push('⏳ Gracias a tu Ingenio, esta acción no te costó una estación.');}
   if(PRAC[id]){const l=practice(s,PRAC[id]);if(l)r.lines.push(l);}
   if(id==='rkmission'){const l=practice(s,rkKind(arg).prac);if(l)r.lines.push(l);}
   if(id==='market'){ // cada cambio cerrado (Pokémon, piedra o evolución) suma una práctica de Carisma
@@ -1548,8 +1587,9 @@ function resolveOption(s,ev,idx){
       if(s.st[m[1]]<m[2]+3&&s.st[m[1]]<STAT_CAP){s.st[m[1]]++;lines.push('📈 Aprendiste en el desafío: +1 '+SL[m[1]]+' (exigía '+m[2]+')');break;}
     }
   }
+  if(opt.duel&&s.boost)s.boost=0;
   s.seen[ev.id]=true;s.recent.push(ev.id);if(s.recent.length>8)s.recent.shift();
-  return {band,text,lines,odds:od.p,sure:!!opt.sure,duel:!!opt.duel,roll:opt.sure?null:lastRoll};
+  return {band,text,lines,odds:od.p,sure:!!opt.sure,duel:!!opt.duel,roll:opt.sure?null:lastRoll,build:opt.sure?null:(opt.parts?buildGym(opt.parts,od.p[0]):buildEv(opt,od))};
 }
 
 // ---------- Finales ----------
@@ -1621,7 +1661,8 @@ function endSeason(s,seasons){
 }
 
 // ===================== Puntaje, logros y epílogo =====================
-const END_BASE={champion:1000,rocket_boss:900,dex_complete:900,profesor:850,gym_leader:800,rocket_alto:500,collector:450,finalista:400,scholar:400,gym_small:350,retador:300,rocket_vet:300,viajero:150,rocket_low:150,arrested:100};
+const END_FLAT=600; // mismo puntaje base para todos los finales: así nadie fuerza uno solo por el puntaje
+const END_BASE=Object.fromEntries(Object.keys(ENDINGS).map(k=>[k,END_FLAT]));
 const ALL_TYPES=[...new Set(MON.flatMap(m=>m.types))];
 const typeComplete=s=>ALL_TYPES.filter(t=>{const L=MON.filter(m=>m.types.includes(t));return L.length>=12&&L.every(m=>s.dex[m.n]);});
 const maxStat=s=>Math.max(...STATS.map(k=>s.st[k]));
@@ -1664,6 +1705,12 @@ const ACHS=[
  {id:'perfecto',hid:true,h:'Sin una sola mancha en el camino.',e:'💠',n:'Camino perfecto',d:'Ganar la Liga a la primera, sin perder ningún combate de gimnasio y ganándole a Blue en sus 4 duelos.',f:s=>s.leagueWon&&s.leagueFails===0&&!(s.counters.gymLoss>0)&&(s.counters.rivalWin||0)>=4}
 ];
 const ACH_HID=ACHS.filter(a=>a.hid).length;
+// Ícono de cada logro: número = sprite de ese Pokémon · 'im:x' / 'it:x' = sprite de objeto · 'bd:n' = medalla
+const ACH_IC={invicto:'bd:0',liga1:149,campeon:'im:master-ball',rival4:18,rival2:65,veloz:78,dex151:151,dex130:'im:poke-ball',
+ monotipo:'im:wise-glasses',multitipo:'im:exp-share',cobertura:132,equipotipo:'it:fire',stat17:'im:muscle-band',statmax:'im:rare-candy',
+ equilibrado:'im:bright-powder',shiny:'it:shiny_charm',shiny10:130,aves:144,mew2:150,iniciales:6,eevee:133,poder:59,rep15:'im:nugget',
+ limpio:113,barco:131,rocketboss:53,profe3:'im:scope-lens',lider:95,favorito:83,pika:25,trio:3,hermanos:134,corazon:35,perfecto:'im:star-piece'};
+ACHS.forEach(a=>{a.ic=ACH_IC[a.id];});
 const achievementsOf=s=>ACHS.filter(a=>{try{return a.f(s);}catch(e){return false;}});
 function scoreOf(s){
   const ach=achievementsOf(s);const tp=teamPower(s);
@@ -1741,10 +1788,46 @@ const RIVAL_B=['Blue te gana con claridad y se va sin darte importancia. Te qued
 RIVAL_T.forEach((T,i)=>EV.push({id:'rival_'+(i+1),pool:'story',kind:'Rival',forced:true,extra:true,once:true,req:s=>s.t>=T,title:'Tu rival Blue: duelo '+(i+1)+' de 4',
  build:s=>{
   const foe=rivalFoe(s,i);const pv=gymPreview(s,foe);const near=0; // sin grises: o ganás o perdés
-  const opt=O('⚔️ Aceptar el duelo',[pv.win,near,100-pv.win-near],[],[RIVAL_G[i][0],RIVAL_G[i][1]],[RIVAL_B[i],{rep:-1,inc:{rivalFights:1}}],[RIVAL_B[i],{rep:-1,inc:{rivalFights:1}}],{duel:true});
+  const opt=O('⚔️ Aceptar el duelo',[pv.win,near,100-pv.win-near],[],[RIVAL_G[i][0],RIVAL_G[i][1]],[RIVAL_B[i],{rep:-1,inc:{rivalFights:1}}],[RIVAL_B[i],{rep:-1,inc:{rivalFights:1}}],{duel:true,parts:pv.parts});
   return Object.assign({},EV.find(e=>e.id==='rival_'+(i+1)),{text:()=>RIVAL_TXT[i][0].replace('Ey,','Ey'+(s.name?', '+s.name+',':',')).replace('Mirá quién anda por acá.',s.name?'Mirá quién anda por acá, '+s.name+'.':'Mirá quién anda por acá.')+' (Su equipo ronda el poder '+foe.pw+'; el tuyo, '+Math.round(teamPower(s))+'.)',opts:[opt]});
  },
  text:()=>'',opts:[S('Seguir','',{})]}));
+
+// ---------- Easter eggs: llevar un stat al máximo (una sola vez por stat, al final de la estación) ----------
+const EGG_REQ=k=>s=>s.st[k]>=STAT_CAP;
+EV.push(
+{id:'egg_valor',pool:'story',kind:'Historia',forced:true,extra:true,once:true,req:EGG_REQ('valor'),title:'Un desafío a la altura de tu Valor',
+ build:s=>{
+  const foe={id:'egg_valor',leader:'El viejo campeón',type:'Mixto',team:['Dragonite','Snorlax','Lapras','Gyarados','Arcanine'],pw:Math.round(teamPower(s))+12};
+  const pv=gymPreview(s,foe);
+  const opt=O('⚔️ Aceptar el duelo',[pv.win,0,100-pv.win],[],['Una batalla legendaria. El viejo campeón sonríe, orgulloso: «Hacía años que nadie me hacía sudar así.» Te cede a uno de sus compañeros.',{gainPick:['Dragonite','Snorlax','Lapras','Aerodactyl','Gyarados','Arcanine'],rep:2,stone:1}],['Perdés.',{rep:-1}],['Te supera con claridad. «Volvé cuando estés listo», dice, y se aleja.',{rep:-1}],{duel:true,parts:pv.parts});
+  return Object.assign({},EV.find(e=>e.id==='egg_valor'),{text:()=>'Tu Valor ya es legendario y se corrió la voz. Un viejo campeón, retirado hace años, te estaba esperando en un claro: «Dicen que no le tenés miedo a nada. Demostralo.» (Su equipo ronda el poder '+foe.pw+'; el tuyo, '+Math.round(teamPower(s))+'.)',opts:[opt,S('Rechazar con respeto','Lo saludás y seguís tu camino.',{})]});
+ },
+ text:()=>'',opts:[S('Seguir','',{})]},
+{id:'egg_ingenio',pool:'story',kind:'Historia',forced:true,extra:true,once:true,req:EGG_REQ('ingenio'),title:'La estación perfecta',
+ text:()=>'Tu Ingenio llegó al máximo y ahora ves cómo encajan todas las piezas: podés planificar una estación entera sin perder un solo día. Lo que decidas hacer a continuación no va a costarte tiempo.',
+ opts:[S('Aprovechar la planificación','La próxima acción que elijas no te cuesta ninguna estación.',{freeSeason:1})]},
+{id:'egg_carisma',pool:'story',kind:'Historia',forced:true,extra:true,once:true,req:EGG_REQ('carisma'),title:'Todos te conocen',
+ text:()=>'Tu Carisma es tan grande que hasta los desconocidos te saludan. Un entrenador veterano se te acerca: «Cuando tengas un combate importante, avisame: te cubro las espaldas con mi equipo de apoyo.»',
+ opts:[S('Guardar el favor','En tu próxima batalla de gimnasio, de la Liga o un duelo, vas a tener +25% de chance (se usa una sola vez).',{boost:25,rep:1})]},
+{id:'egg_cuidado',pool:'story',kind:'Historia',forced:true,extra:true,once:true,req:EGG_REQ('cuidado'),title:'Un brillo especial',
+ build:s=>{
+  const cand=teamMons(s).filter(m=>!m.shiny).concat(s.box.filter(m=>!m.shiny&&!s.team.includes(m.id))).slice(0,6);
+  const opts=cand.map(m=>S('Hacer brillar a '+mon(m.sp).name,'Lo cuidás tanto que, con el sol, su pelaje o su piel empieza a brillar distinto. ¡Es shiny!',{shinyMon:m.id}));
+  opts.push(S('Un Pokémon shiny salvaje','Una criatura brillante sale del pasto y decide quedarse con vos.',{gainShiny:1}));
+  return Object.assign({},EV.find(e=>e.id==='egg_cuidado'),{text:()=>'Tu Cuidado llegó al máximo. Un anciano que cría Pokémon desde hace décadas te mira trabajar y asiente: «Hay un secreto que solo conocen los que cuidan de verdad. ¿A quién querés regalárselo?»',opts});
+ },
+ text:()=>'',opts:[S('Seguir','',{})]},
+{id:'egg_sigilo',pool:'story',kind:'Historia',forced:true,extra:true,once:true,req:EGG_REQ('sigilo'),title:'La bodega que nadie encuentra',
+ build:s=>{
+  const all=[['lucky_charm','Amuleto de la Suerte'],['shiny_charm','Shiny Charm'],['incienso','Incienso'],['lupa','Lupa de investigador'],['piedra_dura','Piedra Dura'],['pepita','Pepita de oro']];
+  if(age(s)<PASE_HASTA)all.push(['pase_libre','Pase libre']);
+  const avail=all.filter(([k])=>!s.items[k]);
+  const opts=avail.length?avail.map(([k,n])=>S('Llevarte: '+n,'Salís sin dejar rastro, con '+n+' bajo el brazo.',{item:k})):[S('Llevarte un lote de piedras','Salís sin dejar rastro con tres piedras evolutivas.',{stone:3})];
+  return Object.assign({},EV.find(e=>e.id==='egg_sigilo'),{text:()=>'Tu Sigilo llegó al máximo: ya nadie te ve moverte. Siguiendo un rumor, encontrás una bodega oculta, sin guardias, llena de objetos valiosos. Tenés tiempo de llevarte uno solo. ¿Cuál?',opts});
+ },
+ text:()=>'',opts:[S('Seguir','',{})]}
+);
 
 // ---------- Guía y glosario (se arma con los datos reales del juego para que no quede desactualizada) ----------
 const END_COND={
@@ -1797,9 +1880,9 @@ function guideSections(){
    '<b>Legendarios y raros:</b> los legendarios piden medallas (o ser Coleccionista con 100+ especies). Mew aparece por rumores y, con la Pokédex casi completa, de forma garantizada. Snorlax se consigue por evento, no salvaje.'])}`]);
   S.push(['🗺️ Zonas de exploración',`<p>Cada zona se abre con las <b>medallas</b> que pide <i>o</i> con un <b>poder de equipo</b> suficiente. Si tu vocación es Coleccionista o Profesor, las medallas no cuentan: solo el poder.</p>`+li(ZONES.map(z=>`<b>${esc(z.name)}</b>: `+(z.id==='celeste'?'8 medallas o '+CELESTE_DEX+' especies en la Pokédex (Coleccionista y Profesor: solo la Pokédex)':z.need?z.need+' medalla'+(z.need===1?'':'s')+' o poder de equipo '+zonePower(z.need):'libre'))) ]);
   S.push(['🏅 Gimnasios y Liga',`<p>Antes de cada combate ves tu chance de ganar y qué la sube o baja. Se calcula así: parte de 40 y suma o resta la <b>ventaja de tipos</b> de tu equipo (cobertura y debilidades), tu <b>poder frente al del rival</b> (hasta +30 / −60), el tamaño del equipo, tu Valor, el Amuleto de la Suerte (+3), la vocación Campeón (+3) y un bono por intentos anteriores (hasta +10). El resultado queda entre 5% y 95%.</p>
-  <p>Si ganás un gimnasio: medalla, +1 de reputación y +1 Valor. Si perdés: −1 de reputación y +3% de chance la próxima vez contra ese líder.</p>`+
+  <p>Si ganás un gimnasio: medalla, +1 de reputación y +1 Valor. Si perdés: −1 de reputación y +2% de chance la próxima vez contra ese líder (hasta +6%).</p>`+
   li(GYMS.map((g,i)=>`<b>${i+1}. ${esc(g.leader)}</b> (${esc(g.city)}, tipo ${esc(g.type)}) · poder ${g.pw}`))+
-  `<p><b>Liga Pokémon:</b> hace falta tener las 8 medallas y ${LEAGUE_AGE} años. Son 5 combates seguidos: si caés en uno, el intento termina ahí. En la Liga no hay bono por intentos anteriores, y cada intento ocupa una estación.</p>`+li(LEAGUE.map(g=>`${esc(g.leader)} (${esc(g.type)}) · poder ${g.pw}`))]);
+  `<p><b>Liga Pokémon:</b> hace falta tener las 8 medallas y ${LEAGUE_AGE} años. Son 5 combates seguidos: si caés en uno, el intento termina ahí. En la Liga no hay bono por intentos anteriores, y el intento ocupa una estación; si caés, te cuesta dos.</p>`+li(LEAGUE.map(g=>`${esc(g.leader)} (${esc(g.type)}) · poder ${g.pw}`))]);
   S.push(['⚔️ Tu rival Blue',`<p>Blue te desafía <b>4 veces en momentos fijos</b> (estaciones ${RIVAL_T.join(', ')}); además es el último rival de la Liga. Su equipo se ajusta al tuyo para que nunca te pase muy por arriba, pero siempre sea un desafío. Su inicial tiene ventaja de tipo sobre el tuyo. Si ganás recibís reputación, piedras y +1 Valor; si perdés, −1 de reputación.</p>`]);
   S.push(['🎭 Vocaciones y orígenes',`<p>Elegís una vocación a los 12 años. Da un impulso, pero no te encierra en un camino.</p>`+li(Object.keys(VOCS).map(k=>`<b>${esc(VOCS[k].name)}</b>: ${esc(VOCS[k].hint)}`))+`<p>El origen define tus stats iniciales, un Pokémon extra y un objeto propio:</p>`+li(ORIGINS.map(o=>`<b>${esc(o.name)}</b>: ${Object.keys(o.st).map(k=>'+'+o.st[k]+' '+SL[k]).join(', ')}${o.rep?', +'+o.rep+' reputación':''} · ${esc(o.mon)}${o.item&&ITEMS[o.item]?' · '+esc(ITEMS[o.item].name)+': '+esc(ITEMS[o.item].desc):''}`))]);
   S.push(['🅡 Equipo Rocket',`<p>Podés unirte por una oferta (aparece con ciertas condiciones: conciencia baja, vocación Aspirante a Rocket, origen Carmín o Familia, entre otras). <b>Una vez adentro no podés irte</b>, y gimnasios, Liga y «ayudar a la gente» quedan fuera de tu alcance sin importar tu vocación.</p>
@@ -1813,7 +1896,7 @@ function guideSections(){
   S.push(['⭐ Reputación, conciencia y Heat',`${li(['<b>Reputación</b> (de −10 a 20): sube cuando ayudás o resolvés bien frente a otros, baja cuando fallás o hacés el ridículo. Suma o resta hasta +10 / −6 puntos en los eventos sociales. A los 5, 10 y 15 la gente te hace un regalo (una piedra, un Pokémon y el Amuleto de la Suerte). Rangos: '+REP_RANKS.slice().reverse().map(r=>r[1]).join(', ')+'.','<b>Conciencia</b> (de −10 a 10): sube con decisiones buenas y baja con robos y trabajos turbios. Abre algunas ofertas (como la del Equipo Rocket) y cuenta en la historia final.','<b>Heat</b> (de 0 a 5): ver Equipo Rocket.'])}`]);
   S.push(['🎒 Objetos',li(Object.keys(ITEMS).filter(k=>!ITEMS[k].stone&&k!=='corona').map(k=>`<b>${esc(ITEMS[k].name)}</b>: ${esc(ITEMS[k].desc)}`))+`<p><b>Piedras evolutivas</b> (Fuego, Hoja, Lunar, Trueno, Agua): hacen evolucionar a ciertos Pokémon. Las encontrás explorando, en eventos y en el mercado. Se usan desde la Mochila.</p>`]);
   S.push(['🏁 Finales',`<p>Cuando cumplís la condición de uno o más finales, el juego te deja <b>elegir cuál cerrar</b> (o seguir jugando por otro). No depende de tu vocación. Si llegás a las ${MAXT} estaciones, se cierra solo el de mayor prioridad entre los que cumplís: Campeón, jefe Rocket, Líder de gimnasio, Maestro Pokémon, Profesor.</p>`+li(Object.keys(ENDINGS).map(k=>`<b>${ENDINGS[k].e} ${esc(ENDINGS[k].t)}</b>: ${esc(END_COND[k]||'')}`))]);
-  S.push(['⭐ Puntaje y logros',`<p>Al terminar recibís un puntaje que se suma así:</p>${li(['Final: '+Object.keys(END_BASE).map(k=>(ENDINGS[k]?ENDINGS[k].t:k)+' '+END_BASE[k]).join(' · '),'4 puntos por especie en la Pokédex','10 por especie shiny','25 por medalla','3 por cada punto de stat por encima de los 10 iniciales','Poder del equipo: (poder − 300) × 0,8','40 por logro','3 por cada estación que te sobra si cerrás antes del tiempo límite'])}<p>Calificación: ${GRADES.slice(0,-1).map(g=>g[1]+' desde '+g[0]).join(' · ')}.</p><p><b>Logros</b> (se guardan en tu navegador):</p>`+li(ACHS.filter(a=>!a.hid).map(a=>`${a.e} <b>${esc(a.n)}</b>: ${esc(a.d)}`))+`<p>Además hay <b>${ACH_HID} logros ocultos</b>: difíciles y específicos, que no muestran su condición hasta que los conseguís (solo una pista). Cuentan igual para el puntaje.</p>`]);
+  S.push(['⭐ Puntaje y logros',`<p>Al terminar recibís un puntaje que se suma así:</p>${li(['Final: '+END_FLAT+' puntos, los mismos para todos los finales (ninguno vale más que otro; lo que suma es cómo jugaste)','4 puntos por especie en la Pokédex','10 por especie shiny','25 por medalla','3 por cada punto de stat por encima de los 10 iniciales','Poder del equipo: (poder − 300) × 0,8','40 por logro','3 por cada estación que te sobra si cerrás antes del tiempo límite'])}<p>Calificación: ${GRADES.slice(0,-1).map(g=>g[1]+' desde '+g[0]).join(' · ')}.</p><p><b>Logros</b> (se guardan en tu navegador):</p>`+li(ACHS.filter(a=>!a.hid).map(a=>`${achIc(a,22)} <b>${esc(a.n)}</b>: ${esc(a.d)}`))+`<p>Además hay <b>${ACH_HID} logros ocultos</b>: difíciles y específicos, que no muestran su condición hasta que los conseguís (solo una pista). Cuentan igual para el puntaje.</p>`]);
   S.push(['📖 Glosario',li([
    '<b>Estación:</b> una unidad de tiempo (3 meses). El juego dura '+MAXT+'.',
    '<b>Poder:</b> la fuerza de un Pokémon o de tu equipo (promedio).',
@@ -1833,6 +1916,139 @@ function guideSections(){
 
 // ===================== INTERFAZ =====================
 const $=id=>document.getElementById(id);
+// Botones flotantes en pantallas largas: volver (si la pantalla tiene un "volver") y subir, sin tener que scrollear hasta abajo
+const FNAV_BACK={zone:'G.back()',trainmode:'G.back()',trainpick:"G.act('train')",study:'G.back()',rkmenu:'G.back()',market:'G.back()',mkstone:'G.back()',mkoffer:'G.back()',gymprev:'G.back()',leagueprev:'G.back()',giovprev:'G.back()'};
+function fnavUpdate(){
+  const el=$('fnav');if(!el)return;
+  const long=document.documentElement.scrollHeight>window.innerHeight+400;
+  if(!long||window.scrollY<250){el.style.display='none';return;}
+  const b=FNAV_BACK[phase];
+  el.innerHTML=(b?`<button onclick="${b}">← Volver</button>`:'')+`<button onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆ Arriba</button>`;
+  el.style.display='flex';
+}
+window.addEventListener('scroll',fnavUpdate,{passive:true});window.addEventListener('resize',fnavUpdate);
+// ---------- Audio: música ambiental y efectos generados con WebAudio ----------
+// No usa archivos ni música con derechos de autor: todo se sintetiza en el navegador. Si querés usar tus propios temas (libres de derechos),
+// subilos al repositorio y poné sus rutas acá, por ejemplo ['musica/tema1.mp3']. Si la lista queda vacía se usa la música generada.
+const MUSIC_FILES=[];
+const AU={ctx:null,g:null,timer:0,next:0,chordIdx:0,prog:null,audio:null,fileIdx:0,started:false,wantMusic:false,lastTick:0,cfg:{music:0.3,sfx:0.5,muted:false}};
+try{const c=JSON.parse(localStorage.getItem('aventura_pokemon_audio')||'null');if(c&&typeof c==='object')Object.assign(AU.cfg,c);}catch(e){}
+const auSave=()=>{try{localStorage.setItem('aventura_pokemon_audio',JSON.stringify(AU.cfg));}catch(e){}};
+const mtof=m=>440*Math.pow(2,(m-69)/12);
+const AU_PROGS=[[[48,55,59,64,67],[45,52,55,60,64],[41,53,57,60,64],[43,50,55,59,62]],
+  [[41,53,57,60,64],[43,50,55,59,62],[40,52,55,59,64],[45,52,55,60,64]],
+  [[45,52,55,60,64],[41,53,57,60,64],[48,55,59,64,67],[43,50,55,59,62]],
+  [[48,55,59,64,67],[40,52,55,59,64],[41,53,57,60,64],[43,50,55,59,62]]];
+const AU_PENT=[60,62,64,67,69,72,74,76,79,81];
+const AU_CHORD=7.2; // segundos por acorde (66 bpm, 8 tiempos)
+function auGraph(ctx){
+  const master=ctx.createGain(),comp=ctx.createDynamicsCompressor();comp.threshold.value=-20;comp.ratio.value=3;
+  master.connect(comp);comp.connect(ctx.destination);
+  const mus=ctx.createGain(),fx=ctx.createGain();mus.connect(master);fx.connect(master);
+  const len=Math.floor(ctx.sampleRate*2.4),ir=ctx.createBuffer(2,len,ctx.sampleRate);
+  for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6);}
+  const conv=ctx.createConvolver();conv.buffer=ir;const send=ctx.createGain();send.gain.value=0.45;send.connect(conv);conv.connect(mus);
+  return {master,mus,fx,send};
+}
+function auNote(ctx,g,midi,t,dur,o){ // una nota con envolvente
+  o=o||{};const f=mtof(midi);const out=ctx.createGain();const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=o.lp||2400;
+  out.gain.setValueAtTime(0.0001,t);out.gain.linearRampToValueAtTime(o.vol,t+(o.att||0.005));
+  if(o.hold)out.gain.setValueAtTime(o.vol,t+dur-(o.rel||1));
+  out.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  for(const [type,det,k] of (o.osc||[['triangle',0,1]])){const os=ctx.createOscillator();os.type=type;os.frequency.value=f*(o.mul||1);os.detune.value=det;
+    const og=ctx.createGain();og.gain.value=k;os.connect(og);og.connect(lp);os.start(t);os.stop(t+dur+0.05);}
+  lp.connect(out);out.connect(g.mus);if(o.send){const s=ctx.createGain();s.gain.value=o.send;out.connect(s);s.connect(g.send);}
+}
+function auChord(ctx,g,t,chord,rnd){ // un acorde (almohadilla + bajo + notas sueltas)
+  chord.forEach((m,i)=>auNote(ctx,g,m,t+i*0.12,AU_CHORD+1.5,{vol:0.03,att:1.6,hold:true,rel:2.2,lp:800,send:0.5,osc:[['triangle',-6,0.6],['sine',5,0.6]]}));
+  auNote(ctx,g,chord[0]-12,t,AU_CHORD,{vol:0.07,att:0.4,hold:true,rel:2,lp:300,osc:[['sine',0,1]]});
+  const step=AU_CHORD/16;
+  for(let i=0;i<16;i++){
+    if(rnd()<(i%4===0?0.5:0.3)){
+      const pool=chord.map(m=>m+12).concat(AU_PENT);const m=pool[Math.floor(rnd()*pool.length)];
+      auNote(ctx,g,m,t+i*step+(i%2?0.04:0),1.5,{vol:0.045,att:0.006,lp:3000,send:0.7,osc:[['triangle',0,0.8],['sine',0,0.4]]});
+    }
+  }
+  if(rnd()<0.4)auNote(ctx,g,chord[2]+24,t+step*(6+Math.floor(rnd()*8)),2.2,{vol:0.02,att:0.01,lp:4000,send:0.9,osc:[['sine',0,1]]});
+}
+function auScheduleLoop(ctx,g,t0,secs,rnd){ // programa varios acordes seguidos (lo usa el reproductor y también la prueba offline)
+  const prog=AU_PROGS[Math.floor(rnd()*AU_PROGS.length)];let t=t0,i=0;
+  while(t<t0+secs){auChord(ctx,g,t,prog[i%4],rnd);t+=AU_CHORD;i++;}
+  return t;
+}
+function auInit(){
+  if(AU.ctx)return AU.ctx;
+  const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;
+  try{AU.ctx=new C();AU.g=auGraph(AU.ctx);auVol();}catch(e){AU.ctx=null;}
+  return AU.ctx;
+}
+function auVol(){
+  if(!AU.g)return;const t=AU.ctx.currentTime;const m=AU.cfg.muted;
+  AU.g.mus.gain.setTargetAtTime(m?0:AU.cfg.music*1.4,t,0.08);AU.g.fx.gain.setTargetAtTime(m?0:AU.cfg.sfx*1.2,t,0.03);
+  if(AU.audio)AU.audio.volume=m?0:Math.min(1,AU.cfg.music);
+}
+function auMusicSync(){
+  const want=!AU.cfg.muted&&AU.cfg.music>0&&AU.started;
+  if(want&&!AU.timer){
+    if(MUSIC_FILES.length){
+      if(!AU.audio){AU.audio=new Audio(MUSIC_FILES[AU.fileIdx%MUSIC_FILES.length]);AU.audio.addEventListener('ended',()=>{AU.fileIdx++;AU.audio.src=MUSIC_FILES[AU.fileIdx%MUSIC_FILES.length];AU.audio.play().catch(()=>{});});}
+      AU.audio.volume=Math.min(1,AU.cfg.music);AU.audio.play().catch(()=>{});AU.timer=-1;return;
+    }
+    const ctx=auInit();if(!ctx)return;if(ctx.state==='suspended')ctx.resume();
+    AU.next=ctx.currentTime+0.3;
+    const tick=()=>{if(!AU.ctx)return;while(AU.next<AU.ctx.currentTime+3){AU.next=auScheduleLoop(AU.ctx,AU.g,AU.next,AU_CHORD,Math.random);}};
+    tick();AU.timer=setInterval(tick,700);
+  }else if(!want&&AU.timer){
+    if(AU.timer>0)clearInterval(AU.timer);AU.timer=0;
+    if(AU.audio)AU.audio.pause();
+  }
+}
+function auStart(){
+  if(AU.started)return;AU.started=true;auInit();auMusicSync();
+}
+['pointerdown','keydown'].forEach(ev=>document.addEventListener(ev,auStart,{capture:true,once:false,passive:true}));
+document.addEventListener('visibilitychange',()=>{if(!AU.ctx)return;if(document.hidden)AU.ctx.suspend();else if(AU.started)AU.ctx.resume();if(AU.audio){if(document.hidden)AU.audio.pause();else if(AU.timer)AU.audio.play().catch(()=>{});}});
+// Efectos: cortos y suaves (el volumen se regula en Sonido)
+const AU_T=(f,t,dur,type,vol,f2)=>{const c=AU.ctx,g=AU.g;const o=c.createOscillator(),e=c.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  e.gain.setValueAtTime(0.0001,t);e.gain.linearRampToValueAtTime(vol,t+0.008);e.gain.exponentialRampToValueAtTime(0.0001,t+dur);o.connect(e);e.connect(g.fx);const s=c.createGain();s.gain.value=0.35;e.connect(s);s.connect(g.send);o.start(t);o.stop(t+dur+0.05);};
+const SFX_DEF={
+  tick:(pos,i)=>{const t=AU.ctx.currentTime;if(pos)AU_T(560+Math.min(i,7)*65,t,0.12,'sine',0.16,700+Math.min(i,7)*80);else AU_T(260,t,0.16,'triangle',0.15,170);},
+  rt:()=>{AU_T(1900,AU.ctx.currentTime,0.03,'triangle',0.05);},
+  good:()=>{const t=AU.ctx.currentTime;[523.25,659.25,783.99].forEach((f,i)=>AU_T(f,t+i*0.09,0.38,'triangle',0.15));AU_T(1568,t+0.28,0.5,'sine',0.05);},
+  neutral:()=>{AU_T(440,AU.ctx.currentTime,0.3,'triangle',0.13);},
+  bad:()=>{const t=AU.ctx.currentTime;AU_T(220,t,0.32,'sine',0.17,160);AU_T(165,t+0.16,0.4,'sine',0.15,110);},
+  win:()=>{const t=AU.ctx.currentTime;[523.25,659.25,783.99,1046.5].forEach((f,i)=>AU_T(f,t+i*0.11,0.9,'triangle',0.13));[659.25,783.99,1046.5].forEach(f=>AU_T(f,t+0.5,1.3,'sine',0.07));},
+  evolve:()=>{const t=AU.ctx.currentTime;[392,440,523.25,587.33,659.25,783.99,880,1046.5].forEach((f,i)=>AU_T(f,t+i*0.075,0.35,'triangle',0.11));[784,1046.5,1318.5].forEach(f=>AU_T(f,t+0.7,1.1,'sine',0.07));},
+  shiny:()=>{const t=AU.ctx.currentTime;for(let i=0;i<6;i++)AU_T(1400+Math.random()*1200,t+i*0.07,0.4,'sine',0.07);AU_T(2093,t+0.45,0.8,'sine',0.06);},
+  dex:()=>{const t=AU.ctx.currentTime;AU_T(880,t,0.14,'sine',0.1);AU_T(1174.7,t+0.1,0.22,'sine',0.1);}
+};
+function sfx(name,a,b){
+  if(AU.cfg.muted||!AU.cfg.sfx||!AU.started)return;
+  const now=performance.now();if(name==='rt'){if(now-AU.lastTick<60)return;AU.lastTick=now;}
+  try{const c=auInit();if(!c)return;if(c.state==='suspended')c.resume();SFX_DEF[name](a,b);}catch(e){}
+}
+// Según lo que pasó en un reporte (entrenar, explorar, gimnasio…) suena un solo efecto, el más importante
+function sfxReport(r){
+  if(!r||r.sfxDone)return;r.sfxDone=true;
+  const L=(r.lines||[]).map(x=>typeof x==='string'?x:(x&&x.t)||'').join(' ');
+  const delay=!!(r.rollInfo)?1900:150;
+  const play=n=>setTimeout(()=>sfx(n),delay);
+  if(/nuevo Campe/.test(L))play('win');
+  else if(/SHINY|ahora es shiny/.test(L))play('shiny');
+  else if(/evolucionó/.test(L))play('evolve');
+  else if(/nuevo en la Pok/.test(L))play('dex');
+}
+// Prueba sin sonido (offline): renderiza unos segundos de música y devuelve métricas
+async function auRenderTest(secs,seed){
+  let a=seed|0;const rnd=()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
+  const ctx=new OfflineAudioContext(2,44100*secs,44100);const g=auGraph(ctx);g.mus.gain.value=AU.cfg.music*1.4;auScheduleLoop(ctx,g,0.1,secs-3,rnd);
+  const buf=await ctx.startRendering();const d=buf.getChannelData(0);let pk=0,sq=0,clip=0,silent=0;
+  for(let i=0;i<d.length;i++){const v=Math.abs(d[i]);if(v>pk)pk=v;sq+=v*v;if(v>=0.999)clip++;}
+  const win=44100;for(let i=0;i+win<=d.length;i+=win){let s=0;for(let j=i;j<i+win;j++)s+=d[j]*d[j];if(Math.sqrt(s/win)<0.002)silent++;}
+  return {peak:pk,rms:Math.sqrt(sq/d.length),clip,silentSeconds:silent,secs,samples:Array.from(d.filter((_,i)=>i%11===0)).length};
+}
+const iconSound=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Sonido"><rect x="1" y="5" width="3" height="6" fill="#9fd8e8"/><rect x="4" y="4" width="2" height="8" fill="#9fd8e8"/><rect x="6" y="3" width="2" height="10" fill="#cfeaf2"/><rect x="10" y="6" width="1" height="4" fill="#f2c94c"/><rect x="12" y="4" width="1" height="8" fill="#f2c94c"/><rect x="14" y="2" width="1" height="12" fill="#f2c94c"/></svg>`;
+
 const esc=x=>String(x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const KEY='aventura_pokemon_v2';
 const META_KEY='aventura_pokemon_logros';
@@ -1901,6 +2117,14 @@ const ZONE_SP={ruta1:'Pidgey',bosque:'Caterpie',moon:'Clefairy',costa:'Staryu',p
 const ENDING_SP={champion:'Dragonite',dex_complete:'Mew',profesor:'Alakazam',rocket_boss:'Persian',rocket_alto:'Meowth',arrested:'Ekans',gym_leader:'Onix',rocket_vet:'Arbok',rocket_low:'Zubat',gym_small:'Geodude',finalista:'Gyarados',collector:'Eevee',scholar:'Slowbro',retador:'Pikachu',viajero:'Pidgeot'};
 const KIND_IC={'Objeto':'rare-candy','Combate':'muscle-band','Mentor':'tm01','Historia':'town-map','Laboratorio':'scope-lens','Oferta':'nugget','Rumor':'scope-lens','Ayudar':'super-potion','Turbio':'bright-powder','Intercambio':'up-grade','Gimnasio':'bd0','Misión':'exp-share','Robo de objetos':'nugget','Cacería':'safari-ball'};
 const kindIc=k=>{const v=KIND_IC[k];if(!v)return '';const src=v==='bd0'?ICONS_BD[0]:ICONS_IM[v];return src?`<img class="em" alt="" src="${src}"> `:'';};
+function achIc(a,sz,locked){
+  let ic=a.ic;if(locked&&a.hid)ic='im:poke-ball';
+  let h;
+  if(typeof ic==='number')h=spr(ic,false,sz);
+  else if(typeof ic==='string'){const [k,v]=ic.split(':');const src=k==='im'?ICONS_IM[v]:k==='it'?ICONS_IT[v]:ICONS_BD[+v];h=src?`<img class="spr" width="${sz}" height="${sz}" alt="" src="${src}">`:'';}
+  else h='';
+  return `<span class="achic${locked?' lock':''}" style="width:${sz}px;height:${sz}px">${h}</span>`;
+}
 const itemIc=(k,sz)=>ICONS_IT[k]?`<img class="spr" width="${sz||24}" height="${sz||24}" alt="" src="${ICONS_IT[k]}">`:'';
 const iconBall=sz=>`<img width="${sz}" height="${sz}" alt="Equipo" src="${ICON_BALL}">`;
 const iconDex=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Pokédex"><rect x="2" y="1" width="12" height="14" rx="1" fill="#c9383f"/><rect x="2" y="1" width="12" height="14" rx="1" fill="none" stroke="#5b1217"/><rect x="4" y="3" width="8" height="6" fill="#9fd8e8" stroke="#1d3a52"/><rect x="5" y="4" width="3" height="2" fill="#eaf7fb"/><circle cx="5" cy="12" r="1.3" fill="#ffd84a" stroke="#5b1217" stroke-width=".4"/><rect x="8" y="11" width="4" height="1" fill="#5b1217"/><rect x="8" y="13" width="4" height="1" fill="#5b1217"/></svg>`;
@@ -1945,7 +2169,7 @@ function head(){
   sides();
   const yr=Math.min(Math.floor(s.t/4),MAXT/4-1),si=s.t%4;
   $('top').innerHTML=`<div><div class="when">Año ${yr+1} <span class="sub">de ${MAXT/4}</span> · ${10+yr} años</div><div class="seasons">${SEAS_I.map((ic,i)=>`<span class="se ${i<si?'done':i===si?'cur':''}" title="${SEAS[i]}">${ic}</span>`).join('')}<span class="sub" style="margin-left:6px">${SEAS[si]}</span></div></div>
-  <div class="tools"><button class="ico" title="Pokédex" onclick="G.modal('dex')">${iconDex(24)}</button><button class="ico" title="Equipo" onclick="G.modal('team')">${iconBall(24)}</button><button class="ico" title="Mochila" onclick="G.modal('bag')">🎒</button><button class="ico" title="Guía y glosario" onclick="G.modal('guia')">📖</button><button class="ico" title="Logros y récords" onclick="G.modal('logros')">🏅</button><button class="ico" title="Diario" onclick="G.modal('log')">📜</button></div>`;
+  <div class="tools"><button class="ico" title="Pokédex" onclick="G.modal('dex')">${iconDex(24)}</button><button class="ico" title="Equipo" onclick="G.modal('team')">${iconBall(24)}</button><button class="ico" title="Mochila" onclick="G.modal('bag')">🎒</button><button class="ico" title="Guía y glosario" onclick="G.modal('guia')">📖</button><button class="ico" title="Logros y récords" onclick="G.modal('logros')">🏅</button><button class="ico" title="Diario" onclick="G.modal('log')">📜</button><button class="ico" title="Sonido y música" onclick="G.modal('opts')">${iconSound(24)}</button></div>`;
   let c=(s.name?`<span class="chip">👤 <b>${esc(s.name)}</b></span>`:'')+`<span class="chip" title="Pokédex">${iconDex(16)} <b>${dexN(s)}</b>/151</span><span class="chip" title="Medallas">${s.badges.length?s.badges.map(id=>badgeIc(GYMS.findIndex(g=>g.id===id),18)).join(''):'🏅'} <b>${s.badges.length}</b>/8</span><span class="chip">✨ <b>${shinyN(s)}</b></span><span class="chip">⏳ <b>${Math.max(0,MAXT-s.t)}</b> estaciones</span>`;
   c+=`<span class="chip" style="cursor:pointer" onclick="G.modal('rep')" title="Tocá para ver cómo funciona">⭐ Reputación <b>${s.rep}</b> · ${repRank(s)}</span>`;
   if(s.voc)c+=`<span class="chip">${esc(VOCS[s.voc].name)}</span>`;
@@ -1963,16 +2187,58 @@ function monRow(m,count,btn){
   return `<div class="mon"><div class="mi">${spr(m.sp,m.shiny,48)}<div><div class="nm">${esc(nameOf(m))}${count>1?` <span class="sub">(${count} capturados)</span>`:''}</div><div>${typeChips(mon(m.sp).types)} <span class="sub">Poder ${pw(m)} (${talent(m)>=0?'+':''}${talent(m)}%)${xpOf(m)?` · entrenamiento +${xpOf(m)}`:''}</span></div></div></div>${btn||''}</div>`;
 }
 
+function buildAnim(bd,labels,done){
+  // devuelve una función "saltar"; llama a done() al terminar (o al saltar)
+  const bar=$('rbar'),box=$('rsteps');if(!bar||!box||!bd||!bd.steps.length){done();return ()=>{};}
+  const sp={g:bar.querySelector('.g'),n:bar.querySelector('.n'),b:bar.querySelector('.b')};
+  const setW=a=>{[['g',0],['n',1],['b',2]].forEach(([k,i])=>{const e=sp[k];if(!e)return;e.style.width=a[i]+'%';const v=Math.round(a[i]);const lab=(k==='n')?'':(labels&&labels[i]?labels[i]+' ':'');e.textContent=v>=8?lab+v+'%':'';});};
+  let i=0,stopped=false,timer=0;
+  const chip=(cls,txt)=>{const c=document.createElement('span');c.className='rchip '+cls;c.textContent=txt;box.appendChild(c);};
+  setW(bd.start);
+  chip('base','Base '+Math.round(bd.start[0])+'%');
+  const gap=Math.max(260,Math.min(620,2600/bd.steps.length));
+  const finishAll=()=>{if(stopped)return;stopped=true;clearTimeout(timer);const last=bd.steps[bd.steps.length-1];
+    bar.classList.add('building');setW(last.a);
+    while(i<bd.steps.length){const s=bd.steps[i++];chip(s.d>0?'pos':'neg',s.t+' '+(s.d>0?'+':'')+s.d+'%');}
+    done();};
+  const step=()=>{if(stopped)return;
+    if(i>=bd.steps.length){stopped=true;timer=setTimeout(done,420);return;}
+    const s=bd.steps[i++];const pos=s.d>0;
+    chip(pos?'pos':'neg',s.t+' '+(pos?'+':'')+s.d+'%');sfx('tick',pos,i-1);
+    bar.classList.add('building');setW(s.a);
+    bar.classList.remove('flashg','flashb');void bar.offsetWidth;bar.classList.add(pos?'flashg':'flashb');
+    const pop=document.createElement('b');pop.className='rpop '+(pos?'pos':'neg');pop.textContent=(pos?'+':'')+s.d+'%';pop.style.left=Math.max(6,Math.min(94,s.a[0]))+'%';bar.appendChild(pop);setTimeout(()=>pop.remove(),1000);
+    timer=setTimeout(step,gap);};
+  timer=setTimeout(step,500);
+  return finishAll;
+}
 function rollAnim(r){
+  const bd=r.build||(r.rollInfo&&r.rollInfo.build);
+  const mk0=$('rmark'),bar0=$('rbar');
+  if(bd&&bd.steps.length&&mk0&&bar0){
+    mk0.style.visibility='hidden';
+    const labels=r.rollInfo?r.rollInfo.labels:null;
+    let skip=null,started=false;
+    const go=()=>{if(started)return;started=true;mk0.style.visibility='';bar0.classList.remove('building');spin(r);};
+    skip=buildAnim(bd,labels,go);
+    bar0.onclick=()=>{if(!started){skip();}};
+    return;
+  }
+  spin(r);
+}
+function spin(r){
   // El marcador gira siempre hacia la derecha, vuelve a salir por la izquierda y va perdiendo velocidad hasta frenar en la tirada real
   const mk=$('rmark'),bar=$('rbar');if(!mk||!bar)return;
   let done=false,raf=0;
   const finish=()=>{if(done)return;done=true;cancelAnimationFrame(raf);r.shown=true;mk.style.left=r.roll+'%';
+    {const od=r.odds||(r.rollInfo&&r.rollInfo.odds)||[50,0,50];const band=r.band||(r.roll<od[0]?'g':r.roll<od[0]+od[1]?'n':'b');
+     sfx(band==='g'?(r.rollInfo&&/Gimnasio|Giovanni/.test(r.title||'')?'win':'good'):band==='n'?'neutral':'bad');}
     const a=$('rres'),b=$('rcont');if(a){a.classList.remove('rhide');a.classList.add('rshow');}if(b){b.classList.remove('rhide');b.classList.add('rshow');}};
   bar.onclick=finish;
   const D=200+r.roll,T=1600;let t0=null;
   const step=ts=>{if(done)return;if(t0===null)t0=ts;const k=Math.min(1,(ts-t0)/T);
     const pos=D*(1-Math.pow(1-k,3));mk.style.left=(pos%100)+'%';
+    const cell=Math.floor(pos/8);if(cell!==step.cell){step.cell=cell;sfx('rt');}
     if(k<1)raf=requestAnimationFrame(step);else setTimeout(finish,250);};
   raf=requestAnimationFrame(step);
 }
@@ -1990,6 +2256,7 @@ function view(){
     <button class="btn primary" onclick="G.new()">Nueva aventura</button>
     <div class="row"><button class="btn" onclick="G.modal('hall')">🏛️ Salón de la Fama</button><button class="btn" onclick="G.modal('logros')">🏅 Logros</button></div>
     <button class="btn" onclick="G.modal('guia')">📖 Guía y glosario</button>
+    <button class="btn" onclick="G.modal('opts')"><span style="display:inline-flex;vertical-align:middle;margin-right:6px">${iconSound(18)}</span>Sonido y música</button>
     <p class="sub center">Proyecto de fans sin fines de lucro. No está afiliado a Nintendo, Game Freak, Creatures ni The Pokémon Company. Los sprites de Pokémon y de objetos vienen incluidos en el archivo (tomados del repositorio público PokeAPI/sprites) y pertenecen a sus dueños: Nintendo, Game Freak y The Pokémon Company.</p>`;
   }else if(phase==='name'){
     M.innerHTML=`<div class="card"><div class="kicker">Antes de empezar</div><h2>¿Cómo te llamás?</h2><p class="sub mb">Es el nombre que van a usar tu rival Blue y la historia final. Se recuerda para la próxima partida, pero podés cambiarlo cuando quieras.</p>
@@ -2090,9 +2357,9 @@ function view(){
     const reduced=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
     const anim=!!ri&&!r.shown&&!reduced;
     const pr=ri?ri.odds.map(x=>Math.round(x)):[];
-    const bar=ri?`<div class="rbar" id="rbar" title="Tocá para saltar la animación"><span class="g" style="width:${ri.odds[0]}%">${pr[0]>=8?ri.labels[0]+' '+pr[0]+'%':''}</span>${ri.odds[1]>0?`<span class="n" style="width:${ri.odds[1]}%">${pr[1]>=8?pr[1]+'%':''}</span>`:''}<span class="b" style="width:${ri.odds[2]}%">${pr[2]>=8?ri.labels[2]+' '+pr[2]+'%':''}</span><i class="rmark" id="rmark" style="left:${anim?0:ri.roll}%"></i></div>`:'';
+    const bar=ri?`<div class="rbar" id="rbar" title="Tocá para saltar la animación"><span class="g" style="width:${ri.odds[0]}%">${pr[0]>=8?ri.labels[0]+' '+pr[0]+'%':''}</span>${ri.odds[1]>0?`<span class="n" style="width:${ri.odds[1]}%">${pr[1]>=8?pr[1]+'%':''}</span>`:''}<span class="b" style="width:${ri.odds[2]}%">${pr[2]>=8?ri.labels[2]+' '+pr[2]+'%':''}</span><i class="rmark" id="rmark" style="left:${anim?0:ri.roll}%"></i></div>${anim&&ri.build&&ri.build.steps.length?'<div class="rsteps" id="rsteps"></div>':''}`:'';
     M.innerHTML=`<div class="card"><div class="kicker">Resultado</div><h2>${esc(r.title)}</h2>${bar}<div id="rres" class="${anim?'rhide':''}"><div class="lines">${r.lines.map(lineHtml).join('')}</div></div></div><button class="btn primary ${anim?'rhide':''}" id="rcont" onclick="G.next()">Continuar</button>`;
-    if(anim){r.roll=ri.roll;rollAnim(r);}
+    if(anim){r.roll=ri.roll;rollAnim(r);}else if(!ri)sfxReport(r);
   }else if(phase==='event'){
     const ev=ctx.ev;
     M.innerHTML=`<div class="card"><div class="kicker">${kindIc(ev.kind)}${esc(ev.kind||'Evento')}</div><h2>${esc(ev.title)}</h2><p>${esc(typeof ev.text==='function'?ev.text(s):ev.text)}</p></div>`+
@@ -2113,10 +2380,11 @@ function view(){
     const reduced=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
     const anim=!r.sure&&!r.shown&&!reduced&&r.roll!=null;
     const pr=r.odds.map(x=>Math.round(x));
-    const bar=r.sure?'':`<div class="rbar" id="rbar" title="Tocá para saltar la animación"><span class="g" style="width:${r.odds[0]}%">${pr[0]>=8?pr[0]+'%':''}</span><span class="n" style="width:${r.odds[1]}%">${pr[1]>=8?pr[1]+'%':''}</span><span class="b" style="width:${r.odds[2]}%">${pr[2]>=8?pr[2]+'%':''}</span>${r.shown||anim?`<i class="rmark" id="rmark" style="left:${anim?0:r.roll}%"></i>`:''}</div>`;
+    const bar=r.sure?'':`<div class="rbar" id="rbar" title="Tocá para saltar la animación"><span class="g" style="width:${r.odds[0]}%">${pr[0]>=8?pr[0]+'%':''}</span><span class="n" style="width:${r.odds[1]}%">${pr[1]>=8?pr[1]+'%':''}</span><span class="b" style="width:${r.odds[2]}%">${pr[2]>=8?pr[2]+'%':''}</span>${r.shown||anim?`<i class="rmark" id="rmark" style="left:${anim?0:r.roll}%"></i>`:''}</div>${anim&&r.build&&r.build.steps.length?'<div class="rsteps" id="rsteps"></div>':''}`;
     M.innerHTML=`<div class="card"><div class="kicker">${esc(ctx.ev.title)}</div>${bar}<div id="rres" class="${anim?'rhide':''}">${r.sure?'':`<span class="band ${r.band}">${bn[r.band]}</span>`}<p>${esc(r.text)}</p>${r.lines.length||(ctx.carry&&ctx.carry.length)?`<div class="lines">${r.lines.concat(ctx.carry||[]).map(lineHtml).join('')}</div>`:''}</div></div><button class="btn primary ${anim?'rhide':''}" id="rcont" onclick="G.fin()">Continuar</button>`;
     if(anim)rollAnim(r);
   }else if(phase==='ending'){
+    if(!s.__es){s.__es=true;sfx(s.ending==='arrested'?'bad':'win');}
     const e=ENDINGS[s.ending];const info=recordResult(s);const sc=info.sc;
     const earned=new Set(sc.ach.map(a=>a.id));const fresh=new Set(info.fresh);
     M.innerHTML=`<div class="card center"><div class="big">${ENDING_SP[s.ending]?spr(num(ENDING_SP[s.ending]),false,112):e.e}</div><div class="kicker">Final</div><h2>${esc(e.t)}</h2><p>${esc(e.x)}</p></div>
@@ -2126,8 +2394,8 @@ function view(){
       <p class="sub" style="margin-top:8px">Calificaciones: S 2400+ · A 2000+ · B 1700+ · C 1300+. Los puntos salen solo de lo que pasó en tu partida.</p>
       <button class="btn sm" style="margin-top:8px;text-align:center" onclick="G.share()">📋 Copiar mi resultado para compartir</button><div class="sub" id="shmsg"></div></div>
     <div class="card"><h3 class="mb">🏅 Logros (${sc.ach.length}/${ACHS.length})</h3>
-      <div class="lines">${ACHS.filter(a=>earned.has(a.id)).map(a=>`<div><span style="font-size:20px">${a.e}</span><div><b>${esc(a.n)}</b>${fresh.has(a.id)?' <span class="tag-new">NUEVO</span>':''}<div class="sub">${esc(a.d)}</div></div></div>`).join('')||'<div class="sub">No conseguiste ningún logro esta vez.</div>'}</div>
-      <details style="margin-top:8px"><summary class="sub" style="cursor:pointer">Ver los que te faltaron (${ACHS.length-sc.ach.length}, de los cuales ${ACHS.filter(a=>a.hid&&!earned.has(a.id)).length} ocultos)</summary><div class="lines">${ACHS.filter(a=>!earned.has(a.id)).map(a=>a.hid?`<div style="opacity:.6"><span style="font-size:20px">🔒</span><div><b>Logro oculto</b><div class="sub">Pista: ${esc(a.h)}</div></div></div>`:`<div style="opacity:.6"><span style="font-size:20px">🔒</span><div><b>${esc(a.n)}</b><div class="sub">${esc(a.d)}</div></div></div>`).join('')}</div></details></div>
+      <div class="lines">${ACHS.filter(a=>earned.has(a.id)).map(a=>`<div>${achIc(a,30)}<div><b>${esc(a.n)}</b>${fresh.has(a.id)?' <span class="tag-new">NUEVO</span>':''}<div class="sub">${esc(a.d)}</div></div></div>`).join('')||'<div class="sub">No conseguiste ningún logro esta vez.</div>'}</div>
+      <details style="margin-top:8px"><summary class="sub" style="cursor:pointer">Ver los que te faltaron (${ACHS.length-sc.ach.length}, de los cuales ${ACHS.filter(a=>a.hid&&!earned.has(a.id)).length} ocultos)</summary><div class="lines">${ACHS.filter(a=>!earned.has(a.id)).map(a=>a.hid?`<div style="opacity:.6">${achIc(a,30,true)}<div><b>Logro oculto</b><div class="sub">Pista: ${esc(a.h)}</div></div></div>`:`<div style="opacity:.6">${achIc(a,30,true)}<div><b>${esc(a.n)}</b><div class="sub">${esc(a.d)}</div></div></div>`).join('')}</div></details></div>
     <div class="card"><h3 class="mb">Resumen</h3><div class="lines"><div>Edad: ${Math.min(35,10+Math.floor(s.t/4))} años · ${s.t} estaciones jugadas</div><div>Pokédex: ${dexN(s)}/151 · Shinies: ${shinyN(s)}</div><div>Medallas: ${s.badges.length}/8${s.leagueWon?' · Campeón de la Liga':''} · Reputación ${s.rep} (${repRank(s)})</div><div>${STATS.map(k=>SL[k]+' '+s.st[k]).join(' · ')}</div>${s.voc?`<div>Vocación: ${esc(VOCS[s.voc].name)}</div>`:''}${s.rocket?`<div>Equipo Rocket: ${rocketRank(s)}</div>`:''}${s.gymOwner?`<div>Gimnasio propio de tipo ${TES[s.gymType]} · Fama ${s.fame}</div>`:''}${s.voc==='profesor'?`<div>Publicaciones: ${s.pubs}/3 · Puntos de investigación: ${s.rp}</div>`:''}</div></div>
     <button class="btn" onclick="G.modal('logros')">🏅 Ver todos los logros y mis récords</button>
     <button class="btn primary" onclick="G.new()">Jugar otra vez</button>`;
@@ -2201,6 +2469,16 @@ function modal(kind){
     <div><b>Regalos:</b> al llegar a 5, 10 y 15 de reputación, la gente te regala una piedra evolutiva, un Pokémon y el Amuleto de la Suerte (una vez cada uno).${nx?` Próximo: a los <b>${nx}</b>.`:' Ya recibiste los tres.'}</div>
     <div><b>Rangos:</b> Mala fama (menos de -2) · Desconocido (-2 a 1) · Conocido (2 a 4) · Respetado (5 a 9) · Admirado (10 a 14) · Leyenda local (15+).</div>
     <div class="sub">No cuenta en los trabajos turbios ni en las misiones del Equipo Rocket.</div></div>`;
+  }else if(kind==='opts'){
+    const c=AU.cfg;
+    h=`<h3>${iconSound(20)} Sonido y música</h3>
+    <p class="sub mb">La música ambiental y los efectos se generan dentro del juego: no usa archivos ni música con derechos de autor. Los cambios se guardan en este navegador.</p>
+    <div class="lines" style="gap:14px">
+      <div style="display:block;width:100%"><div style="display:flex;justify-content:space-between"><b>Música</b><b id="auvm">${Math.round(c.music*100)}%</b></div><input type="range" min="0" max="100" value="${Math.round(c.music*100)}" style="width:100%" oninput="G.auSet('music',this.value)"></div>
+      <div style="display:block;width:100%"><div style="display:flex;justify-content:space-between"><b>Efectos</b><b id="auvs">${Math.round(c.sfx*100)}%</b></div><input type="range" min="0" max="100" value="${Math.round(c.sfx*100)}" style="width:100%" oninput="G.auSet('sfx',this.value)"></div>
+    </div>
+    <div class="row" style="margin-top:12px"><button class="btn" id="aumute" onclick="G.auMute()">${c.muted?'Activar sonido':'Silenciar todo'}</button><button class="btn" onclick="G.auTest()">Probar efecto</button></div>
+    <p class="sub" style="margin-top:10px">Los efectos suenan solo en momentos clave: cuando se suman los modificadores de una tirada, al revelarse el resultado, y cuando evoluciona o aparece un shiny.</p>`;
   }else if(kind==='guia'){
     const S=guideSections();
     h=`<h3>📖 Guía y glosario</h3><p class="sub mb">Todo lo que puede generar dudas. Escribí una palabra para filtrar (por ejemplo «heat», «tipo» o «giovanni») o tocá una sección para abrirla.</p>
@@ -2214,7 +2492,7 @@ function modal(kind){
     const endKeys=Object.keys(ENDINGS);const nEnd=endKeys.filter(k=>m.endings[k]).length;
     h=`<h3>🏅 Logros y récords</h3><p class="sub mb">Se guardan en este navegador. Conseguiste <b>${n}</b> de ${ACHS.length} logros y descubriste <b>${nEnd}</b> de ${endKeys.length} finales.</p>
     <button class="btn sm" onclick="G.modal('hall')">🏛️ Ver el Salón de la Fama</button>`+`
-    <h3 style="margin-top:12px">Logros</h3><div class="lines">${ACHS.map(a=>{const got=m.ach[a.id];return `<div style="${got?'':'opacity:.55'}"><span style="font-size:20px">${got?a.e:'🔒'}</span><div><b>${(a.hid&&!got)?'Logro oculto':esc(a.n)}</b>${got?` <span class="sub">· ${fmtDate(got)}</span>`:''}<div class="sub">${(a.hid&&!got)?'Pista: '+esc(a.h):esc(a.d)}</div></div></div>`;}).join('')}</div>
+    <h3 style="margin-top:12px">Logros</h3><div class="lines">${ACHS.map(a=>{const got=m.ach[a.id];return `<div style="${got?'':'opacity:.55'}">${achIc(a,30,!got)}<div><b>${(a.hid&&!got)?'Logro oculto':esc(a.n)}</b>${got?` <span class="sub">· ${fmtDate(got)}</span>`:''}<div class="sub">${(a.hid&&!got)?'Pista: '+esc(a.h):esc(a.d)}</div></div></div>`;}).join('')}</div>
     <h3 style="margin-top:12px">Finales descubiertos</h3><div class="lines">${endKeys.map(k=>`<div style="${m.endings[k]?'':'opacity:.55'}"><span style="font-size:20px">${m.endings[k]?ENDINGS[k].e:'❔'}</span><div><b>${m.endings[k]?esc(ENDINGS[k].t):'Final sin descubrir'}</b>${m.endings[k]?` <span class="sub">· ×${m.endings[k]}</span>`:''}</div></div>`).join('')}</div>`;
   }else if(kind==='log'){
     h=`<h3>📜 Diario</h3>`+(s.log.length?[...s.log].reverse().map(l=>`<div class="logline">${esc(l)}</div>`).join(''):'<p class="sub">Todavía no pasó nada.</p>');
@@ -2313,6 +2591,9 @@ const G={
     ctx.ev=null;save();
     phase=e?'ending':'menu';view();window.scrollTo(0,0);
   },
+  auSet(k,v){AU.cfg[k]=Math.max(0,Math.min(100,+v))/100;if(AU.cfg.muted&&+v>0)AU.cfg.muted=false;auSave();auStart();auVol();auMusicSync();const e=$(k==='music'?'auvm':'auvs');if(e)e.textContent=Math.round(AU.cfg[k]*100)+'%';const b=$('aumute');if(b)b.textContent=AU.cfg.muted?'Activar sonido':'Silenciar todo';if(k==='sfx')sfx('tick',true,2);},
+  auMute(){AU.cfg.muted=!AU.cfg.muted;auSave();auStart();auVol();auMusicSync();const b=$('aumute');if(b)b.textContent=AU.cfg.muted?'Activar sonido':'Silenciar todo';},
+  auTest(){auStart();sfx('good');},
   modal(k){ctx.bagStone=null;if(k!=='team')ctx.pend=null;modal(k);},close(){$('modal').classList.remove('on');ctx.bagStone=null;ctx.pend=null;ctx.modalKind=null;head();},
   teamUi(){if($('modal').classList.contains('on')&&ctx.modalKind==='team')modal('team');head();save();},
   rm(id){if(teamRemove(S_,id))G.teamUi();},
@@ -2333,6 +2614,7 @@ window.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('modal').classList.
 $('modal').addEventListener('click',e=>{if(e.target===$('modal')&&ctx.modalKind)G.close();});
 view();
 iconify(document.body);
+new MutationObserver(fnavUpdate).observe($('main'),{childList:true});fnavUpdate();
 new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes){if(n.nodeType===1)iconify(n);else if(n.nodeType===3&&n.parentNode)iconify(n.parentNode);}}).observe(document.body,{childList:true,subtree:true});
 </script>
 </body>
