@@ -29,14 +29,6 @@ Cada estación elegís una acción (explorar, entrenar, estudiar, el mercado, gi
 
 El juego es un único archivo (`index.html`). No envía datos a ningún servidor, no usa analíticas ni cookies de seguimiento y no carga recursos externos: los sprites vienen incluidos en el archivo.
 
-## Publicarlo en GitHub Pages
-
-1. Creá un repositorio **público** en GitHub.
-2. Subí `index.html` y este `README.md` a la rama principal.
-3. En **Settings → Pages**, elegí publicar desde esa rama (carpeta raíz).
-4. Esperá un momento y abrí la dirección que te muestra GitHub.
-
-Para actualizar el juego, reemplazá `index.html` por la versión nueva. Elegí bien el nombre del repositorio desde el principio: si cambia la dirección, los jugadores pierden sus partidas guardadas (el navegador las guarda por dirección).
 
 ## Aviso legal
 
@@ -46,8 +38,8 @@ Los sprites de Pokémon y de objetos incluidos en el archivo provienen del repos
 
 ## Contacto y errores
 
-Si encontrás un error o tenés una sugerencia, abrí un *issue* en este repositorio o escribí a **[tu contacto]**.
+Si encontrás un error o tenés una sugerencia, abrí un *issue* en este repositorio o escribí a **proximamente**.
 
 ## Créditos
 
-Creado por **[tu nombre]**.
+Creado por **Kolo**.

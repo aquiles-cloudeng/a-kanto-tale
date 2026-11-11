@@ -2018,6 +2018,8 @@ function view(){
     if(f.nw)st=st.filter(m=>evoLvl(m)&&evoNewDex(s,m));
     st.sort((a,b)=>(sel.has(b.id)-sel.has(a.id))||(evoNewDex(s,b)-evoNewDex(s,a))||(evoLvl(b)-evoLvl(a))||pw(b)-pw(a));
     M.innerHTML=`<div class="card"><div class="kicker">Entrenamiento específico</div><h2>Elegí hasta 6 (${sel.size}/6)</h2><p class="sub">Solo los elegidos ganan +${XP_TRAIN} de poder de entrenamiento y tienen chance de evolucionar por nivel (${Math.round(clamp(0.40+0.02*s.st.cuidado,0.40,0.65)*100)}% cada uno). Los elegidos aparecen primero. Poner a un Pokémon en el equipo se hace aparte, desde Equipo.</p>
+    ${sel.size>=6?'<p class="sub" style="color:var(--acc)">Ya elegiste 6 (el máximo): para elegir otro, primero quitá uno con “✔ Elegido” o usá “Quitar todos”.</p>':''}
+    <div class="flt"><button class="fchip" onclick="G.tpClear()">Quitar todos</button>${(s.trainSel||[]).length?'<button class="fchip" onclick="G.tpRepeat()">Repetir la última selección</button>':''}</div>
     <div class="flt"><input type="search" id="tpq" placeholder="Buscar por nombre…" value="${esc(f.q)}" oninput="G.tpf('q',this.value)"><button class="fchip ${f.nw?'on':''}" onclick="G.tpf('nw',${!f.nw})">Su evolución es nueva en mi Pokédex</button><button class="fchip ${f.lvl?'on':''}" onclick="G.tpf('lvl',${!f.lvl})">Todos los que evolucionan por nivel</button></div></div>
     <button class="btn primary" ${sel.size?'':'disabled'} onclick="G.trainGo()">Entrenar a los ${sel.size} elegidos</button>
     <div>${st.map(m=>{const on=sel.has(m.id);const lv=evoLvl(m);return monRow(m,0,`<button style="${on?'border-color:var(--acc);background:#2a3b5a':''}" ${(!on&&sel.size>=6)?'disabled':''} onclick="G.tpt(${m.id})">${on?'✔ Elegido':'Elegir'}</button>`).replace('</div></div></div>',`</div></div></div>`).replace('<span class="sub">Poder',`${s.team.includes(m.id)?'<span class="tag-own">en el equipo</span> ':''}${lv?(evoNewDex(s,m)?'<span class="tag-new">evoluciona a '+esc(evoLvlTargets(m).filter(t=>!s.dex[t]).map(t=>mon(t).name).join('/'))+' · NUEVO</span> ':'<span class="tag-own">evoluciona a '+esc(evoLvlTargets(m).map(t=>mon(t).name).join('/'))+' · ya la tenés</span> '):''}<span class="sub">Poder`);}).join('')||'<p class="sub">Ningún Pokémon coincide.</p>'}</div>
@@ -2260,7 +2262,9 @@ const G={
   guideFilter(q){q=String(q||'').trim().toLowerCase();let any=false;
     document.querySelectorAll('#gsec .gd').forEach(d=>{const t=d.textContent.toLowerCase();const ok=!q||t.includes(q);d.style.display=ok?'':'none';d.open=!!q&&ok;if(ok)any=true;});
     const n=$('gnone');if(n)n.style.display=any?'none':'';},
-  trainPick(){const own=new Set(S_.box.map(m=>m.id));let sel=(S_.trainSel||[]).filter(id=>own.has(id));if(!sel.length)sel=[...S_.team];ctx.tsel=sel.slice(0,6);phase='trainpick';view();window.scrollTo(0,0);},
+  trainPick(){ctx.tsel=[];phase='trainpick';view();window.scrollTo(0,0);},
+  tpRepeat(){const own=new Set(S_.box.map(m=>m.id));ctx.tsel=(S_.trainSel||[]).filter(id=>own.has(id)).slice(0,6);view();},
+  tpClear(){ctx.tsel=[];view();},
   tpt(id){const a=ctx.tsel=ctx.tsel||[];const i=a.indexOf(id);if(i>=0)a.splice(i,1);else if(a.length<6)a.push(id);view();},
   tpf(k,v){ctx.tpf=ctx.tpf||{q:'',lvl:false,nw:false};ctx.tpf[k]=v;view();if(k==='q'){const i=$('tpq');if(i){i.focus();i.setSelectionRange(v.length,v.length);}}},
   trainGo(){const ids=(ctx.tsel||[]).slice(0,6);if(!ids.length)return;G.exec('train',ids);},
