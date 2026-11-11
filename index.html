@@ -130,6 +130,8 @@ img.em{height:1.15em;width:auto;vertical-align:-.22em;image-rendering:pixelated}
 .rchip{font-size:12px;font-weight:700;border-radius:999px;padding:4px 9px;border:1px solid var(--line);background:var(--panel2);animation:chip .35s cubic-bezier(.2,1.4,.4,1) both}
 .rchip.pos{border-color:var(--good);color:#b9f5c9}.rchip.neg{border-color:var(--bad);color:#ffc0c0}.rchip.base{color:var(--mut)}
 @keyframes chip{from{opacity:0;transform:scale(.5) translateY(6px)}to{opacity:1;transform:none}}
+.statflash{animation:statflash .9s ease}
+@keyframes statflash{0%{filter:brightness(1.8) drop-shadow(0 0 10px var(--acc))}100%{filter:none}}
 .rhide{opacity:0;pointer-events:none}
 .rshow{animation:rfade .45s ease both}
 @keyframes rfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -2047,6 +2049,13 @@ async function auRenderTest(secs,seed){
   const win=44100;for(let i=0;i+win<=d.length;i+=win){let s=0;for(let j=i;j<i+win;j++)s+=d[j]*d[j];if(Math.sqrt(s/win)<0.002)silent++;}
   return {peak:pk,rms:Math.sqrt(sq/d.length),clip,silentSeconds:silent,secs,samples:Array.from(d.filter((_,i)=>i%11===0)).length};
 }
+// Íconos dibujados a mano (pixel art): libro (guía), cuaderno (diario) y copa (logros)
+const SVG_BOOK='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="1" y="3" width="14" height="10" fill="#2f5d9b"/><rect x="2" y="4" width="6" height="8" fill="#f4f1e6"/><rect x="8" y="4" width="6" height="8" fill="#f4f1e6"/><rect x="7" y="3" width="2" height="10" fill="#1d3a66"/><rect x="3" y="6" width="4" height="1" fill="#8a8fa0"/><rect x="3" y="8" width="4" height="1" fill="#8a8fa0"/><rect x="3" y="10" width="3" height="1" fill="#8a8fa0"/><rect x="9" y="6" width="4" height="1" fill="#8a8fa0"/><rect x="9" y="8" width="4" height="1" fill="#8a8fa0"/><rect x="9" y="10" width="3" height="1" fill="#8a8fa0"/></svg>';
+const SVG_DIARY='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="3" y="1" width="10" height="14" fill="#8b4a2b"/><rect x="3" y="1" width="2" height="14" fill="#5e2f1a"/><rect x="6" y="3" width="6" height="5" fill="#f4e7c8"/><rect x="7" y="4" width="4" height="1" fill="#9a7b4f"/><rect x="7" y="6" width="3" height="1" fill="#9a7b4f"/><rect x="10" y="10" width="2" height="5" fill="#d9534f"/></svg>';
+const SVG_TROPHY='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="4" y="2" width="8" height="5" fill="#f2c94c"/><rect x="2" y="3" width="2" height="3" fill="#e0b73a"/><rect x="12" y="3" width="2" height="3" fill="#e0b73a"/><rect x="5" y="7" width="6" height="2" fill="#e0b73a"/><rect x="7" y="9" width="2" height="3" fill="#c99a2e"/><rect x="4" y="12" width="8" height="2" fill="#8b5e1a"/><rect x="5" y="3" width="2" height="2" fill="#fff3b0"/></svg>';
+const ICONS_SVG={book:'data:image/svg+xml;utf8,'+encodeURIComponent(SVG_BOOK),diary:'data:image/svg+xml;utf8,'+encodeURIComponent(SVG_DIARY),trophy:'data:image/svg+xml;utf8,'+encodeURIComponent(SVG_TROPHY)};
+const svgIc=(k,sz)=>`<img class="spr" width="${sz}" height="${sz}" alt="" src="${ICONS_SVG[k]}">`;
+const iconTrophy=sz=>svgIc('trophy',sz);
 const iconSound=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Sonido"><rect x="1" y="5" width="3" height="6" fill="#9fd8e8"/><rect x="4" y="4" width="2" height="8" fill="#9fd8e8"/><rect x="6" y="3" width="2" height="10" fill="#cfeaf2"/><rect x="10" y="6" width="1" height="4" fill="#f2c94c"/><rect x="12" y="4" width="1" height="8" fill="#f2c94c"/><rect x="14" y="2" width="1" height="12" fill="#f2c94c"/></svg>`;
 
 const esc=x=>String(x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -2099,9 +2108,9 @@ function spr(n,sh,size){
 }
 // Íconos: Poké Ball (sprite de objeto de PokeAPI/sprites) y un Pokédex dibujado por mí (SVG propio)
 // ---- Íconos del mundo Pokémon (sprites de PokeAPI/sprites incluidos en el archivo) ----
-const EM_MAP={'⭐':['im','star-piece'],'🔄':['im','up-grade'],'🔁':['im','up-grade'],'🎒':['im','potion'],'📈':['im','protein'],'⬆️':['im','rare-candy'],'💪':['im','muscle-band'],'🔬':['im','scope-lens'],'🏆':['im','master-ball'],'👑':['im','master-ball'],'🌱':['im','oran-berry'],'🎁':['im','nugget'],'💱':['im','nugget'],'📜':['im','tm01'],'📖':['im','tm01'],'🪨':['im','moon-stone'],'🧠':['im','wise-glasses'],'🗣️':['im','soothe-bell'],'🥷':['im','bright-powder'],'🐾':['im','poke-ball'],'🏹':['im','safari-ball'],'🤝':['im','super-potion'],'📚':['im','tm01'],'🎓':['im','tm01'],'🧭':['im','town-map'],'⚡':['im','thunder-stone'],'✨':['it','shiny_charm'],'🏅':['bd',0],'🚢':['it','ss_ticket'],'🏟️':['bd',0]};
+const EM_MAP={'⭐':['im','star-piece'],'🔄':['im','up-grade'],'🔁':['im','up-grade'],'🎒':['im','potion'],'📈':['im','protein'],'⬆️':['im','rare-candy'],'💪':['im','muscle-band'],'🔬':['im','scope-lens'],'🏆':['im','master-ball'],'👑':['im','master-ball'],'🌱':['im','oran-berry'],'🎁':['im','nugget'],'💱':['im','nugget'],'📜':['sv','diary'],'📖':['sv','book'],'🪨':['im','moon-stone'],'🧠':['im','wise-glasses'],'🗣️':['im','soothe-bell'],'🥷':['im','bright-powder'],'🐾':['im','poke-ball'],'🏹':['im','safari-ball'],'🤝':['im','super-potion'],'📚':['sv','book'],'🎓':['sv','book'],'🧭':['im','town-map'],'⚡':['im','thunder-stone'],'✨':['it','shiny_charm'],'🏅':['bd',0],'🚢':['it','ss_ticket'],'🏟️':['bd',0]};
 const EM_RX=new RegExp('('+Object.keys(EM_MAP).map(k=>k.replace(/\ufe0f/g,'')).sort((a,b)=>b.length-a.length).join('|')+')\ufe0f?','g');
-const emSrc=k=>{const m=EM_MAP[k]||EM_MAP[k+'\ufe0f'];if(!m)return null;return m[0]==='im'?ICONS_IM[m[1]]:m[0]==='it'?ICONS_IT[m[1]]:ICONS_BD[m[1]];};
+const emSrc=k=>{const m=EM_MAP[k]||EM_MAP[k+'\ufe0f'];if(!m)return null;return m[0]==='im'?ICONS_IM[m[1]]:m[0]==='it'?ICONS_IT[m[1]]:m[0]==='sv'?ICONS_SVG[m[1]]:ICONS_BD[m[1]];};
 function iconify(root){
   const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>{const p=n.parentNode&&n.parentNode.nodeName;return p==='SCRIPT'||p==='STYLE'||p==='TEXTAREA'?NodeFilter.FILTER_REJECT:(EM_RX.test(n.nodeValue)?(EM_RX.lastIndex=0,NodeFilter.FILTER_ACCEPT):(EM_RX.lastIndex=0,NodeFilter.FILTER_REJECT));}});
   const L=[];while(w.nextNode())L.push(w.currentNode);
@@ -2150,8 +2159,9 @@ function save(){
 function loadName(){try{return localStorage.getItem(NAME_KEY)||'';}catch(e){return '';}}
 const cleanName=x=>String(x||'').replace(/[<>]/g,'').replace(/\s+/g,' ').trim().slice(0,14);
 
+const viewS=()=>(ctx.hold&&ctx.pre)?JSON.parse(ctx.pre):S_; // durante la animación de una tirada, el panel muestra el estado de ANTES (no spoilea el resultado)
 function sides(){
-  const s=S_;const tm=teamMons(s);const cnt={};stacks(s).forEach(e=>cnt[e.sp+(e.shiny?'s':'n')]=e.count);
+  const s=viewS();const tm=teamMons(s);const cnt={};stacks(s).forEach(e=>cnt[e.sp+(e.shiny?'s':'n')]=e.count);
   let l=`<div class="card"><h3>${iconBall(20)} Equipo ${tm.length}/6 · poder ${Math.round(teamPower(s))}</h3>`;
   for(let i=0;i<6;i++){const m=tm[i];
     l+=m?`<div class="slot">${spr(m.sp,m.shiny,40)}<div style="min-width:0"><div class="nm">${esc(nameOf(m))}</div><div class="sub">${typeChips(mon(m.sp).types)} Poder ${pw(m)}</div></div><button title="Sacar del equipo" ${tm.length<=1?'disabled':''} onclick="G.rm(${m.id})">Sacar</button></div>`
@@ -2164,12 +2174,12 @@ function sides(){
   $('sideR').innerHTML=r;
 }
 function head(){
-  const s=S_;
+  const s=viewS();
   if(!s||phase==='title'||phase==='name'||phase==='origin'||phase==='starter'){$('top').innerHTML='';$('chips').innerHTML='';$('stats').innerHTML='';$('sideL').innerHTML='';$('sideR').innerHTML='';return;}
   sides();
   const yr=Math.min(Math.floor(s.t/4),MAXT/4-1),si=s.t%4;
   $('top').innerHTML=`<div><div class="when">Año ${yr+1} <span class="sub">de ${MAXT/4}</span> · ${10+yr} años</div><div class="seasons">${SEAS_I.map((ic,i)=>`<span class="se ${i<si?'done':i===si?'cur':''}" title="${SEAS[i]}">${ic}</span>`).join('')}<span class="sub" style="margin-left:6px">${SEAS[si]}</span></div></div>
-  <div class="tools"><button class="ico" title="Pokédex" onclick="G.modal('dex')">${iconDex(24)}</button><button class="ico" title="Equipo" onclick="G.modal('team')">${iconBall(24)}</button><button class="ico" title="Mochila" onclick="G.modal('bag')">🎒</button><button class="ico" title="Guía y glosario" onclick="G.modal('guia')">📖</button><button class="ico" title="Logros y récords" onclick="G.modal('logros')">🏅</button><button class="ico" title="Diario" onclick="G.modal('log')">📜</button><button class="ico" title="Sonido y música" onclick="G.modal('opts')">${iconSound(24)}</button></div>`;
+  <div class="tools"><button class="ico" title="Pokédex" onclick="G.modal('dex')">${iconDex(24)}</button><button class="ico" title="Equipo" onclick="G.modal('team')">${iconBall(24)}</button><button class="ico" title="Mochila" onclick="G.modal('bag')">🎒</button><button class="ico" title="Guía y glosario" onclick="G.modal('guia')">📖</button><button class="ico" title="Logros y récords" onclick="G.modal('logros')">${iconTrophy(24)}</button><button class="ico" title="Diario" onclick="G.modal('log')">📜</button><button class="ico" title="Sonido y música" onclick="G.modal('opts')">${iconSound(24)}</button></div>`;
   let c=(s.name?`<span class="chip">👤 <b>${esc(s.name)}</b></span>`:'')+`<span class="chip" title="Pokédex">${iconDex(16)} <b>${dexN(s)}</b>/151</span><span class="chip" title="Medallas">${s.badges.length?s.badges.map(id=>badgeIc(GYMS.findIndex(g=>g.id===id),18)).join(''):'🏅'} <b>${s.badges.length}</b>/8</span><span class="chip">✨ <b>${shinyN(s)}</b></span><span class="chip">⏳ <b>${Math.max(0,MAXT-s.t)}</b> estaciones</span>`;
   c+=`<span class="chip" style="cursor:pointer" onclick="G.modal('rep')" title="Tocá para ver cómo funciona">⭐ Reputación <b>${s.rep}</b> · ${repRank(s)}</span>`;
   if(s.voc)c+=`<span class="chip">${esc(VOCS[s.voc].name)}</span>`;
@@ -2233,6 +2243,7 @@ function spin(r){
   const finish=()=>{if(done)return;done=true;cancelAnimationFrame(raf);r.shown=true;mk.style.left=r.roll+'%';
     {const od=r.odds||(r.rollInfo&&r.rollInfo.odds)||[50,0,50];const band=r.band||(r.roll<od[0]?'g':r.roll<od[0]+od[1]?'n':'b');
      sfx(band==='g'?(r.rollInfo&&/Gimnasio|Giovanni/.test(r.title||'')?'win':'good'):band==='n'?'neutral':'bad');}
+    if(ctx.hold){ctx.hold=false;head();const st=$('stats');if(st){st.classList.remove('statflash');void st.offsetWidth;st.classList.add('statflash');}}
     const a=$('rres'),b=$('rcont');if(a){a.classList.remove('rhide');a.classList.add('rshow');}if(b){b.classList.remove('rhide');b.classList.add('rshow');}};
   bar.onclick=finish;
   const D=200+r.roll,T=1600;let t0=null;
@@ -2243,6 +2254,7 @@ function spin(r){
   raf=requestAnimationFrame(step);
 }
 function view(){
+  if(phase!=='report'&&phase!=='eventres')ctx.hold=false;
   head();
   const M=$('main');
   const s=S_;
@@ -2254,7 +2266,7 @@ function view(){
     ${ctx.titleMsg?`<div class="pend">${esc(ctx.titleMsg)}</div>`:''}
     ${slots.length?`<h3 class="sec">Tus partidas guardadas (${slots.length}/${MAX_SLOTS})</h3>`+slots.map(x=>{const sv=x.state;const yr=Math.min(Math.floor(sv.t/4),24);return `<div class="slotrow"><button class="btn" onclick="G.cont(${x.id})"><div class="t">Continuar · ${esc(sv.name||'Sin nombre')}</div><div class="d">Año ${yr+1} · ${10+yr} años · Pokédex ${Object.keys(sv.dex).length}/151 · ${sv.badges.length} medallas${sv.voc?' · '+esc(VOCS[sv.voc].name):''}</div></button><button class="btn sm del" title="Borrar esta partida" onclick="G.delSlot(${x.id})">🗑️ Borrar</button></div>`;}).join(''):''}
     <button class="btn primary" onclick="G.new()">Nueva aventura</button>
-    <div class="row"><button class="btn" onclick="G.modal('hall')">🏛️ Salón de la Fama</button><button class="btn" onclick="G.modal('logros')">🏅 Logros</button></div>
+    <div class="row"><button class="btn" onclick="G.modal('hall')">🏛️ Salón de la Fama</button><button class="btn" onclick="G.modal('logros')"><span style="display:inline-flex;vertical-align:middle;margin-right:6px">${iconTrophy(18)}</span>Logros</button></div>
     <button class="btn" onclick="G.modal('guia')">📖 Guía y glosario</button>
     <button class="btn" onclick="G.modal('opts')"><span style="display:inline-flex;vertical-align:middle;margin-right:6px">${iconSound(18)}</span>Sonido y música</button>
     <p class="sub center">Proyecto de fans sin fines de lucro. No está afiliado a Nintendo, Game Freak, Creatures ni The Pokémon Company. Los sprites de Pokémon y de objetos vienen incluidos en el archivo (tomados del repositorio público PokeAPI/sprites) y pertenecen a sus dueños: Nintendo, Game Freak y The Pokémon Company.</p>`;
@@ -2359,6 +2371,7 @@ function view(){
     const pr=ri?ri.odds.map(x=>Math.round(x)):[];
     const bar=ri?`<div class="rbar" id="rbar" title="Tocá para saltar la animación"><span class="g" style="width:${ri.odds[0]}%">${pr[0]>=8?ri.labels[0]+' '+pr[0]+'%':''}</span>${ri.odds[1]>0?`<span class="n" style="width:${ri.odds[1]}%">${pr[1]>=8?pr[1]+'%':''}</span>`:''}<span class="b" style="width:${ri.odds[2]}%">${pr[2]>=8?ri.labels[2]+' '+pr[2]+'%':''}</span><i class="rmark" id="rmark" style="left:${anim?0:ri.roll}%"></i></div>${anim&&ri.build&&ri.build.steps.length?'<div class="rsteps" id="rsteps"></div>':''}`:'';
     M.innerHTML=`<div class="card"><div class="kicker">Resultado</div><h2>${esc(r.title)}</h2>${bar}<div id="rres" class="${anim?'rhide':''}"><div class="lines">${r.lines.map(lineHtml).join('')}</div></div></div><button class="btn primary ${anim?'rhide':''}" id="rcont" onclick="G.next()">Continuar</button>`;
+    ctx.hold=anim;if(anim)head();
     if(anim){r.roll=ri.roll;rollAnim(r);}else if(!ri)sfxReport(r);
   }else if(phase==='event'){
     const ev=ctx.ev;
@@ -2382,6 +2395,7 @@ function view(){
     const pr=r.odds.map(x=>Math.round(x));
     const bar=r.sure?'':`<div class="rbar" id="rbar" title="Tocá para saltar la animación"><span class="g" style="width:${r.odds[0]}%">${pr[0]>=8?pr[0]+'%':''}</span><span class="n" style="width:${r.odds[1]}%">${pr[1]>=8?pr[1]+'%':''}</span><span class="b" style="width:${r.odds[2]}%">${pr[2]>=8?pr[2]+'%':''}</span>${r.shown||anim?`<i class="rmark" id="rmark" style="left:${anim?0:r.roll}%"></i>`:''}</div>${anim&&r.build&&r.build.steps.length?'<div class="rsteps" id="rsteps"></div>':''}`;
     M.innerHTML=`<div class="card"><div class="kicker">${esc(ctx.ev.title)}</div>${bar}<div id="rres" class="${anim?'rhide':''}">${r.sure?'':`<span class="band ${r.band}">${bn[r.band]}</span>`}<p>${esc(r.text)}</p>${r.lines.length||(ctx.carry&&ctx.carry.length)?`<div class="lines">${r.lines.concat(ctx.carry||[]).map(lineHtml).join('')}</div>`:''}</div></div><button class="btn primary ${anim?'rhide':''}" id="rcont" onclick="G.fin()">Continuar</button>`;
+    ctx.hold=anim;if(anim)head();
     if(anim)rollAnim(r);
   }else if(phase==='ending'){
     if(!s.__es){s.__es=true;sfx(s.ending==='arrested'?'bad':'win');}
@@ -2393,11 +2407,11 @@ function view(){
       <div class="lines" style="text-align:left">${sc.parts.map(p=>`<div style="justify-content:space-between"><span>${esc(p[0])}</span><b>+${p[1]}</b></div>`).join('')}</div>
       <p class="sub" style="margin-top:8px">Calificaciones: S 2400+ · A 2000+ · B 1700+ · C 1300+. Los puntos salen solo de lo que pasó en tu partida.</p>
       <button class="btn sm" style="margin-top:8px;text-align:center" onclick="G.share()">📋 Copiar mi resultado para compartir</button><div class="sub" id="shmsg"></div></div>
-    <div class="card"><h3 class="mb">🏅 Logros (${sc.ach.length}/${ACHS.length})</h3>
+    <div class="card"><h3 class="mb">${iconTrophy(20)} Logros (${sc.ach.length}/${ACHS.length})</h3>
       <div class="lines">${ACHS.filter(a=>earned.has(a.id)).map(a=>`<div>${achIc(a,30)}<div><b>${esc(a.n)}</b>${fresh.has(a.id)?' <span class="tag-new">NUEVO</span>':''}<div class="sub">${esc(a.d)}</div></div></div>`).join('')||'<div class="sub">No conseguiste ningún logro esta vez.</div>'}</div>
       <details style="margin-top:8px"><summary class="sub" style="cursor:pointer">Ver los que te faltaron (${ACHS.length-sc.ach.length}, de los cuales ${ACHS.filter(a=>a.hid&&!earned.has(a.id)).length} ocultos)</summary><div class="lines">${ACHS.filter(a=>!earned.has(a.id)).map(a=>a.hid?`<div style="opacity:.6">${achIc(a,30,true)}<div><b>Logro oculto</b><div class="sub">Pista: ${esc(a.h)}</div></div></div>`:`<div style="opacity:.6">${achIc(a,30,true)}<div><b>${esc(a.n)}</b><div class="sub">${esc(a.d)}</div></div></div>`).join('')}</div></details></div>
     <div class="card"><h3 class="mb">Resumen</h3><div class="lines"><div>Edad: ${Math.min(35,10+Math.floor(s.t/4))} años · ${s.t} estaciones jugadas</div><div>Pokédex: ${dexN(s)}/151 · Shinies: ${shinyN(s)}</div><div>Medallas: ${s.badges.length}/8${s.leagueWon?' · Campeón de la Liga':''} · Reputación ${s.rep} (${repRank(s)})</div><div>${STATS.map(k=>SL[k]+' '+s.st[k]).join(' · ')}</div>${s.voc?`<div>Vocación: ${esc(VOCS[s.voc].name)}</div>`:''}${s.rocket?`<div>Equipo Rocket: ${rocketRank(s)}</div>`:''}${s.gymOwner?`<div>Gimnasio propio de tipo ${TES[s.gymType]} · Fama ${s.fame}</div>`:''}${s.voc==='profesor'?`<div>Publicaciones: ${s.pubs}/3 · Puntos de investigación: ${s.rp}</div>`:''}</div></div>
-    <button class="btn" onclick="G.modal('logros')">🏅 Ver todos los logros y mis récords</button>
+    <button class="btn" onclick="G.modal('logros')">${iconTrophy(18)} Ver todos los logros y mis récords</button>
     <button class="btn primary" onclick="G.new()">Jugar otra vez</button>`;
   }
 }
@@ -2490,7 +2504,7 @@ function modal(kind){
   }else if(kind==='logros'){
     const m=loadMeta();const n=Object.keys(m.ach).filter(k=>ACHS.some(a=>a.id===k)).length;
     const endKeys=Object.keys(ENDINGS);const nEnd=endKeys.filter(k=>m.endings[k]).length;
-    h=`<h3>🏅 Logros y récords</h3><p class="sub mb">Se guardan en este navegador. Conseguiste <b>${n}</b> de ${ACHS.length} logros y descubriste <b>${nEnd}</b> de ${endKeys.length} finales.</p>
+    h=`<h3>${iconTrophy(20)} Logros y récords</h3><p class="sub mb">Se guardan en este navegador. Conseguiste <b>${n}</b> de ${ACHS.length} logros y descubriste <b>${nEnd}</b> de ${endKeys.length} finales.</p>
     <button class="btn sm" onclick="G.modal('hall')">🏛️ Ver el Salón de la Fama</button>`+`
     <h3 style="margin-top:12px">Logros</h3><div class="lines">${ACHS.map(a=>{const got=m.ach[a.id];return `<div style="${got?'':'opacity:.55'}">${achIc(a,30,!got)}<div><b>${(a.hid&&!got)?'Logro oculto':esc(a.n)}</b>${got?` <span class="sub">· ${fmtDate(got)}</span>`:''}<div class="sub">${(a.hid&&!got)?'Pista: '+esc(a.h):esc(a.d)}</div></div></div>`;}).join('')}</div>
     <h3 style="margin-top:12px">Finales descubiertos</h3><div class="lines">${endKeys.map(k=>`<div style="${m.endings[k]?'':'opacity:.55'}"><span style="font-size:20px">${m.endings[k]?ENDINGS[k].e:'❔'}</span><div><b>${m.endings[k]?esc(ENDINGS[k].t):'Final sin descubrir'}</b>${m.endings[k]?` <span class="sub">· ×${m.endings[k]}</span>`:''}</div></div>`).join('')}</div>`;
@@ -2565,7 +2579,7 @@ const G={
   mkDone(){G.exec('market',ctx.mk.lines.length?ctx.mk.lines:['Recorriste el mercado sin cerrar ningún trato.']);},
   exec(id,arg){
     ctx.extraDone=false;
-    const r=runAction(S_,id,arg);ctx.rep=r;ctx.armed=null;ctx.carry=[];
+    ctx.pre=JSON.stringify(S_);const r=runAction(S_,id,arg);ctx.rep=r;ctx.armed=null;ctx.carry=[];
     if(r.pool&&r.lines.length){ctx.carry=r.lines;r.lines=[];} // las acciones con evento muestran todo junto en el resultado del evento
     if(r.lines.length){phase='report';view();window.scrollTo(0,0);}else G.next();
   },
@@ -2577,7 +2591,7 @@ const G={
   },
   opt(i){
     const o=ctx.ev.opts[i];
-    const go=()=>{ctx.res=resolveOption(S_,ctx.ev,i);phase='eventres';view();window.scrollTo(0,0);};
+    const go=()=>{ctx.pre=JSON.stringify(S_);ctx.res=resolveOption(S_,ctx.ev,i);phase='eventres';view();window.scrollTo(0,0);};
     if(o.irrev){ask(o.label,'<b>Punto sin retorno.</b> '+esc(o.hint||'No vas a poder volver atrás después de elegir esto.'),'Sí, confirmar',go);return;}
     go();
   },
