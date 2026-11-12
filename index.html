@@ -269,6 +269,7 @@ img[src^="data:image/svg"]{image-rendering:auto}
 .scp.k-fall{animation-name:scFall}
 .scp.an-fall{--an:scFall}.scp.an-rise{--an:scRise}.scp.an-drift{--an:scDrift}.scp.an-blink{--an:scBlink}.scp.an-wisp{--an:scWisp}
 .sctx{position:absolute;left:14px;bottom:12px;right:42%;z-index:3;text-shadow:0 1px 6px #000c,0 0 2px #000}
+.scene.ns .sctx{right:14px}
 .sctx .kicker{color:#fff;opacity:.85;margin-bottom:2px}
 .sctx h2{margin:0;line-height:1.15;font-size:21px}
 .sctx .sub{color:#e8eef8;margin-top:3px}
@@ -315,8 +316,65 @@ img[src^="data:image/svg"]{image-rendering:auto}
 .acc-b>div{overflow:hidden;min-height:0}
 .acc-in{padding:2px 12px 12px;display:flex;flex-direction:column;gap:7px}
 .acc-note{font-size:13px;color:var(--mut);padding:0 2px 4px;line-height:1.4}
-.mkchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}.mkchips span{font-size:12.5px;background:#0006;border:1px solid #fff2;border-radius:99px;padding:2px 9px}
+.mkchips{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}.mkchips span{font-size:12px;background:#0006;border:1px solid #fff2;border-radius:99px;padding:2px 9px}
 @media (prefers-reduced-motion:reduce){.acc-b,.acc-c{transition:none}}
+/* ===== entrenar: mosaicos ===== */
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tt{position:relative;overflow:hidden;isolation:isolate;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px 8px;border-radius:14px;border:1px solid color-mix(in srgb,var(--tc) 55%,#000);background:linear-gradient(165deg,color-mix(in srgb,var(--tc) 46%,#10192b),#121b2e 78%);color:var(--tx);font:inherit;cursor:pointer;box-shadow:0 3px 0 #0a1220,0 6px 10px #0004;text-align:center;transition:transform .2s cubic-bezier(.34,1.8,.5,1),box-shadow .2s,border-color .15s,filter .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.tt:before{content:"";position:absolute;left:50%;top:6px;width:74px;height:74px;margin-left:-37px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--tc) 70%,#fff) 0,transparent 68%);opacity:.4;z-index:-1}
+.tt:hover:not(:disabled){transform:translateY(-2px);border-color:var(--acc)}
+.tt:active:not(:disabled){transform:translateY(2px) scale(.985);box-shadow:0 0 0 #0a1220,inset 0 3px 8px #0007}
+.tt:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+.tt .spr{filter:drop-shadow(0 3px 4px #0008)}
+.tt .nm{font-weight:700;font-size:13.5px;line-height:1.15;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tt .pw{font-size:12px;color:#d6e0f2}
+.tt .tds{display:flex;gap:3px;justify-content:center}
+.tt .td{width:17px;height:17px;border-radius:50%;display:grid;place-items:center;border:1px solid #fff3}.tt .td img{width:11px;height:11px}
+.tt .ev{font-size:11px;line-height:1.2;color:#cfe0f5;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tt .ev.nw{color:#ffe27a;font-weight:700}
+.tt .eq{position:absolute;left:5px;top:5px;font-size:10px;font-weight:700;background:#0008;border:1px solid #fff3;border-radius:99px;padding:0 6px}
+.tt .ck{position:absolute;right:6px;top:6px;width:20px;height:20px;border-radius:50%;display:none;place-items:center;background:var(--acc);color:#1a1200;font-size:13px;font-weight:800}
+.tt.sel{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc),0 3px 0 #6a4f00,0 8px 16px #ffcb3d33;transform:translateY(-2px)}
+.tt.sel .ck{display:grid}
+.ttile{display:flex;flex-direction:column;gap:6px;text-align:left;padding:14px 13px;min-height:176px;position:relative;overflow:hidden;isolation:isolate;border-radius:14px;border:1px solid var(--line);color:var(--tx);font:inherit;cursor:pointer;box-shadow:0 3px 0 #0a1220,0 6px 10px #0004;transition:transform .2s cubic-bezier(.34,1.8,.5,1),border-color .15s}
+.ttile:hover{transform:translateY(-2px);border-color:var(--acc)}.ttile:active{transform:translateY(2px)}
+.ttile .ic{font-size:26px}.ttile .t{font-weight:700;font-size:16px;line-height:1.2}.ttile .d{font-size:13px;color:#d6e0f2;line-height:1.4}.ttile .go{margin-top:auto;font-size:12.5px;font-weight:700;color:var(--acc)}
+.ttile.a{background:linear-gradient(160deg,#7a2a3a,#1b2236 75%)}.ttile.b{background:linear-gradient(160deg,#2a5a8a,#1b2236 75%)}
+@media (min-width:420px){.tgrid{grid-template-columns:repeat(4,1fr)}}
+/* ===== estudiar ===== */
+.ygrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.yr{position:relative;display:flex;flex-direction:column;gap:5px;text-align:left;padding:13px 13px 12px;border-radius:14px;border:1px solid var(--line);background:linear-gradient(160deg,#243a68,#16213a 80%);color:var(--tx);font:inherit;cursor:pointer;box-shadow:0 3px 0 #0a1220,0 6px 10px #0004;transition:transform .2s cubic-bezier(.34,1.8,.5,1),border-color .15s,box-shadow .2s}
+.yr:hover{transform:translateY(-2px);border-color:var(--acc)}
+.yr .big{font-size:24px;font-weight:800;line-height:1}.yr .big small{font-size:14px;font-weight:700;color:#cfe0f5;margin-left:3px}
+.yr .pips{display:flex;gap:4px;flex-wrap:wrap}.yr .pips i{width:13px;height:13px;border-radius:50%;box-shadow:inset 0 -2px 0 #0003}
+.yr .d{font-size:13px;color:#d6e0f2;line-height:1.35}.yr .d b{color:#fff}
+.yr.on{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc),0 3px 0 #6a4f00,0 8px 16px #ffcb3d33;transform:translateY(-2px);background:linear-gradient(160deg,#3a4f86,#1a2848 80%)}
+.yr.on:after{content:"✓";position:absolute;right:8px;top:8px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--acc);color:#1a1200;font-size:13px;font-weight:800}
+.sgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.sgrid .sb:nth-child(-n+3){grid-column:span 2}.sgrid .sb:nth-child(n+4){grid-column:span 3}
+.sb{position:relative;overflow:hidden;isolation:isolate;display:flex;flex-direction:column;align-items:center;gap:3px;padding:14px 8px 11px;border-radius:14px;border:1px solid color-mix(in srgb,var(--sc) 55%,#000);background:linear-gradient(165deg,color-mix(in srgb,var(--sc) 42%,#10192b),#121b2e 80%);color:var(--tx);font:inherit;cursor:pointer;box-shadow:0 3px 0 #0a1220,0 6px 10px #0004;transition:transform .2s cubic-bezier(.34,1.8,.5,1),border-color .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.sb:before{content:"";position:absolute;left:50%;top:8px;width:84px;height:84px;margin-left:-42px;border-radius:50%;background:radial-gradient(circle,var(--sc) 0,transparent 66%);opacity:.32;z-index:-1}
+.sb:hover{transform:translateY(-2px);border-color:var(--acc)}.sb:active{transform:translateY(2px) scale(.985)}
+.sb .spr{filter:drop-shadow(0 3px 4px #0008)}
+.sb .nm{font-weight:800;font-size:15px}.sb .now{font-size:12.5px;color:#d6e0f2}
+.sb .gain{font-size:13px;font-weight:800;color:var(--sc);background:#07101dbb;border:1px solid #ffffff1c;border-radius:99px;padding:1px 9px;margin-top:2px}
+/* ===== rocket / turbio ===== */
+.scp.k-rain{border-radius:1px;height:calc(var(--s)*11);width:var(--s);opacity:0}
+.scp.k-rain.an-fall{animation-duration:calc(var(--d)*.16)}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rg{position:relative;overflow:hidden;isolation:isolate;display:flex;flex-direction:column;gap:5px;text-align:left;padding:13px 12px 12px;border-radius:14px;border:1px solid color-mix(in srgb,var(--rc) 60%,#000);background:linear-gradient(160deg,color-mix(in srgb,var(--rc) 44%,#0d1220),#10172a 82%);color:var(--tx);font:inherit;cursor:pointer;box-shadow:0 3px 0 #0a1220,0 6px 10px #0004;transition:transform .2s cubic-bezier(.34,1.8,.5,1),border-color .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.rg:before{content:"";position:absolute;right:-18px;top:-18px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,var(--rc),transparent 66%);opacity:.3;z-index:-1}
+.rg.wide{grid-column:span 2}.rg.armed{border-color:var(--bad)}
+.rg:hover:not(:disabled){transform:translateY(-2px);border-color:var(--acc)}.rg:active:not(:disabled){transform:translateY(2px) scale(.985)}
+.rg:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.rg .ic{font-size:26px;line-height:1}.rg .t{font-weight:800;font-size:15px;line-height:1.2}.rg .d{font-size:12.5px;color:#d6e0f2;line-height:1.35}
+.rg .rw{font-size:12px;line-height:1.3;color:#cfd9ea;display:flex;gap:5px}.rg .rw b{flex:none}
+.rg .pr{display:inline-flex;align-self:flex-start;margin-top:2px}
+.rg .why{font-size:12px;color:#f0a8ab;margin-top:2px}
+.evt{display:flex;flex-direction:column;gap:8px}
+.evt .btn{background:linear-gradient(160deg,color-mix(in srgb,var(--ec) 22%,#1c2a42),#17233a 80%);border-left:4px solid var(--ec)}
+.evt .btn.armed{border-color:var(--bad);background:#3a1a22}
+.heat{display:inline-flex;gap:3px;vertical-align:middle}.heat i{width:9px;height:12px;border-radius:2px;background:#ffffff26}.heat i.on{background:linear-gradient(#ffb04a,#ff3b3b);box-shadow:0 0 5px #ff5a3a}
 </style>
 </head>
 <body>
@@ -516,6 +574,7 @@ const dexN=s=>Object.keys(s.dex).length;
 const shinyN=s=>Object.keys(s.shinyDex).length;
 const pw=m=>Math.round(mon(m.sp).bst*m.q);
 const talent=m=>Math.round((m.q-1)*100);
+const pwT=m=>pw(m)+(m.xp||0); // poder real = base×talento + entrenamiento (el que cuenta en el poder de equipo)
 function addMonX(s,sp,shiny){
   const m={id:s.nextId++,sp,shiny:!!shiny,q:Math.round((0.9+0.2*R())*100)/100};
   s.box.push(m);s.dex[sp]=1;if(shiny)s.shinyDex[sp]=1;
@@ -728,7 +787,7 @@ function train(s,ids){
       const to=ev[Math.floor(R()*ev.length)][0];
       const from=mon(m.sp).name;const isNew=!s.dex[to];
       evolveMon(s,m,to);
-      lines.push({t:`⭐ ¡${from} evolucionó a ${mon(to).name}!${isNew?' · nuevo en la Pokédex':''}`,sp:to,sh:m.shiny});evolved++;
+      lines.push({t:`⭐ ¡${from} evolucionó a ${mon(to).name}!${isNew?' · nuevo en la Pokédex':''}`,sp:to,sh:m.shiny,isNew:!!isNew});evolved++;
     }
   }
   if(!evolved)lines.push('Entrenaron duro, pero ninguno evolucionó esta vez.');
@@ -769,7 +828,7 @@ function useStone(s,key,monId){
   s.items[key]--;if(!s.items[key])delete s.items[key];
   const from=mon(m.sp).name;const isNew=!s.dex[ev[0]];
   evolveMon(s,m,ev[0]);
-  return {t:`⭐ ${from} evoluciona a ${mon(ev[0]).name}${isNew?' · ¡nuevo en la Pokédex!':''}`,sp:ev[0],sh:m.shiny};
+  return {t:`⭐ ${from} evoluciona a ${mon(ev[0]).name}${isNew?' · ¡nuevo en la Pokédex!':''}`,sp:ev[0],sh:m.shiny,isNew:!!isNew};
 }
 function dupes(s){ // copias que no son la mejor de su especie, ni shiny ni del equipo
   const by={};for(const m of s.box)(by[m.sp]=by[m.sp]||[]).push(m);
@@ -850,7 +909,7 @@ function tradeEvolve(s,monId){
   s.counters.mkv=(s.counters.mkv||0)+1;
   const from=mon(m.sp).name;const isNew=!s.dex[ev[0]];
   evolveMon(s,m,ev[0]);
-  return {t:`🔄 ${from} evoluciona por intercambio a ${mon(ev[0]).name}${isNew?' · ¡nuevo en la Pokédex!':''}`,sp:ev[0],sh:m.shiny};
+  return {t:`🔄 ${from} evoluciona por intercambio a ${mon(ev[0]).name}${isNew?' · ¡nuevo en la Pokédex!':''}`,sp:ev[0],sh:m.shiny,isNew:!!isNew};
 }
 function swapStone(s,a,b){
   if(a===b||!(s.items[a]>0)||!ITEMS[b]||!ITEMS[b].stone)return null;
@@ -2403,7 +2462,7 @@ const itemIc=(k,sz)=>ICONS_IT[k]?`<img class="spr" width="${sz||24}" height="${s
 const iconBall=sz=>`<img width="${sz}" height="${sz}" alt="Equipo" src="${ICON_BALL}">`;
 const iconDex=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Pokédex"><rect x="2" y="1" width="12" height="14" rx="1" fill="#c9383f"/><rect x="2" y="1" width="12" height="14" rx="1" fill="none" stroke="#5b1217"/><rect x="4" y="3" width="8" height="6" fill="#9fd8e8" stroke="#1d3a52"/><rect x="5" y="4" width="3" height="2" fill="#eaf7fb"/><circle cx="5" cy="12" r="1.3" fill="#ffd84a" stroke="#5b1217" stroke-width=".4"/><rect x="8" y="11" width="4" height="1" fill="#5b1217"/><rect x="8" y="13" width="4" height="1" fill="#5b1217"/></svg>`;
 
-const VERSION='5.31'; // se sube en cada entrega y se muestra en el título y en Opciones
+const VERSION='5.37'; // se sube en cada entrega y se muestra en el título y en Opciones
 // ===== Sprites animados y efectos visuales =====
 // Los sprites estáticos están incluidos en el archivo. Las versiones animadas (Gen 5, del repositorio PokeAPI/sprites) se cargan
 // aparte cuando hay conexión; si no cargan, queda el sprite estático. Nada del juego depende de ellas.
@@ -2553,7 +2612,7 @@ function revealFx(r){
   const all=(r.lines||[]).concat(phase==='eventres'?(ctx.carry||[]):[]);
   const L=all.filter(x=>x&&typeof x==='object'&&x.sp);
   const txt=all.map(x=>typeof x==='string'?x:(x&&x.t)||'').join(' ');
-  const evo=L.find(x=>/evoluci/i.test(x.t));
+  const evo=L.find(x=>/evoluci/i.test(x.t)&&x.isNew!==false); // la animación grande solo si es nueva en la Pokédex
   const go=()=>{
     $('main').querySelectorAll('.lsp').forEach((el,i)=>{
       const sp=el.querySelector('.spr');
@@ -2721,6 +2780,21 @@ const SCENES={
   safari:{sky:['#8a2f2a','#ffc062'],glow:{x:72,y:60,c:'rgba(255,215,120,.95)',s:120,disk:1},gnd:'#4a3418',
     layers:[{shape:'hills',color:'#9a6a2e',h:70,sp:110,seed:3,op:.8},{shape:'acacia',color:'#3d2a14',h:90,sp:60,seed:2,n:3},{shape:'hills',color:'#3a2812',h:34,sp:40,seed:8}],
     parts:[{k:'dust',a:'drift',n:16,c:['rgba(255,210,140,.55)'],s:[2,4],dx:[20,70]},{k:'mote',a:'drift',n:6,c:['rgba(255,240,200,.8)'],s:[2,3]}]},
+  entreno:{sky:['#241c52','#ff9a62'],glow:{x:22,y:66,c:'rgba(255,214,150,.95)',s:150},ray:'rgba(255,220,160,.1)',gnd:'#2a1812',
+    layers:[{shape:'hills',color:'#7a4a5a',h:90,sp:120,seed:5,op:.7},{shape:'hills',color:'#4a2d3a',h:60,sp:70,seed:8},{shape:'mesa',color:'#2a1a22',h:34,sp:0,seed:3,k:[6,9]}],
+    parts:[{k:'dust',a:'drift',n:16,c:['rgba(255,220,170,.55)'],s:[2,4],dx:[20,60]},{k:'spark',a:'rise',n:10,c:['#ffd27a','#fff0b0'],s:[2,4]}]},
+  academia:{sky:['#101a44','#7a8fcf'],glow:{x:78,y:26,c:'rgba(255,240,200,.85)',s:84,disk:1},ray:'rgba(255,235,180,.1)',gnd:'#141b3c',
+    layers:[{shape:'skyline',color:'#26356e',h:116,sp:150,seed:21,op:.8,win:'#ffe6a0'},{shape:'skyline',color:'#161f4a',h:78,sp:80,seed:9,win:'#ffd98a'},{shape:'hills',color:'#0e1536',h:26,sp:0,seed:2}],
+    parts:[{k:'conf',a:'fall',n:10,c:['rgba(255,255,245,.85)','rgba(255,240,200,.8)'],s:[4,7],dx:[-40,40]},{k:'spark',a:'blink',n:14,c:['#ffe27a','#fff6c0'],s:[2,4]},{k:'mote',a:'drift',n:10,c:['rgba(255,235,180,.6)'],s:[2,3]}]},
+  rocket:{sky:['#0a0508','#5a1218'],glow:{x:74,y:50,c:'rgba(255,60,70,.6)',s:190},gnd:'#0a0507',beams:true,
+    layers:[{shape:'skyline',color:'#1d0c12',h:112,sp:150,seed:31,op:.9,win:'#ff5a5a'},{shape:'skyline',color:'#10060a',h:74,sp:80,seed:14,win:'#ff3b3b'},{shape:'hills',color:'#070305',h:24,sp:0,seed:5}],
+    parts:[{k:'spark',a:'blink',n:12,c:['#ff4a4a','#ff9a9a'],s:[2,4]},{k:'dust',a:'rise',n:10,c:['rgba(120,100,100,.45)'],s:[6,12],dx:[10,40]},{k:'mote',a:'drift',n:8,c:['rgba(255,150,150,.5)'],s:[2,3]}]},
+  turbio:{sky:['#07060f','#2c1a45'],glow:{x:30,y:62,c:'rgba(255,60,160,.45)',s:170},gnd:'#08060e',
+    layers:[{shape:'skyline',color:'#1c1230',h:118,sp:140,seed:41,op:.9,win:'#ff5ab4'},{shape:'skyline',color:'#0f0a1c',h:80,sp:70,seed:17,win:'#4fe0ff'},{shape:'hills',color:'#06040b',h:22,sp:0,seed:5}],
+    parts:[{k:'rain',a:'fall',n:34,c:['rgba(170,200,255,.5)'],s:[1,1.6],dx:[-8,-4]},{k:'spark',a:'blink',n:6,c:['#ff5ab4','#4fe0ff'],s:[2,3]}]},
+  vocacion:{sky:['#1b2a5e','#ffb680'],glow:{x:50,y:70,c:'rgba(255,230,170,.95)',s:170},ray:'rgba(255,225,170,.14)',gnd:'#2a1f2a',
+    layers:[{shape:'peaks',color:'#6a5a8a',h:104,sp:140,seed:51,k:[2,3],ex:1.1,op:.7},{shape:'hills',color:'#4a3a5a',h:76,sp:80,seed:52},{shape:'trees',color:'#2a2038',h:92,sp:50,seed:53,n:6,r:20},{shape:'hills',color:'#1c1424',h:26,sp:0,seed:54}],
+    parts:[{k:'mote',a:'drift',n:16,c:['rgba(255,235,180,.8)'],s:[2,4]},{k:'spark',a:'blink',n:12,c:['#ffe27a','#fff6c0'],s:[2,4]},{k:'leaf',a:'fall',n:5,c:['#ffd27a','#ffb04a'],s:[6,9]}]},
   mercado:{sky:['#2a1840','#f4a45c'],glow:{x:20,y:62,c:'rgba(255,205,130,.9)',s:150},gnd:'#2b1a12',bunting:true,
     layers:[{shape:'skyline',color:'#4a2a4a',h:96,sp:150,seed:12,op:.75,win:'#ffd890'},{shape:'stalls',color:'#2a1722',h:100,sp:80,seed:3,n:4},{shape:'hills',color:'#1c100c',h:26,sp:0,seed:1}],
     parts:[{k:'orb',a:'blink',n:12,c:['#ffd27a','#ffb04a','#fff0b0'],s:[4,8],dx:[-4,4],dy:[-6,6]},{k:'spark',a:'rise',n:8,c:['#ffe27a','#ffd23d'],s:[2,4]},{k:'mote',a:'drift',n:10,c:['rgba(255,225,170,.6)'],s:[2,3]}]},
@@ -2756,7 +2830,7 @@ function sceneBg(name,H){
 // Banner de gimnasio / liga: escena + nombre + sprite del as animado. kind = clave de SCENES.
 function sceneBanner(kind,o){
   const H=o.h||200,calm=fxLevel()==='off'?' calm':'';
-  return `<div class="scene${calm}" style="--H:${H}px"><div class="scene-bg">${sceneBg(kind,H)}</div><div class="scshade" style="position:absolute;inset:0;z-index:1"></div><div class="sctx"><div class="kicker">${o.kicker||''}</div><h2>${o.title||''}</h2><div class="sub">${o.sub||''}</div></div><div class="scspr">${o.spr||''}</div></div>`;
+  return `<div class="scene${calm}${o.spr?'':' ns'}" style="--H:${H}px"><div class="scene-bg">${sceneBg(kind,H)}</div><div class="scshade" style="position:absolute;inset:0;z-index:1"></div><div class="sctx"><div class="kicker">${o.kicker||''}</div><h2>${o.title||''}</h2><div class="sub">${o.sub||''}</div></div><div class="scspr">${o.spr||''}</div></div>`;
 }
 function lineHtml(l){
   if(typeof l==='string')return `<div>${esc(l)}</div>`;
@@ -2786,7 +2860,7 @@ function sides(){
   const s=viewS();const tm=teamMons(s);const cnt={};stacks(s).forEach(e=>cnt[e.sp+(e.shiny?'s':'n')]=e.count);
   let l=`<div class="card"><h3>${iconBall(20)} Equipo ${tm.length}/6 · poder ${Math.round(teamPower(s))}</h3>`;
   for(let i=0;i<6;i++){const m=tm[i];
-    l+=m?`<div class="slot">${aspr(m.sp,m.shiny,44)}<div style="min-width:0"><div class="nm">${esc(nameOf(m))}</div><div class="sub">${typeChips(mon(m.sp).types)} Poder ${pw(m)}</div></div><button title="Sacar del equipo" ${tm.length<=1?'disabled':''} onclick="G.rm(${m.id})">Sacar</button></div>`
+    l+=m?`<div class="slot">${aspr(m.sp,m.shiny,44)}<div style="min-width:0"><div class="nm">${esc(nameOf(m))}</div><div class="sub">${typeChips(mon(m.sp).types)} Poder ${pwT(m)}${xpOf(m)?` <span style="font-size:12px">(${pw(m)} +${xpOf(m)})</span>`:''}</div></div><button title="Sacar del equipo" ${tm.length<=1?'disabled':''} onclick="G.rm(${m.id})">Sacar</button></div>`
       :`<div class="slot empty" style="cursor:pointer" onclick="G.modal('team')">Lugar libre · tocá para agregar</div>`;}
   l+=`<div class="row" style="margin-top:6px"><button class="btn sm" onclick="G.modal('team')">Cambiar equipo</button><button class="btn sm" title="Arma el equipo con mayor poder" onclick="G.auto()">⚡ Automático</button></div></div>`;
   $('sideL').innerHTML=l;
@@ -2816,7 +2890,7 @@ function head(){
 }
 
 function monRow(m,count,btn){
-  return `<div class="mon"><div class="mi">${spr(m.sp,m.shiny,48)}<div><div class="nm">${esc(nameOf(m))}${count>1?` <span class="sub">(${count} capturados)</span>`:''}</div><div>${typeChips(mon(m.sp).types)} <span class="sub">Poder ${pw(m)} (${talent(m)>=0?'+':''}${talent(m)}%)${xpOf(m)?` · entrenamiento +${xpOf(m)}`:''}</span></div></div></div>${btn||''}</div>`;
+  return `<div class="mon"><div class="mi">${spr(m.sp,m.shiny,48)}<div><div class="nm">${esc(nameOf(m))}${count>1?` <span class="sub">(${count} capturados)</span>`:''}</div><div>${typeChips(mon(m.sp).types)} <span class="sub">Poder ${pwT(m)} (base ${pw(m)}, talento ${talent(m)>=0?'+':''}${talent(m)}%${xpOf(m)?` + entrenamiento ${xpOf(m)}`:''})</span></div></div></div>${btn||''}</div>`;
 }
 
 function buildAnim(bd,labels,done){
@@ -2908,14 +2982,16 @@ function view(){
   }else if(phase==='menu'){
     M.innerHTML=(s.notice?`<div class="card" style="border-color:var(--acc)"><p>${esc(s.notice)}</p></div>`:'')+menuHtml(s);
   }else if(phase==='rkmenu'){
-    const hasDup=dupes(s).length>0;
-    M.innerHTML=`<div class="card"><div class="kicker">Equipo Rocket</div><h2>¿Qué misión tomás?</h2><p class="sub">Rango: <b>${rocketRank(s)}</b> (${s.rocketPts}/${ROCKET_MAX})${rocketNext(s)?` · próximo: <b>${rocketNext(s).name}</b> a los ${rocketNext(s).at}`:''} · Heat <b>${s.heat}</b>/5. Cada misión ocupa una estación y termina en un evento. Solo el trabajo sucio sube mucho el rango; el resto te trae botín.</p></div>`+
-      RK_KINDS.map(k0=>{const k=rkKind(k0.id,s);const capped=s.rocketPts>=ROCKET_MAX;const ok=k0.id==='black'?hasDup:k0.id==='work'?!capped:true;return `<button class="btn" ${ok?'':'disabled'} onclick="G.rk('${k0.id}')"><div class="t">${k.icon} ${esc(k.title)}</div><div class="d">${esc(k.desc)}</div><div class="d">🎁 ${esc(k.gain)}</div><div class="d">⚠ Riesgo: ${esc(k.risk)}</div><div class="d">📈 Practicás <b>${SL[k.prac]}</b> (${(s.prac&&s.prac[k.prac])||0}/${pracNeed(s.st[k.prac])})</div>${ok?'':`<div class="why">${k0.id==='work'?'Ya estás en el máximo rango: ahora podés desafiar a Giovanni':'Necesitás Pokémon repetidos para ofrecer'}</div>`}</button>`;}).join('')+`<button class="btn" onclick="G.back()">← Volver</button>`;
+    const hasDup=dupes(s).length>0;const nx=rocketNext(s);const RC={work:'#c8323f',pokemon:'#8a4fd0',items:'#e08a2a',hunt:'#3aa05a',black:'#1fa3a0'};
+    const heat=`<span class="heat">${[1,2,3,4,5].map(i=>`<i class="${i<=s.heat?'on':''}"></i>`).join('')}</span>`;
+    M.innerHTML=sceneBanner('rocket',{h:160,kicker:'Equipo Rocket',title:'¿Qué misión tomás?',sub:`<div class="mkchips"><span>🅡 ${esc(rocketRank(s))} · ${s.rocketPts}/${ROCKET_MAX}</span><span>Heat ${heat}</span>${nx?`<span>Próximo: ${esc(nx.name)} (${nx.at})</span>`:''}</div>`,spr:''})+`<div class="card scn-card"><p class="sub">Cada misión ocupa una estación y termina en un evento. Solo el trabajo sucio sube mucho el rango; el resto te trae botín.</p></div>
+    <div class="rgrid">`+
+      RK_KINDS.map(k0=>{const k=rkKind(k0.id,s);const capped=s.rocketPts>=ROCKET_MAX;const ok=k0.id==='black'?hasDup:k0.id==='work'?!capped:true;return `<button class="rg${k0.id==='work'?' wide':''}" style="--rc:${RC[k0.id]}" ${ok?'':'disabled'} onclick="G.rk('${k0.id}')"><span class="ic">${k.icon}</span><span class="t">${esc(k.title)}</span><span class="d">${esc(k.desc)}</span><span class="rw"><b>🎁</b><span>${esc(k.gain)}</span></span><span class="rw"><b>⚠</b><span>${esc(k.risk)}</span></span><span class="schip pr" style="--sc:${STC[k.prac]}" title="Practicás ${SL[k.prac]}">${stIc(k.prac,13)}${SL[k.prac]} ${(s.prac&&s.prac[k.prac])||0}/${pracNeed(s.st[k.prac])}</span>${ok?'':`<span class="why">${k0.id==='work'?'Ya estás en el máximo rango: ahora podés desafiar a Giovanni':'Necesitás Pokémon repetidos para ofrecer'}</span>`}</button>`;}).join('')+`</div><button class="btn" onclick="G.back()">← Volver</button>`;
   }else if(phase==='trainmode'){
     const nc=new Set(s.box.filter(evoLvl).map(m=>m.sp)).size;
-    M.innerHTML=`<div class="card"><div class="kicker">Entrenar</div><h2>¿Cómo entrenás?</h2><p class="sub">Cualquiera de los dos ocupa una estación.</p></div>
-    <button class="btn" onclick="G.exec('train')"><div class="t">⚙️ Entrenamiento automático</div><div class="d">Tu equipo entero gana +${XP_TRAIN} de poder (hasta +${XP_CAP}). Además, hasta 8 Pokémon que evolucionan por nivel (${nc} especies posibles ahora) tienen chance de evolucionar. Primero entrenan los del equipo y el resto al azar. Te avisa quiénes entrenaron.</div></button>
-    <button class="btn" onclick="G.trainPick()"><div class="t">🎯 Entrenamiento específico</div><div class="d">Elegís hasta 6 Pokémon de toda tu colección, estén o no en el equipo, y solo esos entrenan: ganan +${XP_TRAIN} de poder y tienen chance de evolucionar. Más control, pero los que no elijas no mejoran esta estación.</div></button>
+    M.innerHTML=sceneBanner('entreno',{h:130,kicker:'Entrenar',title:'¿Cómo entrenás?',sub:'Cualquiera ocupa una estación',spr:''})+`<div class="card scn-card" style="height:14px;padding:0"></div>
+    <div class="row" style="align-items:stretch"><button class="ttile a" onclick="G.exec('train')"><span class="ic">⚙️</span><span class="t">Automático</span><span class="d">Todo tu equipo gana <b>+${XP_TRAIN}</b> de poder (tope +${XP_CAP}). Hasta 8 Pokémon que evolucionan por nivel (${nc} especies ahora) pueden evolucionar. Te avisa quiénes entrenaron.</span><span class="go">Entrenar →</span></button>
+    <button class="ttile b" onclick="G.trainPick()"><span class="ic">🎯</span><span class="t">Específico</span><span class="d">Elegís hasta <b>6</b> Pokémon de toda tu colección y solo esos ganan <b>+${XP_TRAIN}</b> y pueden evolucionar. Más control, pero el resto no mejora.</span><span class="go">Elegir →</span></button></div>
     <button class="btn" onclick="G.back()">← Volver</button>`;
   }else if(phase==='trainpick'){
     const sel=new Set(ctx.tsel||[]);const f=ctx.tpf=ctx.tpf||{q:'',lvl:false,nw:false};
@@ -2925,12 +3001,13 @@ function view(){
     if(f.lvl)st=st.filter(evoLvl);
     if(f.nw)st=st.filter(m=>evoLvl(m)&&evoNewDex(s,m));
     st.sort((a,b)=>(sel.has(b.id)-sel.has(a.id))||(evoNewDex(s,b)-evoNewDex(s,a))||(evoLvl(b)-evoLvl(a))||pw(b)-pw(a));
-    M.innerHTML=`<div class="card"><div class="kicker">Entrenamiento específico</div><h2>Elegí hasta 6 (${sel.size}/6)</h2><p class="sub">Solo los elegidos ganan +${XP_TRAIN} de poder de entrenamiento y tienen chance de evolucionar por nivel (${Math.round(clamp(0.40+0.02*s.st.cuidado,0.40,0.65)*100)}% cada uno). Los elegidos aparecen primero. Poner a un Pokémon en el equipo se hace aparte, desde Equipo.</p>
+    M.innerHTML=sceneBanner('entreno',{h:110,kicker:'Entrenamiento específico',title:'Elegí hasta 6 ('+sel.size+'/6)',sub:'Tocá un Pokémon para elegirlo',spr:''})+`<div class="card scn-card"><p class="sub">Solo los elegidos ganan +${XP_TRAIN} de poder de entrenamiento y tienen chance de evolucionar por nivel (${Math.round(clamp(0.40+0.02*s.st.cuidado,0.40,0.65)*100)}% cada uno). Los elegidos aparecen primero. Poner a un Pokémon en el equipo se hace aparte, desde Equipo. ✨ = su evolución es nueva en tu Pokédex.</p>
     ${sel.size>=6?'<p class="sub" style="color:var(--acc)">Ya elegiste 6 (el máximo): para elegir otro, primero quitá uno con “✔ Elegido” o usá “Quitar todos”.</p>':''}
     <div class="flt"><button class="fchip" onclick="G.tpClear()">Quitar todos</button>${(s.trainSel||[]).length?'<button class="fchip" onclick="G.tpRepeat()">Repetir la última selección</button>':''}</div>
     <div class="flt"><input type="search" id="tpq" placeholder="Buscar por nombre…" value="${esc(f.q)}" oninput="G.tpf('q',this.value)"><button class="fchip ${f.nw?'on':''}" onclick="G.tpf('nw',${!f.nw})">Su evolución es nueva en mi Pokédex</button><button class="fchip ${f.lvl?'on':''}" onclick="G.tpf('lvl',${!f.lvl})">Todos los que evolucionan por nivel</button></div></div>
     <button class="btn primary" ${sel.size?'':'disabled'} onclick="G.trainGo()">Entrenar a los ${sel.size} elegidos</button>
-    <div>${st.map(m=>{const on=sel.has(m.id);const lv=evoLvl(m);return monRow(m,0,`<button style="${on?'border-color:var(--acc);background:#2a3b5a':''}" ${(!on&&sel.size>=6)?'disabled':''} onclick="G.tpt(${m.id})">${on?'✔ Elegido':'Elegir'}</button>`).replace('</div></div></div>',`</div></div></div>`).replace('<span class="sub">Poder',`${s.team.includes(m.id)?'<span class="tag-own">en el equipo</span> ':''}${lv?(evoNewDex(s,m)?'<span class="tag-new">evoluciona a '+esc(evoLvlTargets(m).filter(t=>!s.dex[t]).map(t=>mon(t).name).join('/'))+' · NUEVO</span> ':'<span class="tag-own">evoluciona a '+esc(evoLvlTargets(m).map(t=>mon(t).name).join('/'))+' · ya la tenés</span> '):''}<span class="sub">Poder`);}).join('')||'<p class="sub">Ningún Pokémon coincide.</p>'}</div>
+    <div class="tgrid">${st.map(m=>{const on=sel.has(m.id);const lv=evoLvl(m);const ty=mon(m.sp).types;const isNew=lv&&evoNewDex(s,m);const tg=lv?evoLvlTargets(m):[];const evn=isNew?tg.filter(x=>!s.dex[x]):tg;
+      return `<button class="tt${on?' sel':''}" style="--tc:${TCOL[ty[0]]}" ${(!on&&sel.size>=6)?'disabled':''} onclick="G.tpt(${m.id})" title="${esc(nameOf(m))} · poder ${pwT(m)} (base ${pw(m)}, talento ${talent(m)>=0?'+':''}${talent(m)}%${xpOf(m)?', entrenamiento +'+xpOf(m):''})">${s.team.includes(m.id)?'<span class="eq">equipo</span>':''}<span class="ck">✓</span>${spr(m.sp,m.shiny,56)}<span class="nm">${esc(nameOf(m))}</span><span class="tds">${ty.map(x=>`<i class="td" style="background:${TCOL[x]}">${ICONS_TY[x.toLowerCase()]?`<img alt="" src="${ICONS_TY[x.toLowerCase()]}">`:''}</i>`).join('')}</span><span class="pw">Poder ${pwT(m)}</span>${lv?`<span class="ev${isNew?' nw':''}">${isNew?'✨ ':'→ '}${esc(evn.map(x=>mon(x).name).join('/'))}</span>`:''}</button>`;}).join('')||'<p class="sub">Ningún Pokémon coincide.</p>'}</div>
     <button class="btn" onclick="G.act('train')">← Volver</button>`;
   }else if(phase==='zone'){
     M.innerHTML=`<div class="card"><div class="kicker">Explorar</div><h2>¿Adónde vas?</h2><p class="sub">${powerOnly(s)?'Tu vocación no depende de las medallas: las zonas se abren solo con un equipo lo bastante fuerte (poder de equipo).':'Las zonas se abren con medallas o con un equipo lo bastante fuerte (poder de equipo).'} Tu poder actual: <b>${Math.round(teamPower(s))}</b>. Ves cuántas especies nuevas podrías encontrar.</p></div>`+
@@ -2941,10 +3018,15 @@ function view(){
         return `<button class="btn zbtn${fxLevel()==='off'?' calm':''}" style="--H:104px" title="${esc(z.desc)}" ${open?'':'disabled'} onclick="G.zone('${z.id}')"><div class="scene-bg">${sceneBg(SC_ZONE[z.id]||'dia',104)}</div><div class="zin">${spr(num(ZONE_SP[z.id]),false,44)}<div class="zt"><div class="t">${esc(z.name)}</div>${open?`<div class="d">Nuevas: <b>${nw}</b> de ${sp.length}</div>`:`<div class="why">🔒 ${lock}</div>`}</div></div></button>`;
       }).join('')+`</div><button class="btn" onclick="G.back()">← Volver</button>`;
   }else if(phase==='study'){
-    const y=ctx.years||1;
-    M.innerHTML=`<div class="card"><div class="kicker">Academia</div><h2>¿Cuánto tiempo y en qué?</h2><p class="sub">Estudiar ocupa ${y*4} estaciones seguidas. Elegí un stat para mejorar mucho.</p></div>
-    <div class="row"><button class="btn ${y===1?'armed':''}" onclick="G.years(1)"><div class="t">1 año</div><div class="d">+3 en el stat elegido</div></button><button class="btn ${y===2?'armed':''}" onclick="G.years(2)"><div class="t">2 años</div><div class="d">+6 y +1 Ingenio</div></button></div>`+
-    STATS.map(k=>`<button class="btn" onclick="G.stat('${k}')"><div class="t">${SL[k]} <span class="sub">(ahora ${s.st[k]})</span></div></button>`).join('')+`<button class="btn" onclick="G.back()">← Volver</button>`;
+    const y=ctx.years||1,g=y===1?3:6;
+    const pips=n=>['#ff9bc4','#ffd23d','#ff9a4a','#7fd0ff'].concat(['#ff9bc4','#ffd23d','#ff9a4a','#7fd0ff']).slice(0,n*4).map(c=>`<i style="background:${c}"></i>`).join('');
+    M.innerHTML=sceneBanner('academia',{h:130,kicker:'Academia',title:'¿Cuánto tiempo y en qué?',sub:'Estudiar ocupa estaciones seguidas',spr:''})+`<div class="card scn-card" style="height:14px;padding:0"></div>
+    <div class="sec">Duración</div>
+    <div class="ygrid"><button class="yr ${y===1?'on':''}" onclick="G.years(1)"><span class="big">1<small>año</small></span><span class="pips">${pips(1)}</span><span class="d"><b>4 estaciones</b><br>+3 en el stat elegido</span></button>
+    <button class="yr ${y===2?'on':''}" onclick="G.years(2)"><span class="big">2<small>años</small></span><span class="pips">${pips(2)}</span><span class="d"><b>8 estaciones</b><br>+6 y +1 Ingenio</span></button></div>
+    <div class="sec">¿Qué estudiás?</div>
+    <div class="sgrid">${STATS.map(k=>`<button class="sb" style="--sc:${STC[k]}" onclick="G.stat('${k}')">${stIc(k,40)}<span class="nm">${SL[k]}</span><span class="now">ahora ${s.st[k]}</span><span class="gain">+${g+(y===2&&k==='ingenio'?1:0)}</span></button>`).join('')}</div>
+    <button class="btn" onclick="G.back()">← Volver</button>`;
   }else if(phase==='gymprev'){
     const gym=GYMS[s.badges.length];
     const pv=gymPreview(s,gym);
@@ -3000,7 +3082,16 @@ function view(){
     if(anim){r.roll=ri.roll;rollAnim(r);}else{if(!ri)sfxReport(r);setTimeout(()=>revealFx(r),300);}
   }else if(phase==='event'){
     const ev=ctx.ev;
-    M.innerHTML=`<div class="card"><div class="kicker">${kindIc(ev.kind)}${esc(ev.kind||'Evento')}</div><h2>${esc(ev.title)}</h2><p>${esc(typeof ev.text==='function'?ev.text(s):ev.text)}</p></div>`+
+    const esn=(ev.id||'').startsWith('sh_')?'turbio':(/^rk/.test(ev.pool||'')||ev.pool==='rocket'||(ev.id||'').startsWith('rk'))?'rocket':null;
+    const etx=esc(typeof ev.text==='function'?ev.text(s):ev.text);
+    let vocHtml=null;
+    if(ev.id==='vocacion'){
+      const VC={campeon:['#e0a91c','🏆'],coleccionista:['#2fa36b','🎒'],profesor:['#4a86e8','🔬'],picaro:['#c8323f','🅡']};
+      vocHtml=sceneBanner('vocacion',{h:130,kicker:kindIc(ev.kind)+esc(ev.kind||'Historia'),title:esc(ev.title),sub:'',spr:''})+`<div class="card scn-card"><p>${etx}</p></div><div class="rgrid">`+
+        ev.opts.map((o,i)=>{const v=o.out&&o.out.g&&o.out.g[1]&&o.out.g[1].voc;const V=VOCS[v];const c=VC[v]||['#7b8aa3','⭐'];const sk=V&&Object.keys(V.st)[0];
+          return `<button class="rg${ctx.armed===i?' armed':''}" style="--rc:${c[0]}" onclick="G.opt(${i})"><span class="ic">${c[1]}</span><span class="t">${esc(o.label)}</span><span class="d">${esc(o.out.g[0])}</span>${sk?`<span class="schip pr" style="--sc:${STC[sk]}">${stIc(sk,13)}+${V.st[sk]} ${SL[sk]}</span>`:''}<span class="rw"><b>⭐</b><span>${esc(((h)=>h.charAt(0).toUpperCase()+h.slice(1))((o.hint||'').replace(/^\+\d+ \w+ · /,'')))}</span></span></button>`;}).join('')+`</div>`;
+    }
+    M.innerHTML=(esn?sceneBanner(esn,{h:120,kicker:kindIc(ev.kind)+esc(ev.kind||'Evento'),title:esc(ev.title),sub:'',spr:''})+`<div class="card scn-card"><p>${etx}</p></div><div class="evt" style="--ec:${esn==='rocket'?'#d8343f':'#c04fd0'}">`:`<div class="card"><div class="kicker">${kindIc(ev.kind)}${esc(ev.kind||'Evento')}</div><h2>${esc(ev.title)}</h2><p>${etx}</p></div>`)+
       ev.opts.map((o,i)=>{
         const od=oddsFor(s,o);const armed=ctx.armed===i;
         let extra='';
@@ -3012,7 +3103,8 @@ function view(){
         }
         if(o.irrev)extra+=`<div class="irrev">⚠ Punto sin retorno (te pedimos confirmar antes de aplicar)</div>`;
         return `<button class="btn ${armed?'armed':''}" onclick="G.opt(${i})"><div class="t">${esc(o.label)}</div>${extra}</button>`;
-      }).join('');
+      }).join('')+(esn?'</div>':'');
+    if(vocHtml)M.innerHTML=vocHtml;
   }else if(phase==='eventres'){
     const r=ctx.res;const bn=r.duel?{g:'¡Victoria!',n:'Resultado neutral',b:'Derrota'}:{g:'Buen resultado',n:'Resultado neutral',b:'Mal resultado'};
     const reduced=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -3177,7 +3269,7 @@ const G={
   zone(id){G.exec('explore',id);},
   rk(kind){G.exec('rkmission',kind);},
   years(y){ctx.years=y;view();},
-  stat(k){const y=ctx.years||1;ask('¿Estudiar '+y+' año'+(y===1?'':'s')+' en '+SL[k]+'?','Ocupa <b>'+(y*4)+' estaciones</b> sin explorar ni entrenar y da +'+(y===1?3:6)+' '+SL[k]+(y===2?' y +1 Ingenio':'')+'. Solo se puede estudiar un máximo de 2 veces.','Sí, estudiar',()=>G.exec('study',{years:y,stat:k}));},
+  stat(k){const y=ctx.years||1;ask('¿Estudiar '+y+' año'+(y===1?'':'s')+' en '+SL[k]+'?','Ocupa <b>'+(y*4)+' estaciones</b> sin explorar ni entrenar y da '+(y===2&&k==='ingenio'?'+7 Ingenio':'+'+(y===1?3:6)+' '+SL[k]+(y===2?' y +1 Ingenio':''))+'. Solo se puede estudiar un máximo de 2 veces.','Sí, estudiar',()=>G.exec('study',{years:y,stat:k}));},
   go(){
     const kind=phase==='leagueprev'?'league':phase==='giovprev'?'giovanni':'gym';
     const txt=kind==='league'?'Vas a enfrentar a los cuatro del Alto Mando y al Campeón, uno tras otro. Si perdés, se te va una estación y no ganás ningún bonus.':kind==='giovanni'?'Es el desafío final contra Giovanni. Si perdés, se te va una estación y podés intentarlo de nuevo, pero sin ningún bonus.':'Si perdés, se te va una estación (aunque la próxima vez tendrás un pequeño bonus por la experiencia).';
