@@ -63,4 +63,4 @@ Si encontrás un error o tenés una sugerencia, abrí un *issue* en este reposit
 
 Creado por **[tu nombre]**.
 
-Los íconos de los menús (Pokédex, mochila, guía, logros, diario, opciones y sonido) son de [pixelarticons](https://github.com/halfmage/pixelarticons), de Gerrit Halfmann, con licencia MIT (Copyright (c) 2019 Gerrit Halfmann).
+Los íconos de los menús (mochila, guía, logros, diario, opciones, sonido, Salón de la Fama y reloj de arena) son de [Phosphor Icons](https://phosphoricons.com), en su estilo duotone, con licencia MIT. El ícono de la Pokédex es propio.
