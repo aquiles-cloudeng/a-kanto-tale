@@ -1175,6 +1175,7 @@ function runAction(s,id,arg){
   if(s.freeSeason>0&&(r.seasons||1)>0){r.seasons=Math.max(0,(r.seasons||1)-1);s.freeSeason--;r.lines.push('⏳ Gracias a tu Ingenio, esta acción no te costó una estación.');}
   if(PRAC[id]){const l=practice(s,PRAC[id]);if(l)r.lines.push(l);}
   if(id==='rkmission'){const l=practice(s,rkKind(arg,s).prac);if(l)r.lines.push(l);}
+  if(id==='rkmission'){s.counters['rkm_'+arg]=(s.counters['rkm_'+arg]||0)+1;}
   if(id==='market'){ // cada cambio cerrado (Pokémon, piedra o evolución) suma una práctica de Carisma
     const n=s.counters.mkv||0;s.counters.mkv=0;
     if(n>0){let last=null;const ups=[];for(let i=0;i<n;i++){const l=practice(s,'carisma');if(l){if(l.startsWith('⬆️'))ups.push(l);last=l;}}
@@ -2000,7 +2001,7 @@ function endSeason(s,seasons){
 }
 
 // ===================== Puntaje, logros y epílogo =====================
-const RK_OPS_PTS=35,RK_OPS_CAP=12; // cada operación de mando exitosa (Teniente en adelante) suma al puntaje de quien sigue el camino Rocket
+const RK_OPS_PTS=45,RK_OPS_CAP=12,RK_RANK_PTS=20; // cada operación de mando exitosa (Teniente en adelante) suma al puntaje de quien sigue el camino Rocket
 const END_FLAT=600; // mismo puntaje base para todos los finales: así nadie fuerza uno solo por el puntaje
 const END_BASE=Object.fromEntries(Object.keys(ENDINGS).map(k=>[k,END_FLAT]));
 const ALL_TYPES=[...new Set(MON.flatMap(m=>m.types))];
@@ -2034,6 +2035,14 @@ const ACHS=[
  {id:'limpio',e:'😇',n:'Conciencia limpia',d:'Terminar con la conciencia muy tranquila (moral 8 o más).',f:s=>s.moral>=8},
  {id:'barco',e:'🚢',n:'Marinero',d:'Hacer el viaje en el barco S.S.',f:s=>!!s.counters.shipDone},
  {id:'rocketboss',e:'🅡',n:'El jefe',d:'Convertirte en el líder del Equipo Rocket.',f:s=>!!s.rocketBoss},
+ {id:'rk_teniente',e:'🎖️',n:'Hombre de confianza',d:'Llegar al rango de Teniente del Equipo Rocket.',f:s=>s.rocket&&s.rocketPts>=30},
+ {id:'rk_alto',e:'🕴️',n:'Mano derecha',d:'Llegar al rango de Alto mando del Equipo Rocket.',f:s=>s.rocket&&(s.rocketPts>=ROCKET_MAX||s.rocketBoss)},
+ {id:'rk_ops',e:'📋',n:'Mando firme',d:'Dirigir 5 operaciones de mando exitosas.',f:s=>s.rocket&&(s.counters.rkOps||0)>=5},
+ {id:'rk_ladron',e:'🐾',n:'Ladrón de ganado',d:'Hacer 4 misiones de robo de Pokémon.',f:s=>s.rocket&&(s.counters.rkm_pokemon||0)>=4},
+ {id:'rk_botin',e:'🎒',n:'Botín de guerra',d:'Hacer 4 misiones de robo de objetos.',f:s=>s.rocket&&(s.counters.rkm_items||0)>=4},
+ {id:'rk_negro',e:'💱',n:'Contrabandista',d:'Hacer 2 misiones de mercado negro.',f:s=>s.rocket&&(s.counters.rkm_black||0)>=2},
+ {id:'rk_caza',e:'🏹',n:'Cazador furtivo',d:'Hacer 3 cacerías ilegales.',f:s=>s.rocket&&(s.counters.rkm_hunt||0)>=3},
+ {id:'rk_golpe',e:'👑',n:'Golpe de estado',d:'Vencer a Giovanni en el primer intento.',f:s=>!!s.rocketBoss&&!(s.counters.gioFails>0)},
  {id:'profe3',e:'🔬',n:'Investigador',d:'Conseguir las 3 publicaciones científicas.',f:s=>s.pubs>=3},
  {id:'lider',e:'🏟️',n:'Líder consagrado',d:'Alcanzar la fama máxima de tu propio gimnasio.',f:s=>s.fame>=FAME_MAX},
  // Logros ocultos: no muestran su condición hasta conseguirlos (solo una pista). Se evalúan con el equipo que tenías al ganar la Liga.
@@ -2049,7 +2058,7 @@ const ACH_HID=ACHS.filter(a=>a.hid).length;
 const ACH_IC={invicto:'bd:0',liga1:149,campeon:'im:master-ball',rival4:18,rival2:65,veloz:78,dex151:151,dex130:'im:poke-ball',
  monotipo:'im:wise-glasses',multitipo:'im:exp-share',cobertura:132,equipotipo:'it:fire',stat17:'im:muscle-band',statmax:'im:rare-candy',
  equilibrado:'im:bright-powder',shiny:'it:shiny_charm',shiny10:130,aves:144,mew2:150,iniciales:6,eevee:133,poder:59,rep15:'im:nugget',
- limpio:113,barco:131,rocketboss:53,profe3:'im:scope-lens',lider:95,favorito:83,pika:25,trio:3,hermanos:134,corazon:35,perfecto:'im:star-piece'};
+ limpio:113,barco:131,rocketboss:53,rk_teniente:23,rk_alto:24,rk_ops:110,rk_ladron:52,rk_botin:'im:nugget',rk_negro:'im:wise-glasses',rk_caza:127,rk_golpe:109,profe3:'im:scope-lens',lider:95,favorito:83,pika:25,trio:3,hermanos:134,corazon:35,perfecto:'im:star-piece'};
 ACHS.forEach(a=>{a.ic=ACH_IC[a.id];});
 const achievementsOf=s=>ACHS.filter(a=>{try{return a.f(s);}catch(e){return false;}});
 function scoreOf(s){
@@ -2065,7 +2074,11 @@ function scoreOf(s){
     ['Poder del equipo ('+Math.round(tp)+')',Math.max(0,Math.round((tp-300)*0.8))],
     ['Logros ('+ach.length+(ach.length===1?' logro':' logros')+' × 40)',ach.length*40]
   ];
-  if(s.rocket){const n=Math.min(RK_OPS_CAP,s.counters.rkOps||0);parts.splice(parts.length-1+0,0,['Operaciones de mando ('+n+' × '+RK_OPS_PTS+')',n*RK_OPS_PTS]);}
+  if(s.rocket){
+    const n=Math.min(RK_OPS_CAP,s.counters.rkOps||0);parts.splice(parts.length-1+0,0,['Operaciones de mando ('+n+' × '+RK_OPS_PTS+')',n*RK_OPS_PTS]);
+    const rr=RK_RANKS.filter(r=>r[0]>0&&s.rocketPts>=r[0]).length+(s.rocketBoss?1:0);
+    parts.splice(parts.length-1+0,0,['Rangos del Rocket ('+rr+' × '+RK_RANK_PTS+')',rr*RK_RANK_PTS]);
+  }
   if(goal)parts.push(['Final antes de tiempo ('+(MAXT-s.t)+' estaciones sobrantes × 3)',(MAXT-s.t)*3]);
   const total=parts.reduce((a,p)=>a+p[1],0);
   return {total,parts,ach};
@@ -2237,7 +2250,7 @@ function guideSections(){
   S.push(['⭐ Reputación, conciencia y Heat',`${li(['<b>Reputación</b> (de −10 a 20): sube cuando ayudás o resolvés bien frente a otros, baja cuando fallás o hacés el ridículo. Suma o resta hasta +10 / −6 puntos en los eventos sociales. A los 5, 10 y 15 la gente te hace un regalo (una piedra, un Pokémon y el Amuleto de la Suerte). Rangos: '+REP_RANKS.slice().reverse().map(r=>r[1]).join(', ')+'.','<b>Conciencia</b> (de −10 a 10): sube con decisiones buenas y baja con robos y trabajos turbios. Abre algunas ofertas (como la del Equipo Rocket) y cuenta en la historia final.','<b>Heat</b> (de 0 a 5): ver Equipo Rocket.'])}`]);
   S.push(['🎒 Objetos',li(Object.keys(ITEMS).filter(k=>!ITEMS[k].stone&&k!=='corona').map(k=>`<b>${esc(ITEMS[k].name)}</b>: ${esc(ITEMS[k].desc)}`))+`<p><b>Piedras evolutivas</b> (Fuego, Hoja, Lunar, Trueno, Agua): hacen evolucionar a ciertos Pokémon. Las encontrás explorando, en eventos y en el mercado. Se usan desde la Mochila.</p>`]);
   S.push(['🏁 Finales',`<p>Cuando cumplís la condición de uno o más finales, el juego te deja <b>elegir cuál cerrar</b> (o seguir jugando por otro). No depende de tu vocación. Si llegás a las ${MAXT} estaciones, se cierra solo el de mayor prioridad entre los que cumplís: Campeón, jefe Rocket, Líder de gimnasio, Maestro Pokémon, Profesor.</p>`+li(Object.keys(ENDINGS).map(k=>`<b>${ENDINGS[k].e} ${esc(ENDINGS[k].t)}</b>: ${esc(END_COND[k]||'')}`))]);
-  S.push(['⭐ Puntaje y logros',`<p>Al terminar recibís un puntaje que se suma así:</p>${li(['Final: '+END_FLAT+' puntos, los mismos para todos los finales (ninguno vale más que otro; lo que suma es cómo jugaste)','4 puntos por especie en la Pokédex','10 por especie shiny','25 por medalla','3 por cada punto de stat por encima de los 10 iniciales','Poder del equipo: (poder − 300) × 0,8','40 por logro','35 por cada operación de mando exitosa del Equipo Rocket (hasta 12 operaciones)','3 por cada estación que te sobra si cerrás antes del tiempo límite'])}<p>Calificación: ${GRADES.slice(0,-1).map(g=>g[1]+' desde '+g[0]).join(' · ')}.</p><p><b>Logros</b> (se guardan en tu navegador):</p>`+li(ACHS.filter(a=>!a.hid).map(a=>`${achIc(a,22)} <b>${esc(a.n)}</b>: ${esc(a.d)}`))+`<p>Además hay <b>${ACH_HID} logros ocultos</b>: difíciles y específicos, que no muestran su condición hasta que los conseguís (solo una pista). Cuentan igual para el puntaje.</p>`]);
+  S.push(['⭐ Puntaje y logros',`<p>Al terminar recibís un puntaje que se suma así:</p>${li(['Final: '+END_FLAT+' puntos, los mismos para todos los finales (ninguno vale más que otro; lo que suma es cómo jugaste)','4 puntos por especie en la Pokédex','10 por especie shiny','25 por medalla','3 por cada punto de stat por encima de los 10 iniciales','Poder del equipo: (poder − 300) × 0,8','40 por logro',RK_OPS_PTS+' por cada operación de mando exitosa del Equipo Rocket (hasta '+RK_OPS_CAP+' operaciones)','Equipo Rocket: '+RK_RANK_PTS+' por cada rango alcanzado después de Recluta (y uno más por ser Líder)','3 por cada estación que te sobra si cerrás antes del tiempo límite'])}<p>Calificación: ${GRADES.slice(0,-1).map(g=>g[1]+' desde '+g[0]).join(' · ')}.</p><p><b>Logros</b> (se guardan en tu navegador):</p>`+li(ACHS.filter(a=>!a.hid).map(a=>`${achIc(a,22)} <b>${esc(a.n)}</b>: ${esc(a.d)}`))+`<p>Además hay <b>${ACH_HID} logros ocultos</b>: difíciles y específicos, que no muestran su condición hasta que los conseguís (solo una pista). Cuentan igual para el puntaje.</p>`]);
   S.push(['📖 Glosario',li([
    '<b>Estación:</b> una unidad de tiempo (3 meses). El juego dura '+MAXT+'.',
    '<b>Poder:</b> la fuerza de un Pokémon o de tu equipo (promedio).',
@@ -2485,7 +2498,7 @@ const itemIc=(k,sz)=>ICONS_IT[k]?`<img class="spr" width="${sz||24}" height="${s
 const iconBall=sz=>`<img width="${sz}" height="${sz}" alt="Equipo" src="${ICON_BALL}">`;
 const iconDex=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Pokédex"><rect x="2" y="1" width="12" height="14" rx="1" fill="#c9383f"/><rect x="2" y="1" width="12" height="14" rx="1" fill="none" stroke="#5b1217"/><rect x="4" y="3" width="8" height="6" fill="#9fd8e8" stroke="#1d3a52"/><rect x="5" y="4" width="3" height="2" fill="#eaf7fb"/><circle cx="5" cy="12" r="1.3" fill="#ffd84a" stroke="#5b1217" stroke-width=".4"/><rect x="8" y="11" width="4" height="1" fill="#5b1217"/><rect x="8" y="13" width="4" height="1" fill="#5b1217"/></svg>`;
 
-const VERSION='5.43'; // se sube en cada entrega y se muestra en el título y en Opciones
+const VERSION='5.45'; // se sube en cada entrega y se muestra en el título y en Opciones
 // ===== Sprites animados y efectos visuales =====
 // Los sprites estáticos están incluidos en el archivo. Las versiones animadas (Gen 5, del repositorio PokeAPI/sprites) se cargan
 // aparte cuando hay conexión; si no cargan, queda el sprite estático. Nada del juego depende de ellas.
@@ -3081,7 +3094,7 @@ function view(){
   }else if(phase==='gymprev'){
     const gym=GYMS[s.badges.length];
     const pv=gymPreview(s,gym);
-    M.innerHTML=sceneBanner(SC_TYPE[gym.type]||'liga',{kicker:'Gimnasio de '+esc(gym.city),title:esc(gym.leader)+' · tipo '+esc(gym.type),sub:badgeIc(s.badges.length,22)+' Medalla '+(s.badges.length+1)+' de 8',spr:gym.id==='giovanni'?leaderIc('giovanni',96):aspr(aceNum(gym),false,96)})+`<div class="card scn-card"><div class="sub mb">Su equipo:</div><div class="mi mb" style="flex-wrap:wrap">${gym.team.map(n=>{const m=mon(num(n));return `<span class="mi">${spr(m.n,false,36)}<span class="sub">${esc(m.name)}</span></span>`;}).join('')}</div>
+    M.innerHTML=sceneBanner(SC_TYPE[gym.type]||'liga',{kicker:'Gimnasio de '+esc(gym.city),title:esc(gym.leader)+' · tipo '+esc(gym.type),sub:badgeIc(s.badges.length,22)+' Medalla '+(s.badges.length+1)+' de 8',spr:leaderIc(gym.id,96)||aspr(aceNum(gym),false,96)})+`<div class="card scn-card"><div class="sub mb">Su equipo:</div><div class="mi mb" style="flex-wrap:wrap">${gym.team.map(n=>{const m=mon(num(n));return `<span class="mi">${spr(m.n,false,36)}<span class="sub">${esc(m.name)}</span></span>`;}).join('')}</div>
     <div class="odds"><span class="g" style="width:${pv.win}%">${pv.win}% victoria</span><span class="b" style="width:${100-pv.win}%">${100-pv.win}%</span></div>
     <div class="lines">${pv.parts.filter(p=>p[1]!==0).map(p=>`<div>${p[1]>0?'🟢 +':'🔴 '}${p[1]}% · ${esc(p[0])}</div>`).join('')}</div>
     <p class="sub" style="margin-top:8px">Cambiá tu equipo (el botón de la Poké Ball) para mejorar la cobertura de tipos antes de desafiar.</p></div>
