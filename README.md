@@ -63,4 +63,6 @@ Si encontrás un error o tenés una sugerencia, abrí un *issue* en este reposit
 
 Creado por **[tu nombre]**.
 
+Los sprites de los líderes de gimnasio (pantalla de Medallas) provienen del desensamblado público [pret/pokered](https://github.com/pret/pokered) (`gfx/trainers`), recoloreados, y pertenecen a Nintendo y Game Freak.
+
 Los íconos de los menús (mochila, guía, logros, diario, opciones, sonido, Salón de la Fama y reloj de arena) son de [Phosphor Icons](https://phosphoricons.com), en su estilo duotone, con licencia MIT. El ícono de la Pokédex es propio.
