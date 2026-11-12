@@ -282,6 +282,7 @@ img[src^="data:image/svg"]{image-rendering:auto}
 .zbtn:disabled .scene-bg{filter:grayscale(.9) brightness(.55)}
 .zbtn:disabled .scene-bg *{animation-play-state:paused!important}
 .zbtn:disabled{opacity:.8}
+.zgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.zbtn{padding:9px 10px;min-height:96px}.zin{display:flex;flex-direction:column;gap:4px;height:100%}.zin .spr{align-self:flex-start}.zt .t{font-size:14.5px;line-height:1.2}.zt .d{font-size:12.5px;margin-top:2px;color:#cfd9ea}.zt .why{font-size:11.5px;line-height:1.25}
 .zbtn .spr{filter:drop-shadow(0 2px 3px #000a)}
 .calm *{animation:none!important}
 .calm .scp{display:none}
@@ -2385,7 +2386,7 @@ const itemIc=(k,sz)=>ICONS_IT[k]?`<img class="spr" width="${sz||24}" height="${s
 const iconBall=sz=>`<img width="${sz}" height="${sz}" alt="Equipo" src="${ICON_BALL}">`;
 const iconDex=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Pokédex"><rect x="2" y="1" width="12" height="14" rx="1" fill="#c9383f"/><rect x="2" y="1" width="12" height="14" rx="1" fill="none" stroke="#5b1217"/><rect x="4" y="3" width="8" height="6" fill="#9fd8e8" stroke="#1d3a52"/><rect x="5" y="4" width="3" height="2" fill="#eaf7fb"/><circle cx="5" cy="12" r="1.3" fill="#ffd84a" stroke="#5b1217" stroke-width=".4"/><rect x="8" y="11" width="4" height="1" fill="#5b1217"/><rect x="8" y="13" width="4" height="1" fill="#5b1217"/></svg>`;
 
-const VERSION='5.28'; // se sube en cada entrega y se muestra en el título y en Opciones
+const VERSION='5.29'; // se sube en cada entrega y se muestra en el título y en Opciones
 // ===== Sprites animados y efectos visuales =====
 // Los sprites estáticos están incluidos en el archivo. Las versiones animadas (Gen 5, del repositorio PokeAPI/sprites) se cargan
 // aparte cuando hay conexión; si no cargan, queda el sprite estático. Nada del juego depende de ellas.
@@ -2907,11 +2908,12 @@ function view(){
     <button class="btn" onclick="G.act('train')">← Volver</button>`;
   }else if(phase==='zone'){
     M.innerHTML=`<div class="card"><div class="kicker">Explorar</div><h2>¿Adónde vas?</h2><p class="sub">${powerOnly(s)?'Tu vocación no depende de las medallas: las zonas se abren solo con un equipo lo bastante fuerte (poder de equipo).':'Las zonas se abren con medallas o con un equipo lo bastante fuerte (poder de equipo).'} Tu poder actual: <b>${Math.round(teamPower(s))}</b>. Ves cuántas especies nuevas podrías encontrar.</p></div>`+
-      ZONES.map(z=>{
+      `<div class="zgrid">`+ZONES.map(z=>{
         const open=zoneOpen(s,z);const sp=[...new Set(zoneList(s,z).map(e=>num(e[0])))];const nw=sp.filter(n=>!s.dex[n]).length;
         const need=zoneNeed(s,z);
-        return `<button class="btn zbtn${fxLevel()==='off'?' calm':''}" style="--H:104px" ${open?'':'disabled'} onclick="G.zone('${z.id}')"><div class="scene-bg">${sceneBg(SC_ZONE[z.id]||'dia',104)}</div><div class="hero" style="align-items:flex-start;margin:0">${spr(num(ZONE_SP[z.id]),false,48)}<div style="flex:1"><div class="t">${esc(z.name)}</div><div class="d">${esc(z.desc)}</div><div class="d">${open?`Especies nuevas posibles: <b>${nw}</b> de ${sp.length}`:''}</div>${open?'':z.id==='celeste'?`<div class="why">Necesitás ${powerOnly(s)?'':'las 8 medallas o '}tener ${CELESTE_DEX} de 151 especies en la Pokédex (tenés ${dexN(s)})</div>`:`<div class="why">Necesitás ${powerOnly(s)?'':need+' medalla'+(need===1?'':'s')+' o '}poder de equipo ${zonePower(need)} (el tuyo: ${Math.round(teamPower(s))})</div>`}</div></div></button>`;
-      }).join('')+`<button class="btn" onclick="G.back()">← Volver</button>`;
+        const lock=z.id==='celeste'?`${powerOnly(s)?'':'8 medallas o '}${CELESTE_DEX} en Pokédex (tenés ${dexN(s)})`:`${powerOnly(s)?'':need+' medalla'+(need===1?'':'s')+' o '}poder ${zonePower(need)} (tenés ${Math.round(teamPower(s))})`;
+        return `<button class="btn zbtn${fxLevel()==='off'?' calm':''}" style="--H:104px" title="${esc(z.desc)}" ${open?'':'disabled'} onclick="G.zone('${z.id}')"><div class="scene-bg">${sceneBg(SC_ZONE[z.id]||'dia',104)}</div><div class="zin">${spr(num(ZONE_SP[z.id]),false,44)}<div class="zt"><div class="t">${esc(z.name)}</div>${open?`<div class="d">Nuevas: <b>${nw}</b> de ${sp.length}</div>`:`<div class="why">🔒 ${lock}</div>`}</div></div></button>`;
+      }).join('')+`</div><button class="btn" onclick="G.back()">← Volver</button>`;
   }else if(phase==='study'){
     const y=ctx.years||1;
     M.innerHTML=`<div class="card"><div class="kicker">Academia</div><h2>¿Cuánto tiempo y en qué?</h2><p class="sub">Estudiar ocupa ${y*4} estaciones seguidas. Elegí un stat para mejorar mucho.</p></div>
