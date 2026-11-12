@@ -374,8 +374,20 @@ img[src^="data:image/svg"]{image-rendering:auto}
 .evt{display:flex;flex-direction:column;gap:8px}
 .evt .btn{background:linear-gradient(160deg,color-mix(in srgb,var(--ec) 22%,#1c2a42),#17233a 80%);border-left:4px solid var(--ec)}
 .evt .btn.armed{border-color:var(--bad);background:#3a1a22}
+.rg .bgs{position:absolute;right:4px;bottom:4px;display:flex;gap:0;opacity:.2;z-index:-1;pointer-events:none;filter:saturate(.8)}.rg .bgs .spr{width:34px;height:34px}
 .clamp4{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .heat{display:inline-flex;gap:3px;vertical-align:middle}.heat i{width:9px;height:12px;border-radius:2px;background:#ffffff26}.heat i.on{background:linear-gradient(#ffb04a,#ff3b3b);box-shadow:0 0 5px #ff5a3a}
+/* ===== chips clickeables y modales de info ===== */
+.chip.clk{cursor:pointer;transition:border-color .15s,transform .15s}.chip.clk:hover,.chip.clk:focus-visible{border-color:var(--acc);outline:none;transform:translateY(-1px)}
+.tbar{height:10px;border-radius:99px;background:#0006;border:1px solid var(--line);overflow:hidden;margin:6px 0 10px}.tbar i{display:block;height:100%;background:linear-gradient(90deg,#ffcb3d,#ff9a3d);border-radius:99px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mdl{position:relative;display:grid;grid-template-columns:auto 1fr;grid-template-areas:"b s" "n n" "c c" "t t" "st st";gap:1px 8px;align-items:center;padding:10px;border-radius:12px;border:1px solid var(--line);background:#101828;filter:grayscale(1);opacity:.5}
+.mdl .mdb{grid-area:b}.mdl .mls{grid-area:s;justify-self:end}.mdl .mn{grid-area:n;font-weight:800;margin-top:4px}.mdl .mc{grid-area:c;font-size:12px;color:var(--mut)}.mdl .mt{grid-area:t;font-size:12px}.mdl .ms{grid-area:st;font-size:11.5px;font-weight:700;margin-top:3px}
+.mdl.got{filter:none;opacity:1;border-color:color-mix(in srgb,var(--tc) 60%,#000);background:linear-gradient(160deg,color-mix(in srgb,var(--tc) 40%,#10192b),#121b2e 80%);box-shadow:0 3px 0 #0a1220}
+.mdl.got .ms{color:#7be0a0}
+.mdl.next{filter:grayscale(.6);opacity:.85;border-color:var(--acc)}.mdl.next .ms{color:var(--acc)}
+.tnums{display:flex;gap:8px;margin-bottom:8px}.tnums div{flex:1;text-align:center;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:6px 4px}.tnums b{display:block;font-size:22px}.tnums span{font-size:11.5px;color:var(--mut)}
+.yrs{display:grid;grid-template-columns:repeat(25,1fr);gap:2px}.yrs i{height:10px;border-radius:2px;background:#ffffff1c}.yrs i.d{background:#ffcb3d}.yrs i.c{background:#fff;box-shadow:0 0 6px #fff9}
 </style>
 </head>
 <body>
@@ -2463,7 +2475,7 @@ const itemIc=(k,sz)=>ICONS_IT[k]?`<img class="spr" width="${sz||24}" height="${s
 const iconBall=sz=>`<img width="${sz}" height="${sz}" alt="Equipo" src="${ICON_BALL}">`;
 const iconDex=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Pokédex"><rect x="2" y="1" width="12" height="14" rx="1" fill="#c9383f"/><rect x="2" y="1" width="12" height="14" rx="1" fill="none" stroke="#5b1217"/><rect x="4" y="3" width="8" height="6" fill="#9fd8e8" stroke="#1d3a52"/><rect x="5" y="4" width="3" height="2" fill="#eaf7fb"/><circle cx="5" cy="12" r="1.3" fill="#ffd84a" stroke="#5b1217" stroke-width=".4"/><rect x="8" y="11" width="4" height="1" fill="#5b1217"/><rect x="8" y="13" width="4" height="1" fill="#5b1217"/></svg>`;
 
-const VERSION='5.39'; // se sube en cada entrega y se muestra en el título y en Opciones
+const VERSION='5.40'; // se sube en cada entrega y se muestra en el título y en Opciones
 // ===== Sprites animados y efectos visuales =====
 // Los sprites estáticos están incluidos en el archivo. Las versiones animadas (Gen 5, del repositorio PokeAPI/sprites) se cargan
 // aparte cuando hay conexión; si no cargan, queda el sprite estático. Nada del juego depende de ellas.
@@ -2902,15 +2914,16 @@ function head(){
   const yr=Math.min(Math.floor(s.t/4),MAXT/4-1),si=s.t%4;
   $('top').innerHTML=`<div><div class="when">Año ${yr+1} <span class="sub">de ${MAXT/4}</span> · ${10+yr} años</div><div class="seasons">${SEAS_I.map((ic,i)=>`<span class="se ${i<si?'done':i===si?'cur':''}" title="${SEAS[i]}">${ic}</span>`).join('')}<span class="sub" style="margin-left:6px">${SEAS[si]}</span></div></div>
   <div class="tools"><button class="ico" title="Pokédex" onclick="G.modal('dex')">${iconDex(24)}</button><button class="ico" title="Equipo" onclick="G.modal('team')">${iconBall(24)}</button><button class="ico" title="Mochila" onclick="G.modal('bag')">${pxIc('pack',24,'Mochila')}</button><button class="ico" title="Guía y glosario" onclick="G.modal('guia')">📖</button><button class="ico" title="Logros y récords" onclick="G.modal('logros')">${iconTrophy(24)}</button><button class="ico" title="Diario" onclick="G.modal('log')">📜</button><button class="ico" title="Opciones" onclick="G.modal('opts')">${iconGear(24)}</button></div>`;
-  let c=(s.name?`<span class="chip">👤 <b>${esc(s.name)}</b></span>`:'')+`<span class="chip" title="Pokédex">${iconDex(16)} <b>${dexN(s)}</b>/151</span><span class="chip" title="Medallas">${s.badges.length?s.badges.map(id=>badgeIc(GYMS.findIndex(g=>g.id===id),18)).join(''):'🏅'} <b>${s.badges.length}</b>/8</span><span class="chip">✨ <b>${shinyN(s)}</b></span><span class="chip">⏳ <b>${Math.max(0,MAXT-s.t)}</b> estaciones</span>`;
-  c+=`<span class="chip" style="cursor:pointer" onclick="G.modal('rep')" title="Tocá para ver cómo funciona">⭐ Reputación <b>${s.rep}</b> · ${repRank(s)}</span>`;
-  if(s.voc)c+=`<span class="chip">${esc(VOCS[s.voc].name)}</span>`;
-  if(s.rocket)c+=`<span class="chip ${s.heat>=3?'warn':''}">🅡 ${rocketRank(s)} · Heat <b>${s.heat}</b>/5</span>`;
-  else if(s.heat>0)c+=`<span class="chip ${s.heat>=3?'warn':''}">🚨 Heat <b>${s.heat}</b>/5</span>`;
-  if(s.gymOwner)c+=`<span class="chip">🏟️ Fama <b>${s.fame}</b>/${FAME_MAX}</span>`;
-  if(s.voc==='profesor')c+=`<span class="chip">🔬 Investigación <b>${s.rp}</b> · 📄 <b>${s.pubs}</b>/3</span>`;
-  for(const k in s.items)if(!ITEMS[k].stone)c+=`<span class="chip" title="${esc(ITEMS[k].desc)}">${itemIc(k,18)} ${esc(ITEMS[k].name)}</span>`;
-  const sc=stoneCount(s);if(sc)c+=`<span class="chip">🪨 <b>${sc}</b> piedra${sc===1?'':'s'}</span>`;
+  const K=(k,tip)=>` class="chip clk" role="button" tabindex="0" title="${esc(tip)}" onclick="G.modal('${k}')"`;
+  let c=(s.name?`<span class="chip">👤 <b>${esc(s.name)}</b></span>`:'')+`<span${K('dex','Ver la Pokédex')}>${iconDex(16)} <b>${dexN(s)}</b>/151</span><span${K('medals','Ver el progreso de medallas')}>${s.badges.length?s.badges.map(id=>badgeIc(GYMS.findIndex(g=>g.id===id),18)).join(''):'🏅'} <b>${s.badges.length}</b>/8</span><span${K('shiny','Ver tus shinies')}>✨ <b>${shinyN(s)}</b></span><span${K('time','Ver el tiempo que pasó y el que falta')}>⏳ <b>${Math.max(0,MAXT-s.t)}</b> estaciones</span>`;
+  c+=`<span${K('rep','Tocá para ver cómo funciona')}>⭐ Reputación <b>${s.rep}</b> · ${repRank(s)}</span>`;
+  if(s.voc)c+=`<span${K('voc','Ver tu vocación')}>${esc(VOCS[s.voc].name)}</span>`;
+  if(s.rocket)c+=`<span class="chip clk ${s.heat>=3?'warn':''}" role="button" tabindex="0" title="Ver rango y Heat" onclick="G.modal('rk')">🅡 ${rocketRank(s)} · Heat <b>${s.heat}</b>/5</span>`;
+  else if(s.heat>0)c+=`<span class="chip clk ${s.heat>=3?'warn':''}" role="button" tabindex="0" title="Ver qué es el Heat" onclick="G.modal('rk')">🚨 Heat <b>${s.heat}</b>/5</span>`;
+  if(s.gymOwner)c+=`<span${K('fame','Ver tu fama')}>🏟️ Fama <b>${s.fame}</b>/${FAME_MAX}</span>`;
+  if(s.voc==='profesor')c+=`<span${K('research','Ver el progreso de publicaciones')}>🔬 Investigación <b>${s.rp}</b> · 📄 <b>${s.pubs}</b>/3</span>`;
+  for(const k in s.items)if(!ITEMS[k].stone)c+=`<span${K('item:'+k,ITEMS[k].desc)}>${itemIc(k,18)} ${esc(ITEMS[k].name)}</span>`;
+  const sc=stoneCount(s);if(sc)c+=`<span${K('bag','Abrir la mochila')}>🪨 <b>${sc}</b> piedra${sc===1?'':'s'}</span>`;
   $('chips').innerHTML=c;
   $('stats').innerHTML=STATS.map(k=>`<div class="stat" style="cursor:pointer" title="${esc(statTip(k))}" onclick="G.modal('stat:${k}')"><div class="n">${s.st[k]}</div><div class="l">${stIc(k,13)} ${SL[k]}</div><div class="l" style="font-size:10px;opacity:.6">${(s.prac&&s.prac[k])||0}/${pracNeed(s.st[k])}</div></div>`).join('');
 }
@@ -3002,7 +3015,7 @@ function view(){
   }else if(phase==='origin'){
     const OC={paleta:'#4aa845',plateada:'#a0873a',carmin:'#d4742a',verde:'#2fa3a0',prestigio:'#c9a02a',familia:'#c8323f'};
     M.innerHTML=sceneBanner('dia',{h:130,kicker:'Paso 1 de 2',title:'¿De dónde venís?',sub:'Define tus stats iniciales y tu primer extra',spr:''})+`<div class="card scn-card" style="height:14px;padding:0"></div><div class="rgrid">`+
-      ORIGINS.map(o=>`<button class="rg" style="--rc:${OC[o.id]||'#7b8aa3'}" onclick="G.origin('${o.id}')"><span style="position:absolute;right:6px;top:4px">${aspr(num(o.mon),false,48)}</span><span class="t" style="padding-right:46px">${esc(o.name)}</span><span class="d">${esc(o.desc)}</span><span style="display:flex;flex-wrap:wrap;gap:4px">${Object.keys(o.st).map(k=>`<span class="schip" style="--sc:${STC[k]}">${stIc(k,13)}+${o.st[k]} ${SL[k]}</span>`).join('')}${o.rep?`<span class="schip" style="--sc:#ffcb3d">+${o.rep} Reputación</span>`:''}</span><span class="rw"><b>${aspr(num(o.mon),false,18)}</b><span>Pokémon inicial extra: <b style="display:inline">${esc(o.mon)}</b></span></span><span class="rw" title="${esc(ITEMS[o.item].desc)}"><b>${itemIc(o.item,18)}</b><span class="clamp4"><b style="display:inline">${esc(ITEMS[o.item].name)}</b>: ${esc(ITEMS[o.item].desc)}</span></span></button>`).join('')+`</div>`;
+      ORIGINS.map(o=>`<button class="rg" style="--rc:${OC[o.id]||'#7b8aa3'}" title="Empezás además con un ${esc(o.mon)}" onclick="G.origin('${o.id}')"><span class="bgs">${startersFor(o.id).map(n=>spr(num(n),false,44)).join("")}</span><span class="t">${esc(o.name)}</span><span class="d">${esc(o.desc)}</span><span style="display:flex;flex-wrap:wrap;gap:4px">${Object.keys(o.st).map(k=>`<span class="schip" style="--sc:${STC[k]}">${stIc(k,13)}+${o.st[k]} ${SL[k]}</span>`).join('')}${o.rep?`<span class="schip" style="--sc:#ffcb3d">+${o.rep} Reputación</span>`:''}</span><span class="rw" title="${esc(ITEMS[o.item].desc)}"><b>${itemIc(o.item,18)}</b><span class="clamp4"><b style="display:inline">${esc(ITEMS[o.item].name)}</b>: ${esc(ITEMS[o.item].desc)}</span></span></button>`).join('')+`</div>`;
   }else if(phase==='starter'){
     M.innerHTML=sceneBanner('pradera',{h:130,kicker:'Paso 2 de 2',title:'Tu primer Pokémon',sub:'Con 10 años, el Profesor Oak te deja elegir uno',spr:''})+`<div class="card scn-card" style="height:14px;padding:0"></div><div class="rgrid">`+
       startersFor(ctx.origin).map(n=>{const m=mon(num(n));return `<button class="rg" style="--rc:${TCOL[m.types[0]]};align-items:center;text-align:center;padding:16px 10px 14px" onclick="G.starter('${n}')">${aspr(m.n,false,84)}<span class="t" style="font-size:17px">${n}</span><span>${typeChips(m.types)}</span></button>`;}).join('')+`</div><button class="btn" onclick="G.backOrigin()">← Cambiar de origen</button>`;
@@ -3227,6 +3240,38 @@ function modal(kind){
     <div><b>Regalos:</b> al llegar a 5, 10 y 15 de reputación, la gente te regala una piedra evolutiva, un Pokémon y el Amuleto de la Suerte (una vez cada uno).${nx?` Próximo: a los <b>${nx}</b>.`:' Ya recibiste los tres.'}</div>
     <div><b>Rangos:</b> Mala fama (menos de -2) · Desconocido (-2 a 1) · Conocido (2 a 4) · Respetado (5 a 9) · Admirado (10 a 14) · Leyenda local (15+).</div>
     <div class="sub">No cuenta en los trabajos turbios ni en las misiones del Equipo Rocket.</div></div>`;
+  }else if(kind==='medals'){
+    const TE={Roca:'Rock',Agua:'Water','Eléctrico':'Electric',Planta:'Grass',Veneno:'Poison','Psíquico':'Psychic',Fuego:'Fire',Tierra:'Ground'};
+    const nb=s.badges.length;
+    h=`<h3>🏅 Medallas: ${nb}/8</h3><div class="tbar"><i style="width:${nb/8*100}%"></i></div>${s.rocket?'<p class="sub mb">Estás en el Equipo Rocket: ya no podés desafiar gimnasios.</p>':s.gymOwner?'<p class="sub mb">Ya tenés tu propio gimnasio.</p>':''}<div class="mgrid">`+GYMS.map((g,i)=>{
+      const got=s.badges.includes(g.id),nx=!got&&i===nb&&!s.rocket&&!s.gymOwner;
+      return `<div class="mdl${got?' got':''}${nx?' next':''}" style="--tc:${TCOL[TE[g.type]]||'#7b8aa3'}"><span class="mdb">${badgeIc(i,40)}</span><span class="mls">${spr(aceNum(g),false,52)}</span><span class="mn">${esc(g.leader)}</span><span class="mc">${esc(g.city)}</span><span class="mt">Tipo ${esc(g.type)}</span><span class="ms">${got?'✔ Derrotado':nx?'Siguiente':'Pendiente'}</span></div>`;}).join('')+`</div>`;
+  }else if(kind==='time'){
+    const done=s.t,left=Math.max(0,MAXT-s.t),yr=Math.min(Math.floor(s.t/4),MAXT/4-1),si=s.t%4,ageN=10+yr;
+    const ms=[['Elegir vocación',12,8],['Poder entrar a la Liga',LEAGUE_AGE,(LEAGUE_AGE-10)*4],['Final del juego',35,MAXT]];
+    h=`<h3>⏳ El tiempo</h3><p class="sub mb">Tenés <b>${ageN} años</b> · Año ${yr+1} de ${MAXT/4}, ${SEAS[si]}.</p><div class="tbar"><i style="width:${Math.min(100,done/MAXT*100)}%"></i></div>
+    <div class="tnums"><div><b>${done}</b><span>estaciones hechas</span></div><div><b>${left}</b><span>faltan</span></div><div><b>${MAXT}</b><span>en total (4 por año)</span></div></div>
+    <div class="yrs">${Array.from({length:MAXT/4},(_,i)=>`<i class="${i<yr?'d':i===yr?'c':''}" title="Año ${i+1} (${10+i} años)"></i>`).join('')}</div>
+    <div class="lines" style="margin-top:8px">${ms.map(m=>`<div><span>${done>=m[2]?'✅':'⬜'} <b>${m[0]}</b>: a los ${m[1]} años (estación ${m[2]})${done>=m[2]?'':' · faltan '+(m[2]-done)+' estaciones'}</span></div>`).join('')}</div>
+    <p class="sub" style="margin-top:8px">La mayoría de las acciones ocupan 1 estación. Estudiar ocupa 4 u 8, y el viaje en barco, 4.</p>`;
+  }else if(kind==='shiny'){
+    const sh=MON.filter(m=>s.shinyDex[m.n]);
+    h=`<h3>✨ Shinies: ${sh.length}</h3><p class="sub mb">Chance de que un Pokémon que conseguís sea shiny: <b>${(shinyChance(s)*100).toFixed(1).replace('.0','')}%</b>${s.items.shiny_charm?' (con tu Shiny Charm)':''}${s.voc==='coleccionista'?' · incluye el bonus de Coleccionista':''}.</p>`+(sh.length?`<div class="dex">${sh.map(m=>`<div class="dx"><div class="num">#${String(m.n).padStart(3,'0')}</div>${spr(m.n,true,44)}<div class="sub" style="font-size:11px">${esc(m.name)}</div></div>`).join('')}</div>`:'<p class="sub">Todavía no encontraste ningún shiny.</p>');
+  }else if(kind.startsWith('item:')){
+    const k=kind.slice(5),it=ITEMS[k];
+    if(!it){h='<p class="sub">Objeto desconocido.</p>';}
+    else h=`<h3>${itemIc(k,36)} ${esc(it.name)}</h3><p class="mb">${esc(it.desc)}</p><div class="lines"><div>${k==='shiny_charm'||k==='pase_libre'?'🔒 Este objeto no se pierde por eventos.':'⚠ Algunos eventos malos pueden hacerte perder un objeto.'}</div></div>`;
+  }else if(kind==='rk'){
+    const nx=rocketNext(s);
+    h=`<h3>${s.rocket?'🅡 Equipo Rocket':'🚨 Heat'}</h3>`+(s.rocket?`<p class="sub mb">Rango: <b>${esc(rocketRank(s))}</b> · ${s.rocketPts}/${ROCKET_MAX} puntos${nx?` · próximo: <b>${esc(nx.name)}</b> a los ${nx.at}`:s.rocketBoss?'':' · llegaste al máximo: podés desafiar a Giovanni'}</p><div class="tbar"><i style="width:${Math.min(100,s.rocketPts/ROCKET_MAX*100)}%"></i></div><div class="lines mb">${RK_RANKS.map(r=>`<div><span>${s.rocketPts>=r[0]?'✅':'⬜'} <b>${esc(r[1])}</b> · desde ${r[0]} puntos</span></div>`).join('')}<div><span>${s.rocketBoss?'✅':'⬜'} <b>Líder del Equipo Rocket</b> · vencer a Giovanni</span></div></div>`:'')+`<p class="sub mb">Heat: <b>${s.heat}</b>/5</p><div class="heat" style="margin-bottom:8px">${[1,2,3,4,5].map(i=>`<i class="${i<=s.heat?'on':''}"></i>`).join('')}</div><div class="lines"><div>Es lo que sabe la policía de vos. Con 5 te arrestan y el juego termina.</div><div>Baja 1 por estación (en el Rocket, 1 cada 2). «Mantener un perfil bajo» lo baja en 2.</div></div>`;
+  }else if(kind==='voc'){
+    const V=VOCS[s.voc];
+    h=V?`<h3>${esc(V.name)}</h3><p class="mb">${esc(V.hint)}</p><div class="lines"><div>Elegiste tu vocación a los 12 años. Da un impulso, pero no te encierra en un solo camino.</div></div>`:'<p class="sub">Todavía no elegiste vocación (a los 12 años).</p>';
+  }else if(kind==='fame'){
+    h=`<h3>🏟️ Fama de tu gimnasio: ${s.fame}/${FAME_MAX}</h3><div class="tbar"><i style="width:${Math.min(100,s.fame/FAME_MAX*100)}%"></i></div><p class="sub">La fama sube atendiendo tu gimnasio: retadores, inspecciones y eventos. Al llegar a ${FAME_MAX} completás ese camino.</p>`;
+  }else if(kind==='research'){
+    const nx=nextPub(s);const ck=(v,need,l)=>`<div><span>${v>=need?'✅':'❌'} ${l}: <b>${v}</b>/${need}</span></div>`;
+    h=`<h3>🔬 Investigación: ${s.rp} · 📄 ${s.pubs}/3</h3>`+(s.pubs>=3?'<p class="sub">Ya tenés las 3 publicaciones. Aceptá el puesto de Profesor cuando aparezca la oferta.</p>':`<p class="sub mb">Publicación ${s.pubs+1} de 3. Hacen falta las tres cosas a la vez:</p><div class="lines">${ck(s.rp,nx.rp,'Investigación')}${ck(dexN(s),nx.dex,'Pokédex')}${ck(s.st.ingenio,nx.ing,'Ingenio')}</div><p class="sub" style="margin-top:8px">El trabajo de campo suma investigación; la Pokédex se llena explorando; el Ingenio sube estudiando.</p>`);
   }else if(kind==='opts'){
     const c=AU.cfg;
     h=`<h3>${iconGear(20)} Opciones</h3>
