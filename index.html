@@ -384,6 +384,17 @@ img[src^="data:image/svg"]{image-rendering:auto}
 /* ===== chips clickeables y modales de info ===== */
 .chip.clk{cursor:pointer;transition:border-color .15s,transform .15s}.chip.clk:hover,.chip.clk:focus-visible{border-color:var(--acc);outline:none;transform:translateY(-1px)}
 .tbar{height:10px;border-radius:99px;background:#0006;border:1px solid var(--line);overflow:hidden;margin:6px 0 10px}.tbar i{display:block;height:100%;background:linear-gradient(90deg,#ffcb3d,#ff9a3d);border-radius:99px}
+.tytabs{display:flex;gap:6px;margin:0 0 10px}.tytabs button{flex:1;padding:7px;border-radius:10px;border:1px solid #2a3a58;background:#121b2e;color:#c9d6ee;font-weight:700;cursor:pointer}.tytabs button.on{background:var(--acc);color:#10192b;border-color:var(--acc)}
+.tygrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;margin-bottom:10px}
+.tyb{border:2px solid transparent;border-radius:10px;padding:5px 1px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9.5px;font-weight:800;color:#fff;cursor:pointer;background:var(--tc);position:relative;min-width:0}
+.tyb img{width:22px;height:22px;image-rendering:pixelated}.tyb.sel{border-color:#fff;box-shadow:0 0 0 2px var(--tc)}.tyb .mine{position:absolute;top:2px;right:3px;font-size:8px}
+.tyd{border-radius:12px;padding:10px;background:linear-gradient(160deg,color-mix(in srgb,var(--tc) 35%,#10192b),#121b2e 85%);border:1px solid color-mix(in srgb,var(--tc) 55%,#000)}
+.tyd h4{margin:0 0 8px;display:flex;align-items:center;gap:8px}.tyr{margin:6px 0}.tyr b{display:block;font-size:12px;margin-bottom:3px}.tyr .cs{display:flex;flex-wrap:wrap;gap:4px}.tyr .none{opacity:.55;font-size:12px}
+.tpb{border:0;background:none;padding:0;cursor:pointer}
+.tmx{display:grid;grid-template-columns:20px repeat(18,minmax(0,1fr));gap:1px;font-size:10px;font-weight:800;text-align:center}
+.tmx>div{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:3px}.tmx img{width:100%;max-width:18px;image-rendering:pixelated}
+.tmx .c2{background:#2e8b57;color:#eafff0}.tmx .c5{background:#a8452f;color:#ffe9e2}.tmx .c0{background:#000;color:#9aa}.tmx .c1{background:#16213a;color:transparent}.tmx .hd{background:none}
+.tleg{display:flex;flex-wrap:wrap;gap:8px;font-size:11px;margin:8px 0}.tleg i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:middle;margin-right:4px}
 .mgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
 .mdl{position:relative;display:grid;grid-template-columns:auto 1fr;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"b s" "n s" "c s" "t s" "st st";align-content:start;gap:1px 6px;align-items:center;padding:10px;border-radius:12px;border:1px solid var(--line);background:#101828;filter:grayscale(1);opacity:.5}
 .mdl .mdb{grid-area:b}.mdl .mls{grid-area:s;justify-self:end;align-self:end}.mdl .lead{image-rendering:pixelated;width:96px;height:96px;margin:-8px -4px -4px 0}.mdl .mn{grid-area:n;font-weight:800;margin-top:4px}.mdl .mc{grid-area:c;font-size:12px;color:var(--mut)}.mdl .mt{grid-area:t;font-size:12px}.mdl .ms{grid-area:st;font-size:11.5px;font-weight:700;margin-top:3px}
@@ -605,7 +616,7 @@ function addMonX(s,sp,shiny){
   s.counters.caught=(s.counters.caught||0)+1;
   let up=false;
   const cur=teamMons(s).find(x=>x.sp===sp&&x.id!==m.id);
-  if(cur){if(pw(m)>pw(cur)&&(m.shiny||!cur.shiny)){s.team=s.team.map(id=>id===cur.id?m.id:id);up=true;}} // un shiny en el equipo no lo desplaza uno normal
+  if(cur){if(pwT(m)>pwT(cur)&&(m.shiny||!cur.shiny)){s.team=s.team.map(id=>id===cur.id?m.id:id);up=true;}} // un shiny en el equipo no lo desplaza uno normal
   else if(s.team.length<6)s.team.push(m.id);
   return {m,up};
 }
@@ -646,17 +657,17 @@ const pubReady=(s,i)=>s.voc==='profesor'&&!s.rocket&&s.pubs===i&&s.rp>=PUB_REQ[i
 // ----- colección: un ejemplar visible por especie (el mejor) -----
 function stacks(s){ // un grupo por especie y por variante (los shiny van aparte de los normales)
   const g=new Map();
-  for(const m of s.box){const k=m.sp+(m.shiny?'s':'n');let e=g.get(k);if(!e){e={sp:m.sp,shiny:!!m.shiny,count:0,best:m};g.set(k,e);}e.count++;if(pw(m)>pw(e.best))e.best=m;}
+  for(const m of s.box){const k=m.sp+(m.shiny?'s':'n');let e=g.get(k);if(!e){e={sp:m.sp,shiny:!!m.shiny,count:0,best:m};g.set(k,e);}e.count++;if(pwT(m)>pwT(e.best))e.best=m;}
   return [...g.values()].sort((a,b)=>a.sp-b.sp||a.shiny-b.shiny);
 }
-function bestOf(s,sp){let b=null;for(const m of s.box)if(m.sp===sp&&(!b||pw(m)>pw(b)))b=m;return b;}
+function bestOf(s,sp){let b=null;for(const m of s.box)if(m.sp===sp&&(!b||pwT(m)>pwT(b)))b=m;return b;}
 function autoTeam(s){ // el mejor ejemplar de cada especie (normal o shiny, el que más poder tenga)
-  const by=new Map();for(const e of stacks(s)){const c=by.get(e.sp);if(!c||pw(e.best)>pw(c))by.set(e.sp,e.best);}
-  s.team=[...by.values()].sort((a,b)=>pw(b)-pw(a)).slice(0,6).map(m=>m.id);
+  const by=new Map();for(const e of stacks(s)){const c=by.get(e.sp);if(!c||pwT(e.best)>pwT(c))by.set(e.sp,e.best);}
+  s.team=[...by.values()].sort((a,b)=>pwT(b)-pwT(a)).slice(0,6).map(m=>m.id);
 }
 function normalizeTeam(s){
   const seen=new Map();
-  for(const id of s.team){const m=s.box.find(x=>x.id===id);if(!m)continue;const c=seen.get(m.sp);if(!c||pw(m)>pw(c))seen.set(m.sp,m);}
+  for(const id of s.team){const m=s.box.find(x=>x.id===id);if(!m)continue;const c=seen.get(m.sp);if(!c||pwT(m)>pwT(c))seen.set(m.sp,m);}
   s.team=[...seen.values()].map(m=>m.id).slice(0,6);
   if(!s.team.length)autoTeam(s);
 }
@@ -797,7 +808,7 @@ function train(s,ids){
     for(const m of s.box){
       if(!evoLvl(m))continue;
       const c=bySp.get(m.sp);
-      const better=!c||(s.team.includes(m.id)&&!s.team.includes(c.id))||(s.team.includes(m.id)===s.team.includes(c.id)&&pw(m)>pw(c));
+      const better=!c||(s.team.includes(m.id)&&!s.team.includes(c.id))||(s.team.includes(m.id)===s.team.includes(c.id)&&pwT(m)>pwT(c));
       if(better)bySp.set(m.sp,m);
     }
     const all=shuffle([...bySp.values()]);
@@ -840,7 +851,7 @@ function stoneTargets(s,key){
   const seen=new Map();
   for(const m of s.box){
     const ev=mon(m.sp).evo.find(e=>e[1]==='s'&&e[2]===key);if(!ev)continue;
-    const c=seen.get(m.sp);if(!c||pw(m)>pw(c))seen.set(m.sp,m);
+    const c=seen.get(m.sp);if(!c||pwT(m)>pwT(c))seen.set(m.sp,m);
   }
   return [...seen.values()];
 }
@@ -857,17 +868,17 @@ function useStone(s,key,monId){
 function dupes(s){ // copias que no son la mejor de su especie, ni shiny ni del equipo
   const by={};for(const m of s.box)(by[m.sp]=by[m.sp]||[]).push(m);
   const out=[];
-  for(const sp in by){const arr=by[sp].sort((a,b)=>pw(b)-pw(a));for(const m of arr.slice(1))if(!m.shiny&&!s.team.includes(m.id))out.push(m);}
+  for(const sp in by){const arr=by[sp].sort((a,b)=>pwT(b)-pwT(a));for(const m of arr.slice(1))if(!m.shiny&&!s.team.includes(m.id))out.push(m);}
   return out;
 }
 function dupeStacks(s){
   const g=new Map();
-  for(const m of dupes(s)){let e=g.get(m.sp);if(!e){e={sp:m.sp,count:0,weakest:m};g.set(m.sp,e);}e.count++;if(pw(m)<pw(e.weakest))e.weakest=m;}
+  for(const m of dupes(s)){let e=g.get(m.sp);if(!e){e={sp:m.sp,count:0,weakest:m};g.set(m.sp,e);}e.count++;if(pwT(m)<pwT(e.weakest))e.weakest=m;}
   return [...g.values()].sort((a,b)=>a.sp-b.sp);
 }
 function tradeEvos(s){
   const seen=new Map();
-  for(const m of s.box){if(!mon(m.sp).evo.some(e=>e[1]==='t'))continue;const c=seen.get(m.sp);if(!c||pw(m)>pw(c))seen.set(m.sp,m);}
+  for(const m of s.box){if(!mon(m.sp).evo.some(e=>e[1]==='t'))continue;const c=seen.get(m.sp);if(!c||pwT(m)>pwT(c))seen.set(m.sp,m);}
   return [...seen.values()];
 }
 const marketOk=s=>dupes(s).length>0||stoneCount(s)>0||tradeEvos(s).length>0;
@@ -2499,7 +2510,7 @@ const itemIc=(k,sz)=>ICONS_IT[k]?`<img class="spr" width="${sz||24}" height="${s
 const iconBall=sz=>`<img width="${sz}" height="${sz}" alt="Equipo" src="${ICON_BALL}">`;
 const iconDex=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Pokédex"><rect x="2" y="1" width="12" height="14" rx="1" fill="#c9383f"/><rect x="2" y="1" width="12" height="14" rx="1" fill="none" stroke="#5b1217"/><rect x="4" y="3" width="8" height="6" fill="#9fd8e8" stroke="#1d3a52"/><rect x="5" y="4" width="3" height="2" fill="#eaf7fb"/><circle cx="5" cy="12" r="1.3" fill="#ffd84a" stroke="#5b1217" stroke-width=".4"/><rect x="8" y="11" width="4" height="1" fill="#5b1217"/><rect x="8" y="13" width="4" height="1" fill="#5b1217"/></svg>`;
 
-const VERSION='5.48'; // se sube en cada entrega y se muestra en el título y en Opciones
+const VERSION='5.50'; // se sube en cada entrega y se muestra en el título y en Opciones
 // ===== Sprites animados y efectos visuales =====
 // Los sprites estáticos están incluidos en el archivo. Las versiones animadas (Gen 5, del repositorio PokeAPI/sprites) se cargan
 // aparte cuando hay conexión; si no cargan, queda el sprite estático. Nada del juego depende de ellas.
@@ -2938,7 +2949,7 @@ function head(){
   sides();
   const yr=Math.min(Math.floor(s.t/4),MAXT/4-1),si=s.t%4;
   $('top').innerHTML=`<div><div class="when">Año ${yr+1} <span class="sub">de ${MAXT/4}</span> · ${10+yr} años</div><div class="seasons">${SEAS_I.map((ic,i)=>`<span class="se ${i<si?'done':i===si?'cur':''}" title="${SEAS[i]}">${ic}</span>`).join('')}<span class="sub" style="margin-left:6px">${SEAS[si]}</span></div></div>
-  <div class="tools"><button class="ico" title="Pokédex" onclick="G.modal('dex')">${iconDex(24)}</button><button class="ico" title="Equipo" onclick="G.modal('team')">${iconBall(24)}</button><button class="ico" title="Mochila" onclick="G.modal('bag')">${pxIc('pack',24,'Mochila')}</button><button class="ico" title="Guía y glosario" onclick="G.modal('guia')">📖</button><button class="ico" title="Logros y récords" onclick="G.modal('logros')">${iconTrophy(24)}</button><button class="ico" title="Diario" onclick="G.modal('log')">📜</button><button class="ico" title="Opciones" onclick="G.modal('opts')">${iconGear(24)}</button></div>`;
+  <div class="tools"><button class="ico" title="Pokédex" onclick="G.modal('dex')">${iconDex(24)}</button><button class="ico" title="Equipo" onclick="G.modal('team')">${iconBall(24)}</button><button class="ico" title="Mochila" onclick="G.modal('bag')">${pxIc('pack',24,'Mochila')}</button><button class="ico" title="Tabla de tipos" onclick="G.modal('tipos')">${ICONS_TY.fire?`<img alt="Tabla de tipos" src="${ICONS_TY.fire}" style="width:24px;height:24px;image-rendering:pixelated">`:'⚔️'}</button><button class="ico" title="Guía y glosario" onclick="G.modal('guia')">📖</button><button class="ico" title="Logros y récords" onclick="G.modal('logros')">${iconTrophy(24)}</button><button class="ico" title="Diario" onclick="G.modal('log')">📜</button><button class="ico" title="Opciones" onclick="G.modal('opts')">${iconGear(24)}</button></div>`;
   const K=(k,tip)=>` class="chip clk" role="button" tabindex="0" title="${esc(tip)}" onclick="G.modal('${k}')"`;
   let c=(s.name?`<span class="chip">👤 <b>${esc(s.name)}</b></span>`:'')+`<span${K('dex','Ver la Pokédex')}>${iconDex(16)} <b>${dexN(s)}</b>/151</span><span${K('medals','Ver el progreso de medallas')}>${s.badges.length?s.badges.map(id=>badgeIc(GYMS.findIndex(g=>g.id===id),18)).join(''):'🏅'} <b>${s.badges.length}</b>/8</span><span${K('shiny','Ver tus shinies')}>✨ <b>${shinyN(s)}</b></span><span${K('time','Ver el tiempo que pasó y el que falta')}>⏳ <b>${Math.max(0,MAXT-s.t)}</b> estaciones</span>`;
   c+=`<span${K('rep','Tocá para ver cómo funciona')}>⭐ Reputación <b>${s.rep}</b> · ${repRank(s)}</span>`;
@@ -3028,6 +3039,7 @@ function view(){
     ${slots.length?`<h3 class="sec">Tus partidas guardadas (${slots.length}/${MAX_SLOTS})</h3>`+slots.map(x=>{const sv=x.state;const yr=Math.min(Math.floor(sv.t/4),24);return `<div class="slotrow"><button class="btn" onclick="G.cont(${x.id})"><div class="t">Continuar · ${esc(sv.name||'Sin nombre')}</div><div class="d">Año ${yr+1} · ${10+yr} años · Pokédex ${Object.keys(sv.dex).length}/151 · ${sv.badges.length} medallas${sv.voc?' · '+esc(VOCS[sv.voc].name):''}</div></button><button class="btn sm del" title="Borrar esta partida" onclick="G.delSlot(${x.id})">🗑️ Borrar</button></div>`;}).join(''):''}
     <button class="btn primary" onclick="G.new()">Nueva aventura</button>
     <div class="row"><button class="btn" onclick="G.modal('hall')">🏛️ Salón de la Fama</button><button class="btn" onclick="G.modal('logros')"><span style="display:inline-flex;vertical-align:middle;margin-right:6px">${iconTrophy(18)}</span>Logros</button></div>
+    <button class="btn" onclick="G.modal('tipos')">⚔️ Tabla de tipos</button>
     <button class="btn" onclick="G.modal('guia')">📖 Guía y glosario</button>
     <button class="btn" onclick="G.modal('opts')"><span style="display:inline-flex;vertical-align:middle;margin-right:6px">${iconGear(18)}</span>Opciones</button>
     <p class="sub center">Proyecto de fans sin fines de lucro. No está afiliado a Nintendo, Game Freak, Creatures ni The Pokémon Company. Los sprites de Pokémon y de objetos vienen incluidos en el archivo (tomados del repositorio público PokeAPI/sprites; las versiones animadas de los Pokémon se cargan desde ese mismo repositorio cuando hay conexión) y pertenecen a sus dueños: Nintendo, Game Freak y The Pokémon Company.</p><p class="sub center" id="ver">Versión ${VERSION}</p>`;
@@ -3095,14 +3107,14 @@ function view(){
   }else if(phase==='gymprev'){
     const gym=GYMS[s.badges.length];
     const pv=gymPreview(s,gym);
-    M.innerHTML=sceneBanner(SC_TYPE[gym.type]||'liga',{kicker:'Gimnasio de '+esc(gym.city),title:esc(gym.leader)+' · tipo '+esc(gym.type),sub:badgeIc(s.badges.length,22)+' Medalla '+(s.badges.length+1)+' de 8',spr:leaderIc(gym.id,96)||aspr(aceNum(gym),false,96)})+`<div class="card scn-card"><div class="sub mb">Su equipo:</div><div class="mi mb" style="flex-wrap:wrap">${gym.team.map(n=>{const m=mon(num(n));return `<span class="mi">${spr(m.n,false,36)}<span class="sub">${esc(m.name)}</span></span>`;}).join('')}</div>
+    M.innerHTML=sceneBanner(SC_TYPE[gym.type]||'liga',{kicker:'Gimnasio de '+esc(gym.city),title:esc(gym.leader)+' · tipo '+esc(gym.type),sub:badgeIc(s.badges.length,22)+' Medalla '+(s.badges.length+1)+' de 8',spr:leaderIc(gym.id,96)||aspr(aceNum(gym),false,96)})+`<div class="card scn-card"><div class="sub mb" style="display:flex;justify-content:space-between;align-items:center;gap:8px">Su equipo: <button class="btn sm" style="margin:0" onclick="G.modal('tipos')">⚔️ Tabla de tipos</button></div><div class="mi mb" style="flex-wrap:wrap">${gym.team.map(n=>{const m=mon(num(n));return `<span class="mi">${spr(m.n,false,36)}<span class="sub">${esc(m.name)}</span></span>`;}).join('')}</div>
     <div class="odds"><span class="g" style="width:${pv.win}%">${pv.win}% victoria</span><span class="b" style="width:${100-pv.win}%">${100-pv.win}%</span></div>
     <div class="lines">${pv.parts.filter(p=>p[1]!==0).map(p=>`<div>${p[1]>0?'🟢 +':'🔴 '}${p[1]}% · ${esc(p[0])}</div>`).join('')}</div>
     <p class="sub" style="margin-top:8px">Cambiá tu equipo (el botón de la Poké Ball) para mejorar la cobertura de tipos antes de desafiar.</p></div>
     <button class="btn primary" onclick="G.go()">Desafiar ahora</button><button class="btn" onclick="G.back()">← Prepararme más</button>`;
   }else if(phase==='giovprev'){
     const pv=gymPreview(s,GIOVANNI_RK);
-    M.innerHTML=sceneBanner('rocket',{h:200,kicker:'Equipo Rocket',title:'Giovanni · tipo Tierra',sub:'Líder del Equipo Rocket',spr:leaderIc('giovanni',96)})+`<div class="card scn-card"><div class="sub mb">Su equipo:</div><div class="mi mb" style="flex-wrap:wrap">${GIOVANNI_RK.team.map(n=>{const m=mon(num(n));return `<span class="mi">${spr(m.n,false,36)}<span class="sub">${esc(m.name)}</span></span>`;}).join('')}</div>
+    M.innerHTML=sceneBanner('rocket',{h:200,kicker:'Equipo Rocket',title:'Giovanni · tipo Tierra',sub:'Líder del Equipo Rocket',spr:leaderIc('giovanni',96)})+`<div class="card scn-card"><div class="sub mb" style="display:flex;justify-content:space-between;align-items:center;gap:8px">Su equipo: <button class="btn sm" style="margin:0" onclick="G.modal('tipos')">⚔️ Tabla de tipos</button></div><div class="mi mb" style="flex-wrap:wrap">${GIOVANNI_RK.team.map(n=>{const m=mon(num(n));return `<span class="mi">${spr(m.n,false,36)}<span class="sub">${esc(m.name)}</span></span>`;}).join('')}</div>
     <div class="odds"><span class="g" style="width:${pv.win}%">${pv.win}% victoria</span><span class="b" style="width:${100-pv.win}%">${100-pv.win}%</span></div>
     <div class="lines">${pv.parts.filter(p=>p[1]!==0).map(p=>`<div>${p[1]>0?'🟢 +':'🔴 '}${p[1]}% · ${esc(p[0])}</div>`).join('')}</div>
     <p class="sub" style="margin-top:8px">Si ganás, sos el Líder del Equipo Rocket y ese es tu final. Si perdés no perdés rango, pero cada intento cuesta una estación y no deja ningún bonus: entrená, capturá o robá para volver con un equipo mejor. Si no lo lográs antes de los 35 años, terminás con el rango que alcanzaste.</p></div>
@@ -3293,6 +3305,25 @@ function modal(kind){
   }else if(kind==='voc'){
     const V=VOCS[s.voc];
     h=V?`<h3>${esc(V.name)}</h3><p class="mb">${esc(V.hint)}</p><div class="lines"><div>Elegiste tu vocación a los 12 años. Da un impulso, pero no te encierra en un solo camino.</div></div>`:'<p class="sub">Todavía no elegiste vocación (a los 12 años).</p>';
+  }else if(kind.startsWith('tipos')){
+    const arg=kind.slice(6),TY=Object.keys(TES),mat=arg==='m';
+    const sel=TES[arg]?arg:(ctx.tySel&&TES[ctx.tySel]?ctx.tySel:'Fire');if(TES[arg])ctx.tySel=arg;
+    const mine=teamTypes(s),icn=(ty,z)=>ICONS_TY[ty.toLowerCase()]?`<img alt="" src="${ICONS_TY[ty.toLowerCase()]}"${z?` style="width:${z}px;height:${z}px"`:''}>`:'';
+    const chip=ty=>`<button class="tpb" onclick="G.modal('tipos:${ty}')">${typeChips([ty])}</button>`;
+    h=`<h3>${icn('fire',20)} Tabla de tipos</h3><div class="tytabs"><button class="${mat?'':'on'}" onclick="G.modal('tipos:${sel}')">Por tipo</button><button class="${mat?'on':''}" onclick="G.modal('tipos:m')">Tabla completa</button></div>`;
+    if(!mat){
+      const row=(lbl,arr)=>`<div class="tyr"><b>${lbl}</b>${arr.length?`<div class="cs">${arr.map(chip).join('')}</div>`:'<span class="none">Ninguno</span>'}</div>`;
+      const at=v=>TY.filter(d=>EFF[sel][d]===v),df=v=>TY.filter(a=>EFF[a][sel]===v);
+      h+=`<div class="tygrid">`+TY.map(ty=>`<button class="tyb${ty===sel?' sel':''}" style="--tc:${TCOL[ty]}" onclick="G.modal('tipos:${ty}')">${mine[ty]?'<span class="mine" title="Hay uno en tu equipo">●</span>':''}${icn(ty)}<span>${TES[ty]}</span></button>`).join('')+`</div>
+      <div class="tyd" style="--tc:${TCOL[sel]}"><h4>${icn(sel,28)} ${TES[sel]}</h4>
+      ${row('⚔️ Cuando ataca, hace el DOBLE de daño a:',at(2))}${row('🪶 Cuando ataca, hace la MITAD de daño a:',at(0.5))}${row('🚫 Cuando ataca, NO afecta a:',at(0))}
+      <hr style="border:0;border-top:1px solid #ffffff22;margin:8px 0">
+      ${row('💔 Recibe el DOBLE de daño de:',df(2))}${row('🛡️ Recibe la MITAD de daño de:',df(0.5))}${row('✨ No recibe daño de (inmune):',df(0))}</div>
+      <p class="sub" style="margin-top:8px">● marca los tipos que tenés en tu equipo. Tocá cualquier tipo para ver su ficha.</p>`;
+    }else{
+      h+=`<div class="tleg"><span><i style="background:#2e8b57"></i>Doble daño</span><span><i style="background:#a8452f"></i>Mitad</span><span><i style="background:#000"></i>No afecta</span></div><p class="sub">Cada <b>fila</b> es el tipo que ataca; cada <b>columna</b>, el que defiende.</p><div class="tmx"><div class="hd"></div>`+TY.map(d=>`<div class="hd" title="${TES[d]}">${icn(d)}</div>`).join('')+TY.map(a=>`<div class="hd" title="${TES[a]}">${icn(a)}</div>`+TY.map(d=>{const v=EFF[a][d];return `<div class="${v===2?'c2':v===0.5?'c5':v===0?'c0':'c1'}" title="${TES[a]} → ${TES[d]}${v===2?': doble':v===0.5?': mitad':v===0?': no afecta':''}">${v===2?'2':v===0.5?'½':v===0?'0':'·'}</div>`;}).join('')).join('')+`</div>`;
+    }
+    h+=`<p class="sub" style="margin-top:8px">En el juego, tu Pokémon ataca con su mejor tipo; si el rival tiene dos tipos, los efectos se multiplican. Eso se refleja en las líneas «Ventaja de tipos» y «Defensa de tipos» de cada combate.</p>`;
   }else if(kind==='fame'){
     h=`<h3>🏟️ Fama de tu gimnasio: ${s.fame}/${FAME_MAX}</h3><div class="tbar"><i style="width:${Math.min(100,s.fame/FAME_MAX*100)}%"></i></div><p class="sub">La fama sube atendiendo tu gimnasio: retadores, inspecciones y eventos. Al llegar a ${FAME_MAX} completás ese camino.</p>`;
   }else if(kind==='research'){
