@@ -42,6 +42,17 @@ body{background:radial-gradient(1100px 600px at 50% -10%,#1b2c4a,#0d1420 62%) fi
 .btn.primary:hover:not(:disabled){background:#d8343f;border-color:#ff7a82}
 .btn.armed{border-color:var(--bad);background:#3a1a22}
 .btn.sm{padding:7px 10px;font-size:14px}
+/* Botones "blandos": se hunden al apretarlos (el borde de abajo se aplasta) y rebotan al soltar */
+.btn,.ico,.fchip,#fnav button,.mon button{transition:transform .26s cubic-bezier(.34,1.8,.5,1),box-shadow .26s cubic-bezier(.34,1.8,.5,1),background .15s,border-color .15s,filter .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn{box-shadow:0 3px 0 #0a1220,0 6px 10px #0004}
+.btn.primary{box-shadow:0 4px 0 #6e1219,0 8px 14px #0005}
+.btn:hover:not(:disabled){transform:translateY(-1px)}
+.btn:active:not(:disabled){transform:translateY(3px) scale(.985,.96);box-shadow:0 0 0 #0a1220,inset 0 3px 8px #0007;filter:brightness(.93);transition-duration:.05s}
+.btn.primary:active:not(:disabled){transform:translateY(4px) scale(.985,.95);box-shadow:0 0 0 #6e1219,inset 0 4px 10px #0008}
+.btn:disabled{box-shadow:none}
+.ico,.fchip,.mon button{box-shadow:0 2px 0 #0a1220}
+.ico:active,.fchip:active,#fnav button:active,.mon button:active:not(:disabled){transform:translateY(2px) scale(.9);box-shadow:0 0 0 #0a1220;filter:brightness(.9);transition-duration:.05s}
+@media (prefers-reduced-motion:reduce){.btn,.ico,.fchip,#fnav button,.mon button{transition:none}.btn:active,.ico:active,.fchip:active,#fnav button:active,.mon button:active{transform:none}}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .odds{display:flex;height:20px;border-radius:6px;overflow:hidden;margin-top:8px;font-size:12px;font-weight:700;color:#07111d}
 .odds span{display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden}
@@ -141,6 +152,59 @@ img.em{height:1.15em;width:auto;vertical-align:-.22em;image-rendering:pixelated}
 .hofteam{display:flex;gap:2px;flex-wrap:wrap}
 .gd{background:var(--panel2);border-radius:10px;margin-bottom:6px;padding:0 10px}.gd summary{cursor:pointer;padding:9px 0;font-weight:700}.gd .gb{padding:0 0 10px;font-size:14px;color:#cfdaee}.gd .gb ul{padding-left:18px;margin:4px 0 8px}.gd .gb li{margin-bottom:5px}.gd .gb p{margin:6px 0}
 @media (max-width:380px){.stat .n{font-size:16px}.chip{font-size:12px}.se{width:26px}}
+
+/* ===== Efectos visuales ===== */
+#fxc{position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:50}
+#fxflash{position:fixed;inset:0;pointer-events:none;z-index:49;opacity:0}
+#fxflash.on{animation:fxflash .6s ease-out}
+@keyframes fxflash{0%{opacity:1}100%{opacity:0}}
+.shake{animation:shake .45s cubic-bezier(.36,.07,.19,.97)}
+@keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-7px)}40%,60%{transform:translateX(7px)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.aspr{object-fit:contain}
+.lsp .spr{animation:sprpop .75s cubic-bezier(.2,1.5,.4,1) both}
+#rres.rhide .lsp .spr{animation:none}
+@keyframes sprpop{0%{transform:scale(.15) translateY(16px);opacity:0;filter:brightness(4)}55%{transform:scale(1.22);opacity:1;filter:brightness(1.5)}100%{transform:none;filter:none}}
+.lsp.cap{background:linear-gradient(90deg,#1d3a5c,var(--panel2) 75%)!important}
+.lsp.rare{box-shadow:inset 0 0 0 1px #a78bfa88,0 0 14px #a78bfa55}
+.lsp.sh{box-shadow:inset 0 0 0 1px #ffd34d99,0 0 16px #ffd34d66;background:linear-gradient(110deg,var(--panel2) 35%,#5a4a14 50%,var(--panel2) 65%)!important;background-size:250% 100%!important;animation:shimmer 2.4s linear infinite}
+@keyframes shimmer{from{background-position:120% 0}to{background-position:-120% 0}}
+.lsp.evo .spr{animation:evoglow 1.2s ease both}
+@keyframes evoglow{0%{filter:brightness(5) saturate(0);transform:scale(.6)}50%{filter:brightness(2.2);transform:scale(1.3)}100%{filter:none;transform:none}}
+.parade{display:flex;justify-content:center;gap:6px;margin-bottom:6px}
+.parade .spr{animation:bob 1.8s ease-in-out infinite;filter:drop-shadow(0 4px 6px #0008)}
+.parade .spr:nth-child(2){animation-delay:-.45s}.parade .spr:nth-child(3){animation-delay:-.9s}.parade .spr:nth-child(4){animation-delay:-1.35s}
+.endspr .spr{animation:bob 2.2s ease-in-out infinite;filter:drop-shadow(0 0 16px var(--acc))}
+.vs{display:flex;align-items:center;justify-content:space-around;margin:10px 0 4px;padding:12px 6px;border-radius:12px;background:radial-gradient(ellipse at center,#2c4670 0,#14213a 78%);position:relative;overflow:hidden}
+.vs .vsm .spr{transform:scaleX(-1)}
+.vs .vsm,.vs .vsf{animation:slideL .6s cubic-bezier(.2,1,.3,1) both,bob 1.6s .7s ease-in-out infinite}
+.vs .vsf{animation-name:slideR,bob;animation-delay:0s,.9s}
+@keyframes slideL{from{transform:translateX(-70px);opacity:0}to{transform:none;opacity:1}}
+@keyframes slideR{from{transform:translateX(70px);opacity:0}to{transform:none;opacity:1}}
+.vst{font-weight:900;font-size:28px;color:var(--acc);text-shadow:0 0 14px var(--acc);animation:vspop .6s .3s cubic-bezier(.2,1.8,.4,1) both}
+@keyframes vspop{from{transform:scale(0) rotate(-20deg);opacity:0}to{transform:none;opacity:1}}
+.vs.vwin .vsm,.vs.vlose .vsf{animation:vbounce .9s ease both;filter:drop-shadow(0 0 14px #ffd34d)}
+.vs.vwin .vsf,.vs.vlose .vsm{animation:vfall .9s ease forwards}
+@keyframes vbounce{0%{transform:none}30%{transform:translateY(-22px) scale(1.12)}55%{transform:none}75%{transform:translateY(-8px)}100%{transform:none}}
+@keyframes vfall{0%{transform:none}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}100%{transform:translateY(10px) rotate(-10deg);filter:grayscale(1) brightness(.55);opacity:.5}}
+#evo{position:fixed;inset:0;z-index:60;background:radial-gradient(circle at 50% 45%,#1b2a4a 0,#070b14 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;animation:rfade .4s ease both;cursor:pointer;color:#fff;text-align:center;padding:20px;overflow:hidden}
+#evo .rays{position:absolute;left:50%;top:45%;width:150vmax;height:150vmax;margin:-75vmax 0 0 -75vmax;background:repeating-conic-gradient(from 0deg,#ffffff26 0 6deg,transparent 6deg 18deg);animation:spinr 16s linear infinite;opacity:0;transition:opacity .8s}
+@keyframes spinr{to{transform:rotate(360deg)}}
+#evo.go .rays{opacity:1}
+#evo .stage{position:relative;width:200px;height:200px;display:flex;align-items:center;justify-content:center}
+#evo .stage img{position:absolute;width:180px;height:180px;image-rendering:pixelated;object-fit:contain}
+#evo .old{filter:brightness(0) invert(1) drop-shadow(0 0 12px #fff);animation:evpulse .45s ease-in-out infinite alternate}
+@keyframes evpulse{from{transform:scale(.92);opacity:.75}to{transform:scale(1.1);opacity:1}}
+#evo.go .old{display:none}
+#evo .new{opacity:0}
+#evo.go .new{animation:evnew .9s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes evnew{0%{transform:scale(.2);opacity:0;filter:brightness(6)}60%{transform:scale(1.25);opacity:1;filter:brightness(1.6)}100%{transform:none;opacity:1;filter:none}}
+#evo .cap{opacity:0;font-weight:800;font-size:20px;text-shadow:0 0 14px var(--acc);position:relative;max-width:420px}
+#evo.go .cap{animation:rfade .6s .5s both}
+#evo .hint{opacity:0;position:relative}#evo.go .hint{animation:rfade .6s 1.2s both}
+#evo .flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none}
+#evo.go .flash{animation:fxflash .9s ease-out}
+@media (prefers-reduced-motion:reduce){.parade .spr,.endspr .spr,.vs .vsm,.vs .vsf,.lsp .spr{animation:none!important}}
 </style>
 </head>
 <body>
@@ -289,6 +353,7 @@ const powerOnly=s=>s.voc==='coleccionista'||s.voc==='profesor'; // las medallas 
 const ZONE_PW=[0,400,435,465,485,495,505,530,550]; // poder de equipo que pide una zona de nivel n (parecido al rival del gimnasio n + un margen)
 const zonePower=n=>ZONE_PW[Math.min(Math.max(n,0),8)];
 const aceNum=g=>num(g.team[g.team.length-1]); // el último Pokémon del equipo del líder (su as)
+const myAce=s=>{const t=teamMons(s).slice().sort((a,b)=>pw(b)-pw(a))[0];return t?{sp:t.sp,sh:!!t.shiny}:null;}; // tu Pokémon más fuerte (para la pantalla de «VS»)
 const CELESTE_DEX=140;
 const zoneOpen=(s,z)=>z.id==='celeste'?((!powerOnly(s)&&s.badges.length>=8)||dexN(s)>=CELESTE_DEX||!!s.flags.zone_celeste):(!powerOnly(s)&&s.badges.length>=z.need)||teamPower(s)>=zonePower(z.need)||!!s.flags['zone_'+z.id];
 
@@ -313,7 +378,7 @@ const LEAGUE=[
 ];
 // Dificultad: el poder de gimnasios y Liga crece en rampa (Brock queda igual; Giovanni y la Liga reciben el aumento completo).
 // Calibrado con un bot que juega "atento" para que gane la Liga con unas 10 estaciones de sobra. Para suavizar: bajá GYM_RAMP (40 = más holgado, 60 = muy duro).
-const GYM_RAMP=50;
+const GYM_RAMP=62;
 const GYM_RAMP_F={brock:0,misty:0.15,surge:0.3,erika:0.45,koga:0.6,sabrina:0.75,blaine:0.9,giovanni:1,lorelei:1,bruno:1,agatha:1,lance:1,blue:1};
 for(const g of GYMS.concat(LEAGUE))g.pw+=Math.round(GYM_RAMP*(GYM_RAMP_F[g.id]||0));
 
@@ -460,7 +525,7 @@ function explore(s,zoneId){
       else if(up)tag=' · ¡mejor ejemplar! Pasa al equipo';
       else if(pw(m)>Math.max(...had.map(pw)))tag=' · mejor ejemplar';
       else tag=' · repetido';
-      lines.push({t:`${shiny?'✨ ¡SHINY! ':''}${mon(enc.sp).name} (poder ${pw(m)})${tag}${enc.w<=8&&!shiny?' · raro':''}`,sp:enc.sp,sh:shiny});
+      lines.push({t:`${shiny?'✨ ¡SHINY! ':''}${mon(enc.sp).name} (poder ${pw(m)})${tag}${enc.w<=8&&!shiny?' · raro':''}`,sp:enc.sp,sh:shiny,cap:true,rare:enc.w<=8});
     }else lost.push(mon(enc.sp).name);
   }
   if(!any)lines.push({t:'No lograste capturar ninguno esta vez.'});
@@ -770,8 +835,27 @@ function applyFx(s,fx){
 }
 
 // ---------- Gimnasios ----------
+// Ventaja de tipos: se mide Pokémon por Pokémon contra TODO el equipo rival (no alcanza con tener uno solo que le gane).
+// OFF = cuánto daño hace en promedio cada uno de los tuyos; DEF = cuánto daño reciben en promedio.
+const TYPE_OFF_K=18,TYPE_DEF_K=10;
+function typeMatchup(mons,opps){
+  let off=0,inc=0,n=0,adv=0,weakN=0;
+  for(const m of mons){
+    const mt=mon(m.sp).types;let oi=0,ii=0;
+    for(const o of opps){
+      const ot=mon(o).types;
+      let bo=0;for(const t of mt){let v=1;for(const d of ot)v*=EFF[t][d];if(v>bo)bo=v;}
+      let bi=0;for(const a of ot){let v=1;for(const d of mt)v*=EFF[a][d];if(v>bi)bi=v;}
+      oi+=bo;ii+=bi;
+    }
+    oi/=opps.length;ii/=opps.length;off+=oi;inc+=ii;n++;
+    if(oi>=1.5)adv++;if(ii>=1.5)weakN++;
+  }
+  return n?{off:off/n,inc:inc/n,adv,weakN,n}:{off:1,inc:1,adv:0,weakN:0,n:0};
+}
 function gymPreview(s,gym){
   const mons=teamMons(s);const opps=gym.team.map(num);
+  const tm=typeMatchup(mons,opps);
   let cov=0,weak=0;
   for(const o of opps){
     const ot=mon(o).types;let best=0;
@@ -782,11 +866,12 @@ function gymPreview(s,gym){
     weak+=mons.length?w/mons.length:0;
   }
   cov/=opps.length;weak/=opps.length;
+  const oldT=clamp((cov-1)*10,-8,10)-weak*10;
   const oppPower=gym.pw||(opps.reduce((a,n)=>a+mon(n).bst,0)/opps.length+gym.off+PW_ADJ);
   const tp=teamPower(s);
   const parts=[];
-  parts.push(['Ventaja de tipos (cobertura '+cov.toFixed(1)+'x)',clamp((cov-1)*10,-8,10)]);
-  parts.push(['Debilidades de tu equipo',-weak*10]);
+  parts.push(['Ventaja de tipos ('+tm.adv+' de '+tm.n+' Pokémon con ventaja)',clamp((tm.off-1)*TYPE_OFF_K,-14,24)]);
+  parts.push(['Defensa de tipos ('+tm.weakN+' de '+tm.n+' con debilidad)',clamp((1-tm.inc)*TYPE_DEF_K,-14,8)]);
   parts.push(['Poder del equipo ('+Math.round(tp)+') vs rival ('+Math.round(oppPower)+')',clamp((tp-oppPower)*0.40,-60,30)]);
   parts.push(['Tamaño del equipo ('+mons.length+')',clamp(mons.length*1.5-4.5,-4.5,4.5)]);
   parts.push(['Valor '+s.st.valor,clamp((s.st.valor-4)*0.6,-5,8)]);
@@ -795,10 +880,10 @@ function gymPreview(s,gym){
   if(s.boost)parts.push(['Ventaja del Carisma máximo (un solo uso)',s.boost]);
   const retry=(s.gymRetry[gym.id]||0);if(retry)parts.push(['Experiencia de intentos anteriores',retry]);
   let tot=40;for(const p of parts)tot+=p[1];
-  return {win:clamp(Math.round(tot),5,95),parts:parts.map(p=>[p[0],Math.round(p[1])]),cov,weak,tp,oppPower};
+  return {win:clamp(Math.round(tot),5,95),parts:parts.map(p=>[p[0],Math.round(p[1])]),cov,weak,tp,oppPower,oldT,tm};
 }
 function gymRun(s){
-  const gym=GYMS[s.badges.length];const pv=gymPreview(s,gym);s.boost=0;
+  const gym=GYMS[s.badges.length];const pv=gymPreview(s,gym);s.boost=0;const vs0=myAce(s);
   const band=rollBand([pv.win,0,100-pv.win]); // sin grises: o ganás o perdés
   const lines=[];
   if(band==='g'){
@@ -811,10 +896,10 @@ function gymRun(s){
     lines.push(`${gym.leader} te derrotó. Aprendiste su estilo (+2% la próxima vez, hasta +6%).`);
     lines.push(...applyFx(s,{rep:-1}));
   }
-  return {title:'Gimnasio de '+gym.city,lines,seasons:1,band,rollInfo:{odds:[pv.win,0,100-pv.win],roll:lastRoll,labels:['Victoria','','Derrota'],build:buildGym(pv.parts,pv.win)}};
+  return {title:'Gimnasio de '+gym.city,lines,seasons:1,band,vs:vs0?{me:vs0,foe:aceNum(gym)}:null,rollInfo:{odds:[pv.win,0,100-pv.win],roll:lastRoll,labels:['Victoria','','Derrota'],build:buildGym(pv.parts,pv.win)}};
 }
 function giovanniRun(s){
-  const pv=gymPreview(s,GIOVANNI_RK);const lines=[];s.boost=0;
+  const pv=gymPreview(s,GIOVANNI_RK);const lines=[];s.boost=0;const vs0=myAce(s);
   const gr=R()*100;
   if(gr<pv.win){
     s.rocketBoss=true;
@@ -825,14 +910,14 @@ function giovanniRun(s){
     lines.push(`❌ Giovanni te derrotó. Tu chance era ${pv.win}%.`);
     lines.push('«Todavía no estás listo. Volvé cuando lo estés.» Conservás tu rango: podés entrenar, capturar o robar para volver más fuerte. Cada intento te cuesta una estación y no deja bonus.');
   }
-  return {title:'Desafío a Giovanni',lines,seasons:1,rollInfo:{odds:[pv.win,0,100-pv.win],roll:gr,labels:['Victoria','','Derrota'],build:buildGym(pv.parts,pv.win)}};
+  return {title:'Desafío a Giovanni',lines,seasons:1,vs:vs0?{me:vs0,foe:aceNum(GIOVANNI_RK)}:null,rollInfo:{odds:[pv.win,0,100-pv.win],roll:gr,labels:['Victoria','','Derrota'],build:buildGym(pv.parts,pv.win)}};
 }
 function leagueRun(s){
   const lines=[];let all=true;const boosted=s.boost;
   for(const st of LEAGUE){
     const pv=gymPreview(s,st);
-    if(R()*100<pv.win){lines.push(`✅ Derrotaste a ${st.leader} (${st.type}) — chance era ${pv.win}%`);}
-    else{lines.push(`❌ Caíste ante ${st.leader} (${st.type}) — chance era ${pv.win}%`);all=false;break;}
+    if(R()*100<pv.win){lines.push({t:`✅ Derrotaste a ${st.leader} (${st.type}) — chance era ${pv.win}%`,sp:aceNum(st)});}
+    else{lines.push({t:`❌ Caíste ante ${st.leader} (${st.type}) — chance era ${pv.win}%`,sp:aceNum(st)});all=false;break;}
   }
   s.boost=0;if(boosted)lines.push('🎯 Usaste la ventaja de tu Carisma máximo en esta Liga.');
   if(all){s.leagueWon=true;s.counters.leagueT=s.t;s.leagueTeam=teamMons(s).map(m=>m.sp);s.leagueMoral=s.moral;lines.push('🏆 ¡Sos el nuevo Campeón de la Liga Pokémon!');}
@@ -843,13 +928,14 @@ function leagueRun(s){
 // ---------- Práctica: cada acción entrena su stat afín; con los usos suficientes sube +1 (cada vez cuesta más) ----------
 const PRAC={explore:'cuidado',train:'valor',help:'carisma',shady:'sigilo',field:'ingenio',gymwork:'carisma'};
 const RK_KINDS=[
- {id:'work',icon:'🅡',title:'Trabajo sucio de la organización',pool:'rocket',prac:'carisma',desc:'Cobros, sabotajes, espionaje y reclutamiento.',gain:'Es lo que más rango da: sin esto no llegás al Alto Mando. A veces trae una piedra o un Pokémon.',risk:'Heat si sale mal'},
+ {id:'work',icon:'🅡',title:'Trabajo sucio de la organización',pool:'rocket',prac:'carisma',hi:{icon:'🎖️',title:'Operaciones de mando',pool:'rk_cmd',desc:'Dirigir asaltos, someter bandas rivales, comprar funcionarios y disputar el poder en la cúpula. Ya no hacés los mandados: los ordenás.',gain:'Rango alto (+3 o +4) y cada operación exitosa suma al puntaje final. A veces trae piedras u objetos.',risk:'Heat, rango perdido si el plan se cae'},desc:'Cobros, sabotajes, espionaje y reclutamiento.',gain:'Es lo que más rango da: sin esto no llegás al Alto Mando. A veces trae una piedra o un Pokémon.',risk:'Heat si sale mal'},
  {id:'pokemon',icon:'🐾',title:'Robar Pokémon',pool:'rk_pk',prac:'sigilo',desc:'Entrenadores, criaderos, exposiciones y laboratorios.',gain:'Muchos Pokémon comunes (4-5) o 1-2 muy raros, según cómo lo encares. Rango alto.',risk:'Heat, reputación o perder un Pokémon'},
  {id:'items',icon:'🎒',title:'Robar objetos',pool:'rk_it',prac:'ingenio',desc:'Depósitos, camiones, museos y mansiones.',gain:'Piedras evolutivas y objetos (Incienso, Lupa, amuletos).',risk:'Heat y tiempo perdido'},
  {id:'hunt',icon:'🏹',title:'Cacería ilegal',pool:'rk_hunt',prac:'valor',desc:'Cazar Pokémon protegidos en zonas cerradas.',gain:'Pokémon de la zona, a veces una piedra.',risk:'Heat, guardabosques y perder un Pokémon'},
  {id:'black',icon:'💱',title:'Mercado negro',pool:'rk_black',prac:'carisma',desc:'Un contrabandista te ofrece algo por un Pokémon repetido.',gain:'Un Pokémon distinto o una piedra, sin azar, y rango asegurado si aceptás.',risk:'Ninguno, pero necesitás repetidos'}
 ];
-const rkKind=id=>RK_KINDS.find(k=>k.id===id)||RK_KINDS[0];
+const RK_CMD_AT=30; // desde Teniente el trabajo sucio se vuelve «operaciones de mando»
+const rkKind=(id,s)=>{const k=RK_KINDS.find(k=>k.id===id)||RK_KINDS[0];return(k.hi&&s&&s.rocketPts>=RK_CMD_AT)?Object.assign({},k,k.hi):k;};
 const pracNeed=v=>3+Math.floor(v/2);
 function practice(s,stat){
   s.prac=s.prac||{};
@@ -892,7 +978,7 @@ function runAction(s,id,arg){
   const r=runActionCore(s,id,arg);
   if(s.freeSeason>0&&(r.seasons||1)>0){r.seasons=Math.max(0,(r.seasons||1)-1);s.freeSeason--;r.lines.push('⏳ Gracias a tu Ingenio, esta acción no te costó una estación.');}
   if(PRAC[id]){const l=practice(s,PRAC[id]);if(l)r.lines.push(l);}
-  if(id==='rkmission'){const l=practice(s,rkKind(arg).prac);if(l)r.lines.push(l);}
+  if(id==='rkmission'){const l=practice(s,rkKind(arg,s).prac);if(l)r.lines.push(l);}
   if(id==='market'){ // cada cambio cerrado (Pokémon, piedra o evolución) suma una práctica de Carisma
     const n=s.counters.mkv||0;s.counters.mkv=0;
     if(n>0){let last=null;const ups=[];for(let i=0;i<n;i++){const l=practice(s,'carisma');if(l){if(l.startsWith('⬆️'))ups.push(l);last=l;}}
@@ -912,7 +998,7 @@ function runActionCore(s,id,arg){
     case 'help':return {title:'Ayudar a la gente',lines:[],pool:'help',seasons:1};
     case 'shady':return {title:'Trabajos turbios',lines:[],pool:'shady',seasons:1};
     case 'field':return {title:'Trabajo de campo',lines:[],pool:'field',seasons:1};
-    case 'rkmission':{const k=rkKind(arg);return {title:k.title,lines:[],pool:k.pool,seasons:1};}
+    case 'rkmission':{const k=rkKind(arg,s);return {title:k.title,lines:[],pool:k.pool,seasons:1};}
     case 'rklay':s.heat=Math.max(0,s.heat-2);return {title:'Perfil bajo',lines:['Te escondés unos meses. Heat: '+s.heat+'/5.'],seasons:1};
     case 'gymwork':return {title:'Atender tu gimnasio',lines:[],pool:'gymown',seasons:1};
     case 'market':return {title:'Mercado de intercambio',lines:arg||[],seasons:1};
@@ -1088,15 +1174,15 @@ const EV=[
  opts:[O('Cruzar el cargamento',[40,35,25],[['s','sigilo',2],['s','ingenio',1]],['Salió perfecto. Te dejan quedarte con un huevo.',{gainWild:1,moral:-1,st:{sigilo:1}}],['Cruzás sin problemas, pero te pagan poco.',{moral:-1}],['Un oficial sospecha de tu mochila.',{heat:1,loseItem:1}]),
   S('Rechazar','Mejor no meterte.',{moral:1})]},
 // ===== Misiones Rocket =====
-{id:'rk_cobro',pool:'rocket',kind:'Misión',w:3,req:s=>true,title:'Cobro de «protección»',
+{id:'rk_cobro',pool:'rocket',kind:'Misión',w:3,req:s=>s.rocketPts<30,title:'Cobro de «protección»',
  text:()=>'Un comerciante no paga su cuota a la organización.',
  opts:[O('Intimidarlo',[45,30,25],[['s','valor',2],['s','carisma',1]],['Paga todo. Los jefes toman nota.',{rocketPts:1,moral:-1}],['Paga la mitad.',{moral:-1}],['Llama a la policía.',{heat:1}]),
   O('Convencerlo con labia',[40,35,25],[['s','carisma',3]],['Lo convencés de que le conviene pagar.',{rocketPts:2}],['Promete pagar la semana que viene.',{}],['Se ríe de vos.',{rocketPts:-1}])]},
-{id:'rk_contrabando',pool:'rocket',kind:'Misión',w:3,req:s=>true,title:'Cargamento clandestino',
+{id:'rk_contrabando',pool:'rocket',kind:'Misión',w:3,req:s=>s.rocketPts<30,title:'Cargamento clandestino',
  text:()=>'Hay que mover un cargamento de Pokémon capturados hasta un puerto sin que la policía lo note.',
  opts:[O('Planificar la ruta',[40,35,25],[['s','ingenio',3]],['Llegan todos. Te ascienden.',{rocketPts:2,moral:-1}],['Llegan algunos.',{rocketPts:1}],['Un control los detiene.',{heat:2}]),
   O('Mover el cargamento rápido',[35,25,40],[['s','sigilo',2],['s','valor',1]],['Llegás antes de que se den cuenta.',{rocketPts:2,moral:-1}],['Perdés algo en el camino.',{moral:-1}],['Un oficial te sigue.',{heat:2}])]},
-{id:'rk_silph',pool:'rocket',kind:'Misión',w:2,req:s=>s.rocketPts>=16,title:'Infiltrar un edificio corporativo',
+{id:'rk_silph',pool:'rocket',kind:'Misión',w:2,req:s=>s.rocketPts>=16&&s.rocketPts<48,title:'Infiltrar un edificio corporativo',
  text:()=>'Una gran empresa guarda tecnología que los jefes quieren. Hay que entrar disfrazado.',
  opts:[O('Entrar como empleado',[35,30,35],[['s','sigilo',2],['s','ingenio',2]],['Cruzás los pasillos sin mirar atrás. Tu nombre llega a los jefes.',{rocketPts:3,gainWild:1,moral:-1}],['Conseguís poco, pero salís entero.',{rocketPts:1}],['Te detectan y debés huir.',{heat:2,rocketPts:-1}]),
   O('Distraer a los guardias',[30,35,35],[['s','carisma',2],['s','valor',1]],['Todos miran hacia otro lado. Todo sale perfecto.',{rocketPts:3,moral:-1}],['Hacés el ruido justo.',{rocketPts:1}],['Se dan cuenta del truco.',{heat:2}])]},
@@ -1258,26 +1344,81 @@ const EV=[
  opts:[O('Negociar el precio',[30,30,40],[C('carisma',7,4)],['Cerrás un trato y entrás. Salís con una piedra.',{stone:1,moral:-1}],['Se arrepiente a último momento.',{}],['Te denuncia a sus superiores.',{heat:2,rep:-1}]),
   O('Distraerlo mientras entrás',[30,30,40],[C('sigilo',7,4)],['No se entera de nada y te llevás el botín.',{gainWild:1,moral:-1}],['No lográs entrar.',{}],['Se da vuelta justo cuando pasás.',{heat:1,time:1}])]},
 // ===== Misiones Rocket =====
-{id:'rk_espionaje',pool:'rocket',kind:'Misión',w:3,req:s=>true,title:'Espionaje industrial',
+{id:'rk_espionaje',pool:'rocket',kind:'Misión',w:3,req:s=>s.rocketPts<30,title:'Espionaje industrial',
  text:()=>'La organización quiere los planos de un invento. Hay que copiarlos sin que la empresa lo note.',
  opts:[O('Hackear el sistema de la empresa',[35,30,35],[C('ingenio',6,4)],['Los copiás en minutos. Los jefes están encantados.',{rocketPts:3,st:{ingenio:1}}],['Copiás solo una parte.',{rocketPts:1}],['Te rastrean la conexión.',{heat:2,rocketPts:-1}]),
   O('Colarte como técnico',[35,30,35],[C('sigilo',5,3),C('carisma',4,2)],['Copiás todo con el uniforme puesto.',{rocketPts:3,stone:1}],['Entrás pero no llegás a los planos.',{rocketPts:1}],['Te piden credenciales y no tenés.',{heat:2}])]},
-{id:'rk_reclutar',pool:'rocket',kind:'Misión',w:3,req:s=>true,title:'Conseguir nuevos reclutas',
+{id:'rk_reclutar',pool:'rocket',kind:'Misión',w:3,req:s=>s.rocketPts<30,title:'Conseguir nuevos reclutas',
  text:()=>'Los jefes te piden traer a dos o tres jóvenes talentosos a la organización.',
  opts:[O('Convencerlos con promesas',[35,35,30],[C('carisma',6,4)],['Se suman tres y te ganás un ascenso.',{rocketPts:3,moral:-1}],['Se suma uno.',{rocketPts:1}],['Uno te denuncia.',{heat:2}]),
   O('Mostrarles tu poder',[35,30,35],[C('valor',5,3),['p',1]],['Quedan impresionados y se suman.',{rocketPts:2,gainWild:1}],['Se burlan de vos.',{}],['Te desafían y perdés frente a todos.',{rocketPts:-1,rep:-1}])]},
-{id:'rk_sabotaje',pool:'rocket',kind:'Misión',w:3,req:s=>true,title:'Sabotear una radio',
+{id:'rk_sabotaje',pool:'rocket',kind:'Misión',w:3,req:s=>s.rocketPts<30,title:'Sabotear una radio',
  text:()=>'Una radio local difunde denuncias contra la organización. Hay que callarla.',
  opts:[O('Cortar los cables de noche',[30,30,40],[C('sigilo',5,4)],['Quedan sin señal toda la semana.',{rocketPts:2,moral:-1}],['Cortás solo la mitad.',{rocketPts:1}],['Te ven huyendo.',{heat:2}]),
   O('Reprogramar los equipos',[30,30,40],[C('ingenio',6,4)],['Dejás la radio en silencio sin dejar huellas.',{rocketPts:3,st:{ingenio:1}}],['Funciona un rato.',{}],['El técnico te descubre.',{heat:2,rocketPts:-1}])]},
-{id:'rk_chantaje',pool:'rocket',kind:'Misión',w:3,req:s=>true,title:'Un favor a cambio de silencio',
+{id:'rk_chantaje',pool:'rocket',kind:'Misión',w:3,req:s=>s.rocketPts<30,title:'Un favor a cambio de silencio',
  text:()=>'Un funcionario tiene secretos comprometedores. Los jefes quieren que cumpla un favor y que no pregunte.',
  opts:[O('Presionarlo con labia',[35,35,30],[C('carisma',5,4)],['Cede y los jefes se muestran muy satisfechos.',{rocketPts:2,moral:-1}],['Pide tiempo.',{rocketPts:1}],['Te amenaza con llamar a la policía.',{heat:2,rocketPts:-1}]),
   O('Seguirlo para reunir pruebas',[35,30,35],[C('sigilo',5,4),C('ingenio',6,2)],['Reunís todo lo necesario sin que lo note.',{rocketPts:3,stone:1}],['Reunís poco.',{rocketPts:1}],['Te descubre y avisa a todos.',{heat:2}])]},
-{id:'rk_prueba',pool:'rocket',kind:'Misión',w:2,req:s=>s.rocketPts>=8,title:'Una prueba de lealtad',
+{id:'rk_prueba',pool:'rocket',kind:'Misión',w:2,req:s=>s.rocketPts>=8&&s.rocketPts<30,title:'Una prueba de lealtad',
  text:()=>'Un superior quiere ver de qué estás hecho. Te propone tres tareas seguidas sin dormir.',
  opts:[O('Aceptar sin quejas',[30,30,40],[C('valor',6,3),C('cuidado',5,2)],['Las cumplís todas y te nombran de confianza.',{rocketPts:4,st:{valor:1}}],['Cumplís dos de tres.',{rocketPts:1}],['Te quedás dormido en la última.',{rocketPts:-2,heat:1}]),
   O('Delegar con astucia',[35,30,35],[C('ingenio',6,3),C('carisma',5,2)],['Repartís bien y los jefes lo notan.',{rocketPts:3}],['Cumplen a medias.',{rocketPts:1}],['Te descubren pasándole el trabajo a otros.',{rocketPts:-2}])]},
+
+// ===== Rocket: operaciones de mando (Teniente en adelante) =====
+{id:'rkc_asalto',pool:'rk_cmd',kind:'Operación',w:3,req:s=>s.rocketPts>=30,title:'Dirigir un asalto con tu escuadrón',
+ text:()=>'Los jefes te dan un objetivo y un escuadrón entero a tu cargo: tenés que decidir cómo se hace el golpe, y la responsabilidad es tuya.',
+ opts:[O('Planificar cada detalle',[35,30,35],[C('ingenio',7,4),C('carisma',5,2)],['Cada integrante sabe qué hacer. El golpe sale limpio y tu nombre sube.',{rocketPts:3,inc:{rkOps:1},moral:-1,stone:1}],['Sale bien, pero con retrasos.',{rocketPts:1}],['El plan se filtra y el escuadrón cae en una trampa.',{rocketPts:-2,heat:2}]),
+  O('Encabezar la entrada',[30,30,40],[C('valor',7,4),['p',1]],['Entrás primero y el escuadrón te sigue sin dudar.',{rocketPts:3,inc:{rkOps:1},moral:-1,st:{valor:1}}],['Cumplen el objetivo con bajas.',{rocketPts:1}],['Te superan en número y tenés que replegarte.',{rocketPts:-2,heat:2}])]},
+{id:'rkc_traidor',pool:'rk_cmd',kind:'Operación',w:3,req:s=>s.rocketPts>=30,title:'Un traidor en las filas',
+ text:()=>'Alguien filtra información de la organización a la policía. Los jefes te encargan descubrir quién es, sin hacer ruido.',
+ opts:[O('Tenderle una trampa con datos falsos',[35,30,35],[C('ingenio',7,4),C('sigilo',5,2)],['El soplón muerde el anzuelo y queda al descubierto. Los jefes quedan impresionados.',{rocketPts:3,inc:{rkOps:1},moral:-1}],['Sospechás de dos y no podés probar nada.',{rocketPts:1}],['Acusás a la persona equivocada.',{rocketPts:-2,moral:-1}]),
+  O('Interrogar a los sospechosos',[35,30,35],[C('carisma',7,4),C('valor',5,2)],['Uno se quiebra y confiesa todo.',{rocketPts:3,inc:{rkOps:1},moral:-1,st:{carisma:1}}],['Nadie habla.',{rocketPts:1}],['El interrogatorio sale mal y se arma un escándalo.',{rocketPts:-2,heat:1}])]},
+{id:'rkc_banda',pool:'rk_cmd',kind:'Operación',w:3,req:s=>s.rocketPts>=30,title:'Una banda rival invade tu zona',
+ text:()=>'Una banda de matones quiere quedarse con el territorio de la organización. Te toca a vos decidir cómo se responde.',
+ opts:[O('Negociar un reparto de territorio',[35,35,30],[C('carisma',7,4),C('ingenio',5,2)],['Firmás un pacto que deja la mejor parte para la organización.',{rocketPts:3,inc:{rkOps:1},moral:-1}],['Acuerdan una tregua incómoda.',{rocketPts:1}],['Se burlan de la oferta y toman una calle más.',{rocketPts:-2,heat:1}]),
+  O('Echarlos con tus Pokémon',[30,30,40],[C('valor',7,4),['p',1]],['Los hacés retroceder y no vuelven a pisar la zona.',{rocketPts:3,inc:{rkOps:1},moral:-1,gainWild:1}],['Los frenás, pero siguen rondando.',{rocketPts:1}],['Te superan y perdés prestigio.',{rocketPts:-2,heat:1}])]},
+{id:'rkc_soborno',pool:'rk_cmd',kind:'Operación',w:3,req:s=>s.rocketPts>=30,title:'Un funcionario que se puede comprar',
+ text:()=>'Un inspector municipal está por clausurar un negocio de la organización. Hay que resolverlo antes de que firme.',
+ opts:[O('Ofrecerle un trato que no pueda rechazar',[35,35,30],[C('carisma',7,4)],['Firma lo que le pedís y el negocio sigue abierto.',{rocketPts:3,inc:{rkOps:1},moral:-1}],['Acepta, pero cobra el doble.',{rocketPts:1}],['Se niega y te denuncia.',{rocketPts:-2,heat:2}]),
+  O('Conseguir algo con qué presionarlo',[35,30,35],[C('sigilo',6,3),C('ingenio',6,3)],['Reunís todo lo necesario y se vuelve un aliado útil.',{rocketPts:3,inc:{rkOps:1},moral:-1,stone:1}],['Encontrás poco y cede a medias.',{rocketPts:1}],['Te descubre revisando sus cosas.',{rocketPts:-2,heat:2}])]},
+{id:'rkc_casino',pool:'rk_cmd',kind:'Operación',w:2,req:s=>s.rocketPts>=30,title:'El casino clandestino',
+ text:()=>'La organización te pone al frente de un casino escondido bajo un local. Las cuentas no cierran y los clientes se quejan.',
+ opts:[O('Auditar las cuentas',[35,35,30],[C('ingenio',7,4)],['Descubrís quién se llevaba de más y el negocio vuelve a rendir.',{rocketPts:3,inc:{rkOps:1},moral:-1,stone:1}],['Ordenás parte de las cuentas.',{rocketPts:1}],['Los números se complican y perdés dinero.',{rocketPts:-2}]),
+  O('Poner orden en la sala',[35,30,35],[C('valor',6,3),C('carisma',6,3)],['La sala se calma y los clientes vuelven.',{rocketPts:3,inc:{rkOps:1},moral:-1}],['Calmás los ánimos por una noche.',{rocketPts:1}],['Se arma una pelea y llega la policía.',{rocketPts:-2,heat:2}])]},
+{id:'rkc_reclutas',pool:'rk_cmd',kind:'Operación',w:3,req:s=>s.rocketPts>=30,title:'Formar a los nuevos',
+ text:()=>'Llegaron veinte reclutas y nadie sabe qué hacer con ellos. Los jefes te piden que armes un escuadrón que sirva.',
+ opts:[O('Entrenarlos con disciplina',[35,35,30],[C('valor',6,3),C('cuidado',6,3)],['En unas semanas se mueven como un solo cuerpo.',{rocketPts:3,inc:{rkOps:1},st:{cuidado:1}}],['Aprenden lo básico.',{rocketPts:1}],['Se amotinan por el maltrato.',{rocketPts:-2,heat:1}]),
+  O('Elegir a uno y hacerlo tu mano derecha',[35,30,35],[C('carisma',7,4)],['Te ganás su lealtad y trae un Pokémon como «tributo».',{rocketPts:3,inc:{rkOps:1},moral:-1,gainWild:1}],['Es de confianza, pero no destaca.',{rocketPts:1}],['Te traiciona a la primera oportunidad.',{rocketPts:-2}])]},
+{id:'rkc_inspector',pool:'rk_cmd',kind:'Operación',w:2,req:s=>s.rocketPts>=30,title:'Una investigación demasiado cercana',
+ text:()=>'Un detective está siguiendo el rastro de tus operaciones. Si llega a los jefes, todos caen.',
+ opts:[O('Desviar la investigación con pistas falsas',[35,30,35],[C('ingenio',7,4),C('sigilo',5,2)],['El detective persigue un fantasma y archiva el caso.',{rocketPts:3,inc:{rkOps:1},moral:-1,heat:-1}],['Ganás tiempo, pero sigue merodeando.',{rocketPts:1}],['Se da cuenta del engaño y te cierra el cerco.',{rocketPts:-2,heat:2}]),
+  O('Hacerlo desistir con labia',[35,35,30],[C('carisma',7,4)],['Lo convencés de que su pista es un callejón sin salida.',{rocketPts:3,inc:{rkOps:1},moral:-1,st:{carisma:1}}],['Duda, pero no lo suelta.',{rocketPts:1}],['No te cree y avisa a sus superiores.',{rocketPts:-2,heat:2}])]},
+{id:'rkc_torre',pool:'rk_cmd',kind:'Operación',w:2,req:s=>s.rocketPts>=30,title:'Tomar una torre de comunicaciones',
+ text:()=>'La organización necesita controlar las señales de una ciudad entera. La torre más alta tiene guardias y un sistema complicado.',
+ opts:[O('Tomar la torre con tu equipo',[30,30,40],[C('valor',6,3),['p',1]],['Tomás el control y la ciudad queda sin señal para quien vos decidas.',{rocketPts:4,inc:{rkOps:1},moral:-1}],['Tomás la planta baja y nada más.',{rocketPts:1}],['Los guardias resisten y te toca huir.',{rocketPts:-2,heat:2}]),
+  O('Entrar al sistema desde afuera',[35,30,35],[C('ingenio',7,4),C('sigilo',5,2)],['Controlás todo desde una furgoneta sin que nadie lo note.',{rocketPts:4,inc:{rkOps:1},moral:-1,st:{ingenio:1}}],['Controlás una parte.',{rocketPts:1}],['Un técnico detecta la intrusión.',{rocketPts:-2,heat:2}])]},
+// Comandante en adelante
+{id:'rkc_silph',pool:'rk_cmd',kind:'Operación',w:3,req:s=>s.rocketPts>=48,title:'Tomar el edificio de una gran empresa',
+ text:()=>'Los jefes quieren una torre de oficinas entera, con sus archivos y su tecnología. Es la operación más grande que te encargaron hasta ahora.',
+ opts:[O('Coordinar varios frentes a la vez',[30,30,40],[C('ingenio',8,4),C('carisma',6,3)],['Todos los equipos entran a la vez y el edificio cae en una hora.',{rocketPts:4,inc:{rkOps:1},moral:-2,stone:2,gainWild:1}],['Tomás parte del edificio.',{rocketPts:1}],['Los frentes se descoordinan y es un desastre.',{rocketPts:-3,heat:3}]),
+  O('Asalto directo con todo el equipo',[30,25,45],[C('valor',8,4),['p',1]],['Arrasás con la seguridad y salís con todo el botín.',{rocketPts:4,inc:{rkOps:1},moral:-2,stone:1,item:'lupa'}],['Entrás, pero sin lo más valioso.',{rocketPts:1}],['La policía llega antes de tiempo.',{rocketPts:-3,heat:3}])]},
+{id:'rkc_cupula',pool:'rk_cmd',kind:'Operación',w:3,req:s=>s.rocketPts>=48,title:'Disputa en la cúpula',
+ text:()=>'Otro comandante quiere quedarse con tu territorio y se presenta con un plan ante los jefes. Te toca defender tu lugar.',
+ opts:[O('Defender tu plan con argumentos',[35,30,35],[C('carisma',8,4),C('ingenio',7,3)],['Los jefes se inclinan por tu plan y el rival queda en ridículo.',{rocketPts:4,inc:{rkOps:1},moral:-1,st:{carisma:1}}],['Quedan dudas y se reparte el territorio.',{rocketPts:1}],['Tu rival expone una falla de tu plan.',{rocketPts:-3}]),
+  O('Mostrar tu poder en un duelo',[30,30,40],[C('valor',8,4),['p',1]],['Ganás el duelo y nadie vuelve a discutirte.',{rocketPts:4,inc:{rkOps:1},moral:-1,st:{valor:1}}],['Empatan y se enfrían las cosas.',{rocketPts:1}],['Perdés frente a todos.',{rocketPts:-3,heat:1}])]},
+{id:'rkc_fuga',pool:'rk_cmd',kind:'Operación',w:3,req:s=>s.rocketPts>=48,title:'Rescatar a un comandante detenido',
+ text:()=>'La policía arrestó a un comandante que sabe demasiado. Hay que sacarlo antes de que hable.',
+ opts:[O('Planear una fuga durante el traslado',[30,30,40],[C('ingenio',8,4),C('sigilo',7,3)],['Lo sacás sin un solo disparo. Te debe un favor enorme.',{rocketPts:4,inc:{rkOps:1},moral:-1,stone:1}],['Lo sacás, pero la policía los sigue.',{rocketPts:1,heat:1}],['El traslado cambia de ruta y fracasás.',{rocketPts:-3,heat:2}]),
+  O('Asaltar la comisaría de noche',[30,25,45],[C('valor',8,4),['p',1]],['Entrás, lo sacás y salís antes del amanecer.',{rocketPts:4,inc:{rkOps:1},moral:-2}],['Lo sacás herido y a duras penas.',{rocketPts:1,heat:2}],['Los refuerzos llegan antes de que escapen.',{rocketPts:-3,heat:3}])]},
+{id:'rkc_guerra',pool:'rk_cmd',kind:'Operación',w:3,req:s=>s.rocketPts>=48,title:'Una organización rival declara la guerra',
+ text:()=>'Otra banda poderosa empezó a atacar los negocios de Rocket. Los jefes te dan carta blanca para responder.',
+ opts:[O('Armar una alianza con otra banda',[35,30,35],[C('carisma',8,4),C('ingenio',6,2)],['Con aliados nuevos, la banda rival se retira.',{rocketPts:4,inc:{rkOps:1},moral:-1}],['La alianza no alcanza para ganar, pero frena el avance.',{rocketPts:1}],['Los aliados se retiran a mitad de camino.',{rocketPts:-3,heat:1}]),
+  O('Golpe preventivo a su base',[30,30,40],[C('sigilo',8,4),C('valor',6,2)],['Su base cae esa misma noche y la guerra termina.',{rocketPts:4,inc:{rkOps:1},moral:-2,gainWild:1}],['Hacés daño, pero responden.',{rocketPts:1,heat:1}],['Los esperaban y salís a los tropezones.',{rocketPts:-3,heat:2}])]},
+{id:'rkc_barrio',pool:'rk_cmd',kind:'Operación',w:2,req:s=>s.rocketPts>=48,title:'Quedarte con todo un barrio',
+ text:()=>'Un barrio entero depende de la organización... o de nadie. Los jefes quieren que lo controles de forma permanente.',
+ opts:[O('Ganarte a los vecinos con favores',[35,35,30],[C('carisma',8,4),C('cuidado',6,2)],['Te ven como un protector y el barrio no te suelta.',{rocketPts:4,inc:{rkOps:1},moral:-1,st:{cuidado:1}}],['Algunos te creen y otros no.',{rocketPts:1}],['Te descubren la jugada y se rebelan.',{rocketPts:-3,heat:2}]),
+  O('Asegurar el control con presencia armada',[30,30,40],[C('valor',8,4),['p',1]],['Nadie vuelve a levantar la voz.',{rocketPts:4,inc:{rkOps:1},moral:-2}],['Los controlás un tiempo, pero hay resentimiento.',{rocketPts:1}],['Los vecinos se organizan y te sacan a patadas.',{rocketPts:-3,heat:2}])]},
 // ===== Rocket: robar Pokémon =====
 {id:'rkp_novato',pool:'rk_pk',kind:'Robo de Pokémon',w:3,req:s=>true,title:'Una plaza llena de entrenadores',
  text:()=>'En la plaza hay decenas de chicos con sus Pokémon sueltos, distraídos. Los jefes aceptan cantidad, pero pagan mejor por un ejemplar que casi nadie tiene.',
@@ -1408,7 +1549,7 @@ const EV=[
  text:()=>'En el fondo de un depósito abandonado encontrás a un Pokémon herido, atado a una caja. Su dueño no está.',
  opts:[O('Curarlo con paciencia',[35,35,30],[C('cuidado',6,3)],['Se recupera y decide quedarse con vos.',{gainWild:1,moral:1,st:{cuidado:1}}],['Lo curás, pero se escapa apenas puede.',{moral:1}],['Se asusta, te muerde y el ruido atrae a alguien.',{heat:1,time:1}]),
   O('Llevártelo sin que nadie te vea',[30,30,40],[C('sigilo',6,3)],['Salís con el Pokémon sin dejar rastro.',{gainWild:1,moral:-1}],['No encontrás cómo sacarlo.',{}],['Alguien te ve cargándolo.',{heat:2,moral:-1}])]},
-{id:'rk_enfermos',pool:'rocket',kind:'Misión',w:3,req:s=>true,title:'Pokémon robados enfermos',
+{id:'rk_enfermos',pool:'rocket',kind:'Misión',w:3,req:s=>s.rocketPts<30,title:'Pokémon robados enfermos',
  text:()=>'Un cargamento de Pokémon robados llegó enfermo al escondite. Si no los ponés en condiciones, la organización pierde plata.',
  opts:[O('Cuidarlos vos mismo',[35,35,30],[C('cuidado',6,3)],['Los dejás sanos y tus superiores toman nota.',{rocketPts:2,st:{cuidado:1}}],['Salvás a la mayoría.',{rocketPts:1}],['Algunos empeoran y te echan la culpa.',{time:1}]),
   O('Venderlos rápido a un comprador',[35,30,35],[C('carisma',6,3)],['Cerrás un buen negocio y te quedás con una piedra.',{rocketPts:2,stone:1,moral:-1}],['Los vendés a precio bajo.',{rocketPts:1,moral:-1}],['El comprador sospecha y avisa a la policía.',{heat:2}])]},
@@ -1554,12 +1695,12 @@ const EV=[
   O('Pedirle con paciencia que te enseñe',[40,40,20],[C('carisma',5,3)],['Le gusta tu respeto y te muestra cómo moverte.',{st:{sigilo:2},flag:{mentor_sigilo:true}}],['Te da un par de consejos.',{st:{sigilo:1},flag:{mentor_sigilo:true}}],['No le interesa enseñar.',{time:1}])]}
 ];
 // En los trabajos turbios y del Equipo Rocket lo que sobra del neutral va sobre todo a «bien»: más «mal» significaría más Heat y arrestos injustos
-const HEAT_POOLS=['shady','rocket','rk_pk','rk_it','rk_hunt','rk_black'];
+const HEAT_POOLS=['shady','rocket','rk_cmd','rk_pk','rk_it','rk_hunt','rk_black'];
 EV.forEach(e=>{if(HEAT_POOLS.includes(e.pool))for(const o of e.opts)if(!o.sure)o.base=capNeutral(o.base0,0.7);});
 EV.forEach(e=>{e.opts.forEach(o=>{o.irrev=!!o.irrev;});});
 // La reputación cuenta en los eventos sociales: ayudar a la gente y cualquier desafío donde pese el Carisma (no en los turbios ni en los de Rocket)
 EV.forEach(e=>{
-  if(e.pool==='shady'||e.pool==='rocket'||(e.also&&(e.also.includes('shady')||e.also.includes('rocket'))))return;
+  if(e.pool==='shady'||e.pool==='rocket'||e.pool==='rk_cmd'||(e.also&&(e.also.includes('shady')||e.also.includes('rocket'))))return;
   e.opts.forEach(o=>{if(o.sure)return;if(e.pool==='help'||(o.mods||[]).some(m=>(m[0]==='s'||m[0]==='c')&&m[1]==='carisma'))o.mods.push(['r']);});
 });
 
@@ -1663,6 +1804,7 @@ function endSeason(s,seasons){
 }
 
 // ===================== Puntaje, logros y epílogo =====================
+const RK_OPS_PTS=35,RK_OPS_CAP=12; // cada operación de mando exitosa (Teniente en adelante) suma al puntaje de quien sigue el camino Rocket
 const END_FLAT=600; // mismo puntaje base para todos los finales: así nadie fuerza uno solo por el puntaje
 const END_BASE=Object.fromEntries(Object.keys(ENDINGS).map(k=>[k,END_FLAT]));
 const ALL_TYPES=[...new Set(MON.flatMap(m=>m.types))];
@@ -1727,6 +1869,7 @@ function scoreOf(s){
     ['Poder del equipo ('+Math.round(tp)+')',Math.max(0,Math.round((tp-300)*0.8))],
     ['Logros ('+ach.length+(ach.length===1?' logro':' logros')+' × 40)',ach.length*40]
   ];
+  if(s.rocket){const n=Math.min(RK_OPS_CAP,s.counters.rkOps||0);parts.splice(parts.length-1+0,0,['Operaciones de mando ('+n+' × '+RK_OPS_PTS+')',n*RK_OPS_PTS]);}
   if(goal)parts.push(['Final antes de tiempo ('+(MAXT-s.t)+' estaciones sobrantes × 3)',(MAXT-s.t)*3]);
   const total=parts.reduce((a,p)=>a+p[1],0);
   return {total,parts,ach};
@@ -1881,7 +2024,7 @@ function guideSections(){
    '<b>Mercado:</b> por visita podés hacer hasta '+MK_LIMITS.trades+' cambios de Pokémon repetidos, '+MK_LIMITS.swaps+' de piedras y '+MK_LIMITS.evos+' evoluciones por intercambio. La Pepita de oro suma 1 cambio de cada tipo. Cada visita ocupa una estación.',
    '<b>Legendarios y raros:</b> los legendarios piden medallas (o ser Coleccionista con 100+ especies). Mew aparece por rumores y, con la Pokédex casi completa, de forma garantizada. Snorlax se consigue por evento, no salvaje.'])}`]);
   S.push(['🗺️ Zonas de exploración',`<p>Cada zona se abre con las <b>medallas</b> que pide <i>o</i> con un <b>poder de equipo</b> suficiente. Si tu vocación es Coleccionista o Profesor, las medallas no cuentan: solo el poder.</p>`+li(ZONES.map(z=>`<b>${esc(z.name)}</b>: `+(z.id==='celeste'?'8 medallas o '+CELESTE_DEX+' especies en la Pokédex (Coleccionista y Profesor: solo la Pokédex)':z.need?z.need+' medalla'+(z.need===1?'':'s')+' o poder de equipo '+zonePower(z.need):'libre'))) ]);
-  S.push(['🏅 Gimnasios y Liga',`<p>Antes de cada combate ves tu chance de ganar y qué la sube o baja. Se calcula así: parte de 40 y suma o resta la <b>ventaja de tipos</b> de tu equipo (cobertura y debilidades), tu <b>poder frente al del rival</b> (hasta +30 / −60), el tamaño del equipo, tu Valor, el Amuleto de la Suerte (+3), la vocación Campeón (+3) y un bono por intentos anteriores (hasta +10). El resultado queda entre 5% y 95%.</p>
+  S.push(['🏅 Gimnasios y Liga',`<p>Antes de cada combate ves tu chance de ganar y qué la sube o baja. Se calcula así: parte de 40 y suma o resta la <b>ventaja de tipos</b> de tu equipo (cuantos más Pokémon tengan ataques fuertes contra los del rival, más suma: hasta +24; ir con todo agua contra un gimnasio de fuego pesa mucho), la <b>defensa de tipos</b> (resta hasta −14 si tus Pokémon son débiles a los del rival y suma hasta +8 si los resisten), tu <b>poder frente al del rival</b> (hasta +30 / −60), el tamaño del equipo, tu Valor, el Amuleto de la Suerte (+3), la vocación Campeón (+3) y un bono por intentos anteriores (hasta +10). El resultado queda entre 5% y 95%.</p>
   <p>Si ganás un gimnasio: medalla, +1 de reputación y +1 Valor. Si perdés: −1 de reputación y +2% de chance la próxima vez contra ese líder (hasta +6%).</p>`+
   li(GYMS.map((g,i)=>`<b>${i+1}. ${esc(g.leader)}</b> (${esc(g.city)}, tipo ${esc(g.type)}) · poder ${g.pw}`))+
   `<p><b>Liga Pokémon:</b> hace falta tener las 8 medallas y ${LEAGUE_AGE} años. Son 5 combates seguidos: si caés en uno, el intento termina ahí. En la Liga no hay bono por intentos anteriores, y el intento ocupa una estación; si caés, te cuesta dos.</p>`+li(LEAGUE.map(g=>`${esc(g.leader)} (${esc(g.type)}) · poder ${g.pw}`))]);
@@ -1889,7 +2032,7 @@ function guideSections(){
   S.push(['🎭 Vocaciones y orígenes',`<p>Elegís una vocación a los 12 años. Da un impulso, pero no te encierra en un camino.</p>`+li(Object.keys(VOCS).map(k=>`<b>${esc(VOCS[k].name)}</b>: ${esc(VOCS[k].hint)}`))+`<p>El origen define tus stats iniciales, un Pokémon extra y un objeto propio:</p>`+li(ORIGINS.map(o=>`<b>${esc(o.name)}</b>: ${Object.keys(o.st).map(k=>'+'+o.st[k]+' '+SL[k]).join(', ')}${o.rep?', +'+o.rep+' reputación':''} · ${esc(o.mon)}${o.item&&ITEMS[o.item]?' · '+esc(ITEMS[o.item].name)+': '+esc(ITEMS[o.item].desc):''}`))]);
   S.push(['🅡 Equipo Rocket',`<p>Podés unirte por una oferta (aparece con ciertas condiciones: conciencia baja, vocación Aspirante a Rocket, origen Carmín o Familia, entre otras). <b>Una vez adentro no podés irte</b>, y gimnasios, Liga y «ayudar a la gente» quedan fuera de tu alcance sin importar tu vocación.</p>
   ${li(['<b>Rangos:</b> '+RK_RANKS.map(r=>r[1]+' ('+r[0]+')').join(' · ')+'. El máximo es '+ROCKET_MAX+' puntos.',
-   '<b>Misiones:</b> trabajo sucio (el que más rango da), robar Pokémon (muchos comunes o pocos raros), robar objetos, cacería ilegal y mercado negro (necesitás un Pokémon repetido).',
+   '<b>Misiones:</b> trabajo sucio (el que más rango da; desde Teniente, a los 30 puntos de rango, pasan a ser <b>operaciones de mando</b>: asaltos dirigidos, bandas rivales, funcionarios, disputas en la cúpula y, desde Comandante, golpes enormes. Cada operación exitosa suma 35 puntos al puntaje final, hasta 12), robar Pokémon (muchos comunes o pocos raros), robar objetos, cacería ilegal y mercado negro (necesitás un Pokémon repetido).',
    '<b>Heat:</b> es lo que sabe la policía de vos. Con 5 te arrestan y el juego termina. Baja 1 por estación (en Rocket, 1 cada 2). «Mantener un perfil bajo» lo baja en 2.',
    '<b>Pase libre:</b> te salva una vez del arresto (se consume, Heat baja a 2) y vence a los '+PASE_HASTA+' años.',
    '<b>Giovanni:</b> al llegar al Alto mando podés desafiarlo. Si ganás, la organización es tuya. Si perdés podés prepararte y volver a intentarlo.'])}`]);
@@ -1898,7 +2041,7 @@ function guideSections(){
   S.push(['⭐ Reputación, conciencia y Heat',`${li(['<b>Reputación</b> (de −10 a 20): sube cuando ayudás o resolvés bien frente a otros, baja cuando fallás o hacés el ridículo. Suma o resta hasta +10 / −6 puntos en los eventos sociales. A los 5, 10 y 15 la gente te hace un regalo (una piedra, un Pokémon y el Amuleto de la Suerte). Rangos: '+REP_RANKS.slice().reverse().map(r=>r[1]).join(', ')+'.','<b>Conciencia</b> (de −10 a 10): sube con decisiones buenas y baja con robos y trabajos turbios. Abre algunas ofertas (como la del Equipo Rocket) y cuenta en la historia final.','<b>Heat</b> (de 0 a 5): ver Equipo Rocket.'])}`]);
   S.push(['🎒 Objetos',li(Object.keys(ITEMS).filter(k=>!ITEMS[k].stone&&k!=='corona').map(k=>`<b>${esc(ITEMS[k].name)}</b>: ${esc(ITEMS[k].desc)}`))+`<p><b>Piedras evolutivas</b> (Fuego, Hoja, Lunar, Trueno, Agua): hacen evolucionar a ciertos Pokémon. Las encontrás explorando, en eventos y en el mercado. Se usan desde la Mochila.</p>`]);
   S.push(['🏁 Finales',`<p>Cuando cumplís la condición de uno o más finales, el juego te deja <b>elegir cuál cerrar</b> (o seguir jugando por otro). No depende de tu vocación. Si llegás a las ${MAXT} estaciones, se cierra solo el de mayor prioridad entre los que cumplís: Campeón, jefe Rocket, Líder de gimnasio, Maestro Pokémon, Profesor.</p>`+li(Object.keys(ENDINGS).map(k=>`<b>${ENDINGS[k].e} ${esc(ENDINGS[k].t)}</b>: ${esc(END_COND[k]||'')}`))]);
-  S.push(['⭐ Puntaje y logros',`<p>Al terminar recibís un puntaje que se suma así:</p>${li(['Final: '+END_FLAT+' puntos, los mismos para todos los finales (ninguno vale más que otro; lo que suma es cómo jugaste)','4 puntos por especie en la Pokédex','10 por especie shiny','25 por medalla','3 por cada punto de stat por encima de los 10 iniciales','Poder del equipo: (poder − 300) × 0,8','40 por logro','3 por cada estación que te sobra si cerrás antes del tiempo límite'])}<p>Calificación: ${GRADES.slice(0,-1).map(g=>g[1]+' desde '+g[0]).join(' · ')}.</p><p><b>Logros</b> (se guardan en tu navegador):</p>`+li(ACHS.filter(a=>!a.hid).map(a=>`${achIc(a,22)} <b>${esc(a.n)}</b>: ${esc(a.d)}`))+`<p>Además hay <b>${ACH_HID} logros ocultos</b>: difíciles y específicos, que no muestran su condición hasta que los conseguís (solo una pista). Cuentan igual para el puntaje.</p>`]);
+  S.push(['⭐ Puntaje y logros',`<p>Al terminar recibís un puntaje que se suma así:</p>${li(['Final: '+END_FLAT+' puntos, los mismos para todos los finales (ninguno vale más que otro; lo que suma es cómo jugaste)','4 puntos por especie en la Pokédex','10 por especie shiny','25 por medalla','3 por cada punto de stat por encima de los 10 iniciales','Poder del equipo: (poder − 300) × 0,8','40 por logro','35 por cada operación de mando exitosa del Equipo Rocket (hasta 12 operaciones)','3 por cada estación que te sobra si cerrás antes del tiempo límite'])}<p>Calificación: ${GRADES.slice(0,-1).map(g=>g[1]+' desde '+g[0]).join(' · ')}.</p><p><b>Logros</b> (se guardan en tu navegador):</p>`+li(ACHS.filter(a=>!a.hid).map(a=>`${achIc(a,22)} <b>${esc(a.n)}</b>: ${esc(a.d)}`))+`<p>Además hay <b>${ACH_HID} logros ocultos</b>: difíciles y específicos, que no muestran su condición hasta que los conseguís (solo una pista). Cuentan igual para el puntaje.</p>`]);
   S.push(['📖 Glosario',li([
    '<b>Estación:</b> una unidad de tiempo (3 meses). El juego dura '+MAXT+'.',
    '<b>Poder:</b> la fuerza de un Pokémon o de tu equipo (promedio).',
@@ -1928,6 +2071,7 @@ function fnavUpdate(){
   el.innerHTML=(b?`<button onclick="${b}">← Volver</button>`:'')+`<button onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆ Arriba</button>`;
   el.style.display='flex';
 }
+document.addEventListener('touchstart',function(){},{passive:true}); // para que :active funcione también en iOS
 window.addEventListener('scroll',fnavUpdate,{passive:true});window.addEventListener('resize',fnavUpdate);
 // ---------- Audio: música ambiental y efectos generados con WebAudio ----------
 // No usa archivos ni música con derechos de autor: todo se sintetiza en el navegador. Si querés usar tus propios temas (libres de derechos),
@@ -2137,9 +2281,169 @@ function achIc(a,sz,locked){
 const itemIc=(k,sz)=>ICONS_IT[k]?`<img class="spr" width="${sz||24}" height="${sz||24}" alt="" src="${ICONS_IT[k]}">`:'';
 const iconBall=sz=>`<img width="${sz}" height="${sz}" alt="Equipo" src="${ICON_BALL}">`;
 const iconDex=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Pokédex"><rect x="2" y="1" width="12" height="14" rx="1" fill="#c9383f"/><rect x="2" y="1" width="12" height="14" rx="1" fill="none" stroke="#5b1217"/><rect x="4" y="3" width="8" height="6" fill="#9fd8e8" stroke="#1d3a52"/><rect x="5" y="4" width="3" height="2" fill="#eaf7fb"/><circle cx="5" cy="12" r="1.3" fill="#ffd84a" stroke="#5b1217" stroke-width=".4"/><rect x="8" y="11" width="4" height="1" fill="#5b1217"/><rect x="8" y="13" width="4" height="1" fill="#5b1217"/></svg>`;
+
+// ===== Sprites animados y efectos visuales =====
+// Los sprites estáticos están incluidos en el archivo. Las versiones animadas (Gen 5, del repositorio PokeAPI/sprites) se cargan
+// aparte cuando hay conexión; si no cargan, queda el sprite estático. Nada del juego depende de ellas.
+const VFX={cfg:{anim:true,fx:'full'}};
+try{const c=JSON.parse(localStorage.getItem('aventura_pokemon_vfx')||'null');if(c&&typeof c==='object')Object.assign(VFX.cfg,c);}catch(e){}
+const vfxSave=()=>{try{localStorage.setItem('aventura_pokemon_vfx',JSON.stringify(VFX.cfg));}catch(e){}};
+const motionOK=()=>!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+const fxLevel=()=>motionOK()?VFX.cfg.fx:'off';
+const ANIM_BASE='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/';
+const animState={},animWait={};
+const animUrl=(n,sh)=>ANIM_BASE+(sh?'shiny/':'')+n+'.gif';
+function aspr(n,sh,size){
+  const h=spr(n,sh,size);
+  return(VFX.cfg.anim&&h.startsWith('<img class="spr"'))?h.replace('<img class="spr"','<img class="spr aspr" data-an="'+animUrl(n,sh)+'"'):h;
+}
+function animate(root){
+  if(!VFX.cfg.anim||!root||!root.querySelectorAll)return;
+  const L=[...root.querySelectorAll('img[data-an]')];if(root.matches&&root.matches('img[data-an]'))L.push(root);
+  for(const im of L){
+    const u=im.dataset.an,st=animState[u];
+    if(st==='ok'){if(im.src!==u)im.src=u;}
+    else if(st==='load')animWait[u].push(im);
+    else if(!st){
+      animState[u]='load';animWait[u]=[im];
+      const t=new Image();
+      t.onload=()=>{animState[u]='ok';(animWait[u]||[]).forEach(x=>{if(x.isConnected)x.src=u;});delete animWait[u];};
+      t.onerror=()=>{animState[u]='bad';delete animWait[u];};
+      t.src=u;
+    }
+  }
+}
+const FX={cv:null,cx:null,w:0,h:0,P:[],A:[],raf:0,last:0,season:-1,n:-1,fw:0};
+const FX_COL=['#ffd34d','#ff5a5f','#4ad1ff','#7dff7a','#c77dff','#ffffff'];
+function fxInit(){
+  if(FX.cv)return;
+  const c=document.createElement('canvas');c.id='fxc';document.body.appendChild(c);FX.cv=c;FX.cx=c.getContext('2d');
+  const fl=document.createElement('div');fl.id='fxflash';document.body.appendChild(fl);
+  fxSize();addEventListener('resize',fxSize);document.addEventListener('visibilitychange',()=>{if(!document.hidden)fxKick();});
+}
+function fxSize(){const d=Math.min(window.devicePixelRatio||1,2);FX.w=innerWidth;FX.h=innerHeight;FX.cv.width=FX.w*d;FX.cv.height=FX.h*d;FX.cx.setTransform(d,0,0,d,0,0);}
+function fxKick(){if(!FX.raf&&!document.hidden)FX.raf=requestAnimationFrame(fxLoop);}
+function fxDraw(cx,p,a){
+  cx.save();cx.globalAlpha=Math.max(0,Math.min(1,a));cx.translate(p.x,p.y);cx.rotate(p.rot||0);cx.fillStyle=p.col;
+  if(p.k==='rect')cx.fillRect(-p.s/2,-p.s/3,p.s,p.s*.66);
+  else if(p.k==='star'){cx.beginPath();for(let i=0;i<8;i++){const r=i%2?p.s*.28:p.s,an=i*Math.PI/4;cx.lineTo(Math.cos(an)*r,Math.sin(an)*r);}cx.closePath();cx.fill();}
+  else if(p.k==='petal'){cx.beginPath();cx.ellipse(0,0,p.s,p.s*.55,0,0,6.283);cx.fill();}
+  else if(p.k==='glow'){const g=cx.createRadialGradient(0,0,0,0,0,p.s);g.addColorStop(0,p.col);g.addColorStop(1,'rgba(255,220,100,0)');cx.fillStyle=g;cx.beginPath();cx.arc(0,0,p.s,0,6.283);cx.fill();}
+  else{cx.beginPath();cx.arc(0,0,p.s,0,6.283);cx.fill();}
+  cx.restore();
+}
+function fxAmb(si,init){
+  const r=Math.random,x=r()*FX.w,y=init?r()*FX.h:-12;
+  if(si===0)return{k:'petal',x,y,s:3+r()*3,vx:18+r()*22,vy:28+r()*30,sw:22,ph:r()*6,sp:1+r(),rot:r()*6,vr:1+r()*2,col:r()<.5?'#ffb7d5':'#ffd6e8',al:.7};
+  if(si===1)return{k:'glow',x,y:init?r()*FX.h:FX.h*(.3+r()*.7),s:8+r()*7,vx:6,vy:-10-r()*10,sw:14,ph:r()*6,sp:.8+r(),rot:0,vr:0,col:'rgba(255,230,110,1)',al:.6};
+  if(si===2)return{k:'petal',x,y,s:4+r()*3,vx:14+r()*20,vy:32+r()*30,sw:28,ph:r()*6,sp:.8+r(),rot:r()*6,vr:1+r()*3,col:['#e07a2a','#c0392b','#d4a017','#a0522d'][(r()*4)|0],al:.8};
+  return{k:'dot',x,y,s:1.4+r()*2,vx:6,vy:34+r()*40,sw:16,ph:r()*6,sp:.6+r(),rot:0,vr:0,col:'#ffffff',al:.8};
+}
+function fxLoop(ts){
+  FX.raf=0;const cx=FX.cx;const dt=Math.min(.05,(ts-(FX.last||ts))/1000);FX.last=ts;
+  cx.clearRect(0,0,FX.w,FX.h);
+  for(const a of FX.A){
+    a.ph+=dt*a.sp;a.x+=(a.vx+Math.sin(a.ph)*a.sw)*dt;a.y+=a.vy*dt;a.rot+=a.vr*dt;
+    if(a.y>FX.h+16||a.x>FX.w+20||a.y<-30){Object.assign(a,fxAmb(FX.season,false));if(a.k==='glow')a.y=FX.h+10;}
+    fxDraw(cx,a,a.k==='glow'?(.45+.45*Math.sin(a.ph*2)):a.al);
+  }
+  for(let i=FX.P.length-1;i>=0;i--){
+    const p=FX.P[i];p.life-=dt;
+    if(p.life<=0||p.y>FX.h+30){FX.P.splice(i,1);continue;}
+    p.vy+=p.g*dt;p.vx*=p.drag;p.x+=p.vx*dt;p.y+=p.vy*dt;p.rot+=p.vr*dt;
+    fxDraw(cx,p,p.life/p.fade);
+  }
+  if(FX.P.length||FX.A.length)FX.raf=requestAnimationFrame(fxLoop);
+  else{cx.clearRect(0,0,FX.w,FX.h);FX.last=0;}
+}
+function fxAmbient(){
+  fxInit();const lv=fxLevel();
+  const si=(S_&&typeof S_.t==='number'&&phase!=='title')?S_.t%4:0;
+  const n=lv==='full'?24:lv==='low'?10:0;
+  if(FX.season!==si||FX.n!==n){FX.season=si;FX.n=n;FX.A=[];for(let i=0;i<n;i++)FX.A.push(fxAmb(si,true));}
+  if(n)fxKick();
+}
+const fxScale=n=>fxLevel()==='low'?Math.ceil(n/2):n;
+function fxBurst(x,y,col,n,gold){
+  if(fxLevel()==='off')return;fxInit();n=fxScale(n||26);
+  for(let i=0;i<n;i++){const an=Math.random()*6.283,sp=70+Math.random()*230;
+    FX.P.push({k:i%3===0?'star':'dot',x,y,vx:Math.cos(an)*sp,vy:Math.sin(an)*sp-40,g:260,drag:.985,s:i%3===0?4+Math.random()*4:1.5+Math.random()*2.5,rot:0,vr:(Math.random()-.5)*8,col:gold?(i%2?'#ffd34d':'#fff3b0'):(col||'#fff'),life:.7+Math.random()*.7,fade:.5});}
+  fxKick();
+}
+function fxConfetti(n,cols){
+  if(fxLevel()==='off')return;fxInit();n=fxScale(n||100);cols=cols||FX_COL;
+  for(let i=0;i<n;i++)FX.P.push({k:'rect',x:Math.random()*FX.w,y:-10-Math.random()*FX.h*.25,vx:(Math.random()-.5)*160,vy:60+Math.random()*220,g:140,drag:.995,s:6+Math.random()*6,rot:Math.random()*6,vr:(Math.random()-.5)*14,col:cols[(Math.random()*cols.length)|0],life:3+Math.random()*2.2,fade:1});
+  fxKick();
+}
+function fxFireworks(ms){
+  if(fxLevel()==='off')return;fxInit();const tok=++FX.fw;const t0=Date.now();
+  const one=()=>{if(tok!==FX.fw||Date.now()-t0>ms)return;
+    const x=FX.w*(.15+Math.random()*.7),y=FX.h*(.12+Math.random()*.32),col=FX_COL[(Math.random()*5)|0],n=fxScale(46);
+    for(let i=0;i<n;i++){const an=i/n*6.283+Math.random()*.2,sp=90+Math.random()*150;
+      FX.P.push({k:'dot',x,y,vx:Math.cos(an)*sp,vy:Math.sin(an)*sp,g:90,drag:.975,s:2+Math.random()*1.8,rot:0,vr:0,col,life:1.1+Math.random()*.6,fade:.6});}
+    fxKick();setTimeout(one,320+Math.random()*260);};
+  one();
+}
+function fxFlash(col){
+  if(fxLevel()==='off')return;fxInit();const f=$('fxflash');if(!f)return;
+  f.style.background=col||'#fff';f.classList.remove('on');void f.offsetWidth;f.classList.add('on');
+}
+function fxShake(el){if(fxLevel()==='off'||!el)return;el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');setTimeout(()=>el.classList.remove('shake'),500);}
+function fxSparkEl(el,kind){
+  if(!el||!el.isConnected)return;const r=el.getBoundingClientRect();if(!r.width)return;
+  const x=r.left+r.width/2,y=r.top+r.height/2;
+  if(kind==='gold'){fxBurst(x,y,null,44,true);}
+  else if(kind==='violet')fxBurst(x,y,'#c4a8ff',32);
+  else fxBurst(x,y,'#bfe6ff',26);
+}
+function fxEvolve(l,done){
+  if(fxLevel()==='off'){done&&done();return;}
+  const nm=(l.t.match(/^\S+\s+¡?(.+?) evoluciona/)||[])[1];const from=MON.find(x=>x.name===nm);
+  const srcOf=(n,sh)=>(sh?SPRS[n]:SPRN[n])||'';
+  const ov=document.createElement('div');ov.id='evo';
+  const txt=l.t.replace(/^\S+\s+/,'');
+  ov.innerHTML=`<div class="rays"></div><div class="stage"><img class="old" alt="" src="${srcOf(from?from.n:l.sp,false)}"><img class="new aspr" alt="" data-an="${animUrl(l.sp,l.sh)}" src="${srcOf(l.sp,l.sh)}"><div></div></div><div class="cap">${esc(txt)}</div><div class="sub hint">Tocá para continuar</div><div class="flash"></div>`;
+  document.body.appendChild(ov);animate(ov);
+  let closed=false;const t0=Date.now();
+  const close=()=>{if(closed)return;closed=true;ov.style.transition='opacity .35s';ov.style.opacity=0;setTimeout(()=>{ov.remove();done&&done();},360);};
+  ov.onclick=()=>{if(Date.now()-t0>700)close();};
+  setTimeout(()=>{if(closed)return;ov.classList.add('go');sfx('evolve');fxBurst(FX.w/2,FX.h*.45,null,70,true);fxConfetti(40,['#ffd34d','#ffffff','#9fe3ff']);},1800);
+  setTimeout(close,6500);
+}
+function vsHtml(vs,band){
+  const cls=band?(band==='g'?' vwin':' vlose'):'';
+  return `<div class="vs${cls}" id="vs"><div class="vsm">${aspr(vs.me.sp,vs.me.sh,84)}</div><div class="vst">VS</div><div class="vsf">${aspr(vs.foe,false,84)}</div></div>`;
+}
+function vsResolve(band){const v=$('vs');if(v){v.classList.remove('vwin','vlose');void v.offsetWidth;v.classList.add(band==='g'?'vwin':'vlose');}}
+function fxResult(r,band){
+  if(fxLevel()==='off')return;
+  const big=/Gimnasio|Giovanni|Liga/.test(r.title||'');
+  const mk=$('rmark');const rc=mk?mk.getBoundingClientRect():null;
+  if(band==='g'){if(rc)fxBurst(rc.left,rc.top+rc.height/2,null,big?44:24,true);if(big){fxConfetti(110);}}
+  else if(band==='b'){fxShake($('main'));fxFlash('rgba(255,60,60,.3)');}
+}
+function revealFx(r){
+  if(!r||r.__fx)return;r.__fx=1;
+  if(fxLevel()==='off')return;
+  const all=(r.lines||[]).concat(phase==='eventres'?(ctx.carry||[]):[]);
+  const L=all.filter(x=>x&&typeof x==='object'&&x.sp);
+  const txt=all.map(x=>typeof x==='string'?x:(x&&x.t)||'').join(' ');
+  const evo=L.find(x=>/evoluci/i.test(x.t));
+  const go=()=>{
+    $('main').querySelectorAll('.lsp').forEach((el,i)=>{
+      const sp=el.querySelector('.spr');
+      const kind=el.classList.contains('sh')?'gold':el.classList.contains('rare')?'violet':(el.classList.contains('cap')||el.classList.contains('evo'))?'white':null;
+      if(kind)setTimeout(()=>fxSparkEl(sp,kind),200+i*170);
+    });
+    if(L.some(x=>x.sh&&x.cap))fxConfetti(70,['#ffd34d','#fff3b0','#ffffff']);
+    if(/nuevo Campe/.test(txt)){fxFireworks(3600);fxConfetti(120);}
+  };
+  evo?fxEvolve(evo,go):go();
+}
 function lineHtml(l){
   if(typeof l==='string')return `<div>${esc(l)}</div>`;
-  return `<div>${l.sp?spr(l.sp,l.sh,40):''}${l.item?itemIc(l.item,28):''}${l.badge!=null?badgeIc(l.badge,32):''}<span>${esc(l.t)}</span></div>`;
+  const cls=l.sp?' class="lsp'+(l.cap?' cap':'')+(l.rare?' rare':'')+(l.sh?' sh':'')+(/evoluci/i.test(l.t)?' evo':'')+'"':'';
+  return `<div${cls}>${l.sp?aspr(l.sp,l.sh,l.cap?56:48):''}${l.item?itemIc(l.item,28):''}${l.badge!=null?badgeIc(l.badge,32):''}<span>${esc(l.t)}</span></div>`;
 }
 // Varias partidas guardadas (hasta MAX_SLOTS). La partida vieja de una sola ranura se importa sola la primera vez.
 const SLOTS_KEY='aventura_pokemon_slots',NAME_KEY='aventura_pokemon_nombre',MAX_SLOTS=5;
@@ -2164,7 +2468,7 @@ function sides(){
   const s=viewS();const tm=teamMons(s);const cnt={};stacks(s).forEach(e=>cnt[e.sp+(e.shiny?'s':'n')]=e.count);
   let l=`<div class="card"><h3>${iconBall(20)} Equipo ${tm.length}/6 · poder ${Math.round(teamPower(s))}</h3>`;
   for(let i=0;i<6;i++){const m=tm[i];
-    l+=m?`<div class="slot">${spr(m.sp,m.shiny,40)}<div style="min-width:0"><div class="nm">${esc(nameOf(m))}</div><div class="sub">${typeChips(mon(m.sp).types)} Poder ${pw(m)}</div></div><button title="Sacar del equipo" ${tm.length<=1?'disabled':''} onclick="G.rm(${m.id})">Sacar</button></div>`
+    l+=m?`<div class="slot">${aspr(m.sp,m.shiny,44)}<div style="min-width:0"><div class="nm">${esc(nameOf(m))}</div><div class="sub">${typeChips(mon(m.sp).types)} Poder ${pw(m)}</div></div><button title="Sacar del equipo" ${tm.length<=1?'disabled':''} onclick="G.rm(${m.id})">Sacar</button></div>`
       :`<div class="slot empty" style="cursor:pointer" onclick="G.modal('team')">Lugar libre · tocá para agregar</div>`;}
   l+=`<div class="row" style="margin-top:6px"><button class="btn sm" onclick="G.modal('team')">Cambiar equipo</button><button class="btn sm" title="Arma el equipo con mayor poder" onclick="G.auto()">⚡ Automático</button></div></div>`;
   $('sideL').innerHTML=l;
@@ -2242,7 +2546,7 @@ function spin(r){
   let done=false,raf=0;
   const finish=()=>{if(done)return;done=true;cancelAnimationFrame(raf);r.shown=true;mk.style.left=r.roll+'%';
     {const od=r.odds||(r.rollInfo&&r.rollInfo.odds)||[50,0,50];const band=r.band||(r.roll<od[0]?'g':r.roll<od[0]+od[1]?'n':'b');
-     sfx(band==='g'?(r.rollInfo&&/Gimnasio|Giovanni/.test(r.title||'')?'win':'good'):band==='n'?'neutral':'bad');}
+     sfx(band==='g'?(r.rollInfo&&/Gimnasio|Giovanni/.test(r.title||'')?'win':'good'):band==='n'?'neutral':'bad');vsResolve(band);fxResult(r,band);setTimeout(()=>revealFx(r),400);}
     if(ctx.hold){ctx.hold=false;head();const st=$('stats');if(st){st.classList.remove('statflash');void st.offsetWidth;st.classList.add('statflash');}}
     const a=$('rres'),b=$('rcont');if(a){a.classList.remove('rhide');a.classList.add('rshow');}if(b){b.classList.remove('rhide');b.classList.add('rshow');}};
   bar.onclick=finish;
@@ -2260,7 +2564,7 @@ function view(){
   const s=S_;
   if(phase==='title'){
     const slots=readSlots();
-    M.innerHTML=`<div class="card center"><div class="big">🎒</div><h2>Mi aventura Pokémon</h2>
+    M.innerHTML=`<div class="card center"><div class="parade">${[6,9,3,25,59,94,149,150,151,130,131,143,65,68,134,135,136,38,103,142,148,6,9].sort(()=>Math.random()-.5).slice(0,4).map(n=>aspr(n,false,76)).join('')}</div><h2>Mi aventura Pokémon</h2>
     <p class="mb">Empezás con 10 años y un solo Pokémon. Cada estación decidís qué hacer: explorar, entrenar, desafiar gimnasios, estudiar… o algo peor. Tu carrera dura hasta los 35 años y tus decisiones marcan quién vas a ser.</p>
     <p class="sub mb">Hay puntos sin retorno, probabilidades que dependen de tus stats, tu equipo y tus objetos, y muchos finales posibles.</p></div>
     ${ctx.titleMsg?`<div class="pend">${esc(ctx.titleMsg)}</div>`:''}
@@ -2269,7 +2573,7 @@ function view(){
     <div class="row"><button class="btn" onclick="G.modal('hall')">🏛️ Salón de la Fama</button><button class="btn" onclick="G.modal('logros')"><span style="display:inline-flex;vertical-align:middle;margin-right:6px">${iconTrophy(18)}</span>Logros</button></div>
     <button class="btn" onclick="G.modal('guia')">📖 Guía y glosario</button>
     <button class="btn" onclick="G.modal('opts')"><span style="display:inline-flex;vertical-align:middle;margin-right:6px">${iconSound(18)}</span>Sonido y música</button>
-    <p class="sub center">Proyecto de fans sin fines de lucro. No está afiliado a Nintendo, Game Freak, Creatures ni The Pokémon Company. Los sprites de Pokémon y de objetos vienen incluidos en el archivo (tomados del repositorio público PokeAPI/sprites) y pertenecen a sus dueños: Nintendo, Game Freak y The Pokémon Company.</p>`;
+    <p class="sub center">Proyecto de fans sin fines de lucro. No está afiliado a Nintendo, Game Freak, Creatures ni The Pokémon Company. Los sprites de Pokémon y de objetos vienen incluidos en el archivo (tomados del repositorio público PokeAPI/sprites; las versiones animadas de los Pokémon se cargan desde ese mismo repositorio cuando hay conexión) y pertenecen a sus dueños: Nintendo, Game Freak y The Pokémon Company.</p>`;
   }else if(phase==='name'){
     M.innerHTML=`<div class="card"><div class="kicker">Antes de empezar</div><h2>¿Cómo te llamás?</h2><p class="sub mb">Es el nombre que van a usar tu rival Blue y la historia final. Se recuerda para la próxima partida, pero podés cambiarlo cuando quieras.</p>
     <input type="text" id="pname" maxlength="14" value="${esc(ctx.name!==undefined?ctx.name:loadName())}" placeholder="Tu nombre" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--tx);border-radius:10px;padding:10px 12px;font:inherit;font-size:17px" onkeydown="if(event.key==='Enter')G.nameOk()"></div>
@@ -2281,7 +2585,7 @@ function view(){
       ORIGINS.map(o=>`<button class="btn" onclick="G.origin('${o.id}')"><div class="t">${esc(o.name)}</div><div class="d">${esc(o.desc)}</div><div class="d">${Object.keys(o.st).map(k=>'+'+o.st[k]+' '+SL[k]).join(' · ')}${o.rep?' · +'+o.rep+' Reputación':''} · Pokémon inicial extra: ${o.mon}</div><div class="d">${itemIc(o.item,20)} Objeto inicial: ${esc(ITEMS[o.item].name)} — ${esc(ITEMS[o.item].desc)}</div></button>`).join('');
   }else if(phase==='starter'){
     M.innerHTML=`<div class="card"><div class="kicker">Paso 2 de 2</div><h2>Tu primer Pokémon</h2><p>Con 10 años, el Profesor Oak te deja elegir uno.</p></div>`+
-      startersFor(ctx.origin).map(n=>{const m=mon(num(n));return `<button class="btn" onclick="G.starter('${n}')"><div class="mi">${spr(m.n,false,48)}<div class="t">${n} ${typeChips(m.types)}</div></div></button>`;}).join('')+`<button class="btn" onclick="G.backOrigin()">← Cambiar de origen</button>`;
+      startersFor(ctx.origin).map(n=>{const m=mon(num(n));return `<button class="btn" onclick="G.starter('${n}')"><div class="mi">${aspr(m.n,false,56)}<div class="t">${n} ${typeChips(m.types)}</div></div></button>`;}).join('')+`<button class="btn" onclick="G.backOrigin()">← Cambiar de origen</button>`;
   }else if(phase==='menu'){
     const acts=getActions(s);
     M.innerHTML=(s.notice?`<div class="card" style="border-color:var(--acc)"><p>${esc(s.notice)}</p></div>`:'')+`<div class="card"><div class="kicker">Esta estación</div><h2>¿Qué vas a hacer?</h2><p class="sub">Cada decisión ocupa una estación (3 meses). Quedan ${Math.max(0,MAXT-s.t)} hasta los 35 años.</p></div>`+
@@ -2289,7 +2593,7 @@ function view(){
   }else if(phase==='rkmenu'){
     const hasDup=dupes(s).length>0;
     M.innerHTML=`<div class="card"><div class="kicker">Equipo Rocket</div><h2>¿Qué misión tomás?</h2><p class="sub">Rango: <b>${rocketRank(s)}</b> (${s.rocketPts}/${ROCKET_MAX})${rocketNext(s)?` · próximo: <b>${rocketNext(s).name}</b> a los ${rocketNext(s).at}`:''} · Heat <b>${s.heat}</b>/5. Cada misión ocupa una estación y termina en un evento. Solo el trabajo sucio sube mucho el rango; el resto te trae botín.</p></div>`+
-      RK_KINDS.map(k=>{const capped=s.rocketPts>=ROCKET_MAX;const ok=k.id==='black'?hasDup:k.id==='work'?!capped:true;return `<button class="btn" ${ok?'':'disabled'} onclick="G.rk('${k.id}')"><div class="t">${k.icon} ${esc(k.title)}</div><div class="d">${esc(k.desc)}</div><div class="d">🎁 ${esc(k.gain)}</div><div class="d">⚠ Riesgo: ${esc(k.risk)}</div><div class="d">📈 Practicás <b>${SL[k.prac]}</b> (${(s.prac&&s.prac[k.prac])||0}/${pracNeed(s.st[k.prac])})</div>${ok?'':`<div class="why">${k.id==='work'?'Ya estás en el máximo rango: ahora podés desafiar a Giovanni':'Necesitás Pokémon repetidos para ofrecer'}</div>`}</button>`;}).join('')+`<button class="btn" onclick="G.back()">← Volver</button>`;
+      RK_KINDS.map(k0=>{const k=rkKind(k0.id,s);const capped=s.rocketPts>=ROCKET_MAX;const ok=k0.id==='black'?hasDup:k0.id==='work'?!capped:true;return `<button class="btn" ${ok?'':'disabled'} onclick="G.rk('${k0.id}')"><div class="t">${k.icon} ${esc(k.title)}</div><div class="d">${esc(k.desc)}</div><div class="d">🎁 ${esc(k.gain)}</div><div class="d">⚠ Riesgo: ${esc(k.risk)}</div><div class="d">📈 Practicás <b>${SL[k.prac]}</b> (${(s.prac&&s.prac[k.prac])||0}/${pracNeed(s.st[k.prac])})</div>${ok?'':`<div class="why">${k0.id==='work'?'Ya estás en el máximo rango: ahora podés desafiar a Giovanni':'Necesitás Pokémon repetidos para ofrecer'}</div>`}</button>`;}).join('')+`<button class="btn" onclick="G.back()">← Volver</button>`;
   }else if(phase==='trainmode'){
     const nc=new Set(s.box.filter(evoLvl).map(m=>m.sp)).size;
     M.innerHTML=`<div class="card"><div class="kicker">Entrenar</div><h2>¿Cómo entrenás?</h2><p class="sub">Cualquiera de los dos ocupa una estación.</p></div>
@@ -2326,7 +2630,7 @@ function view(){
   }else if(phase==='gymprev'){
     const gym=GYMS[s.badges.length];
     const pv=gymPreview(s,gym);
-    M.innerHTML=`<div class="card"><div class="kicker">Gimnasio de ${esc(gym.city)}</div><div class="hero">${spr(aceNum(gym),false,64)}<div><h2 style="margin:0">${esc(gym.leader)} · tipo ${esc(gym.type)}</h2><div class="sub">${badgeIc(s.badges.length,22)} Medalla ${s.badges.length+1} de 8</div></div></div><div class="sub mb">Su equipo:</div><div class="mi mb" style="flex-wrap:wrap">${gym.team.map(n=>{const m=mon(num(n));return `<span class="mi">${spr(m.n,false,36)}<span class="sub">${esc(m.name)}</span></span>`;}).join('')}</div>
+    M.innerHTML=`<div class="card"><div class="kicker">Gimnasio de ${esc(gym.city)}</div><div class="hero">${aspr(aceNum(gym),false,72)}<div><h2 style="margin:0">${esc(gym.leader)} · tipo ${esc(gym.type)}</h2><div class="sub">${badgeIc(s.badges.length,22)} Medalla ${s.badges.length+1} de 8</div></div></div><div class="sub mb">Su equipo:</div><div class="mi mb" style="flex-wrap:wrap">${gym.team.map(n=>{const m=mon(num(n));return `<span class="mi">${spr(m.n,false,36)}<span class="sub">${esc(m.name)}</span></span>`;}).join('')}</div>
     <div class="odds"><span class="g" style="width:${pv.win}%">${pv.win}% victoria</span><span class="b" style="width:${100-pv.win}%">${100-pv.win}%</span></div>
     <div class="lines">${pv.parts.filter(p=>p[1]!==0).map(p=>`<div>${p[1]>0?'🟢 +':'🔴 '}${p[1]}% · ${esc(p[0])}</div>`).join('')}</div>
     <p class="sub" style="margin-top:8px">Cambiá tu equipo (el botón de la Poké Ball) para mejorar la cobertura de tipos antes de desafiar.</p></div>
@@ -2370,9 +2674,9 @@ function view(){
     const anim=!!ri&&!r.shown&&!reduced;
     const pr=ri?ri.odds.map(x=>Math.round(x)):[];
     const bar=ri?`<div class="rbar" id="rbar" title="Tocá para saltar la animación"><span class="g" style="width:${ri.odds[0]}%">${pr[0]>=8?ri.labels[0]+' '+pr[0]+'%':''}</span>${ri.odds[1]>0?`<span class="n" style="width:${ri.odds[1]}%">${pr[1]>=8?pr[1]+'%':''}</span>`:''}<span class="b" style="width:${ri.odds[2]}%">${pr[2]>=8?ri.labels[2]+' '+pr[2]+'%':''}</span><i class="rmark" id="rmark" style="left:${anim?0:ri.roll}%"></i></div>${anim&&ri.build&&ri.build.steps.length?'<div class="rsteps" id="rsteps"></div>':''}`:'';
-    M.innerHTML=`<div class="card"><div class="kicker">Resultado</div><h2>${esc(r.title)}</h2>${bar}<div id="rres" class="${anim?'rhide':''}"><div class="lines">${r.lines.map(lineHtml).join('')}</div></div></div><button class="btn primary ${anim?'rhide':''}" id="rcont" onclick="G.next()">Continuar</button>`;
+    M.innerHTML=`<div class="card"><div class="kicker">Resultado</div><h2>${esc(r.title)}</h2>${r.vs&&r.vs.me?vsHtml(r.vs,(!anim&&ri)?(ri.roll<ri.odds[0]?'g':'b'):null):''}${bar}<div id="rres" class="${anim?'rhide':''}"><div class="lines">${r.lines.map(lineHtml).join('')}</div></div></div><button class="btn primary ${anim?'rhide':''}" id="rcont" onclick="G.next()">Continuar</button>`;
     ctx.hold=anim;if(anim)head();
-    if(anim){r.roll=ri.roll;rollAnim(r);}else if(!ri)sfxReport(r);
+    if(anim){r.roll=ri.roll;rollAnim(r);}else{if(!ri)sfxReport(r);setTimeout(()=>revealFx(r),300);}
   }else if(phase==='event'){
     const ev=ctx.ev;
     M.innerHTML=`<div class="card"><div class="kicker">${kindIc(ev.kind)}${esc(ev.kind||'Evento')}</div><h2>${esc(ev.title)}</h2><p>${esc(typeof ev.text==='function'?ev.text(s):ev.text)}</p></div>`+
@@ -2396,12 +2700,12 @@ function view(){
     const bar=r.sure?'':`<div class="rbar" id="rbar" title="Tocá para saltar la animación"><span class="g" style="width:${r.odds[0]}%">${pr[0]>=8?pr[0]+'%':''}</span><span class="n" style="width:${r.odds[1]}%">${pr[1]>=8?pr[1]+'%':''}</span><span class="b" style="width:${r.odds[2]}%">${pr[2]>=8?pr[2]+'%':''}</span>${r.shown||anim?`<i class="rmark" id="rmark" style="left:${anim?0:r.roll}%"></i>`:''}</div>${anim&&r.build&&r.build.steps.length?'<div class="rsteps" id="rsteps"></div>':''}`;
     M.innerHTML=`<div class="card"><div class="kicker">${esc(ctx.ev.title)}</div>${bar}<div id="rres" class="${anim?'rhide':''}">${r.sure?'':`<span class="band ${r.band}">${bn[r.band]}</span>`}<p>${esc(r.text)}</p>${r.lines.length||(ctx.carry&&ctx.carry.length)?`<div class="lines">${r.lines.concat(ctx.carry||[]).map(lineHtml).join('')}</div>`:''}</div></div><button class="btn primary ${anim?'rhide':''}" id="rcont" onclick="G.fin()">Continuar</button>`;
     ctx.hold=anim;if(anim)head();
-    if(anim)rollAnim(r);
+    if(anim)rollAnim(r);else setTimeout(()=>revealFx(r),300);
   }else if(phase==='ending'){
-    if(!s.__es){s.__es=true;sfx(s.ending==='arrested'?'bad':'win');}
+    if(!s.__es){s.__es=true;sfx(s.ending==='arrested'?'bad':'win');if(s.ending!=='arrested')setTimeout(()=>{fxFireworks(3800);fxConfetti(120);},500);}
     const e=ENDINGS[s.ending];const info=recordResult(s);const sc=info.sc;
     const earned=new Set(sc.ach.map(a=>a.id));const fresh=new Set(info.fresh);
-    M.innerHTML=`<div class="card center"><div class="big">${ENDING_SP[s.ending]?spr(num(ENDING_SP[s.ending]),false,112):e.e}</div><div class="kicker">Final</div><h2>${esc(e.t)}</h2><p>${esc(e.x)}</p></div>
+    M.innerHTML=`<div class="card center"><div class="big${ENDING_SP[s.ending]?' endspr':''}">${ENDING_SP[s.ending]?aspr(num(ENDING_SP[s.ending]),false,128):e.e}</div><div class="kicker">Final</div><h2>${esc(e.t)}</h2><p>${esc(e.x)}</p></div>
     <div class="card"><h3 class="mb">📜 ${s.name?`La historia de ${esc(s.name)}`:'Tu historia'}</h3>${epilogue(s).map(x=>`<p class="mb">${esc(x)}</p>`).join('')}</div>
     <div class="card center"><div class="kicker">Puntaje final</div><div style="font-size:48px;font-weight:900;line-height:1.1">${sc.total}</div><div class="sub">Calificación <b style="color:var(--acc);font-size:20px">${gradeOf(sc.total)}</b>${info.rank?` · puesto ${info.rank} en tus mejores partidas`:''}</div>
       <div class="lines" style="text-align:left">${sc.parts.map(p=>`<div style="justify-content:space-between"><span>${esc(p[0])}</span><b>+${p[1]}</b></div>`).join('')}</div>
@@ -2429,7 +2733,7 @@ function modal(kind){
     h=`<h3>${iconDex(20)} Pokédex · ${dexN(s)}/151</h3><div class="dex">`+MON.map(m=>{const c=s.dex[m.n];return `<div class="dx ${c?'':'no'}" title="${esc((c?m.name:'#'+m.n+' (todavía no lo tenés)')+' · poder base '+m.bst+' · tocá para ver dónde conseguirlo')}" onclick="G.modal('dexmon:${m.n}')"><div class="num">#${String(m.n).padStart(3,'0')} ${s.shinyDex[m.n]?'✨':''}</div>${c?spr(m.n,!!s.shinyDex[m.n],40)+esc(m.name):'<span style="font-size:22px">?</span>'}</div>`;}).join('')+`</div>`;
   }else if(kind.startsWith('dexmon:')){
     const n=+kind.slice(7),m=mon(n),w=whereIs(n);
-    h=`<h3>${spr(n,false,40)} #${String(n).padStart(3,'0')} ${esc(m.name)} ${typeChips(m.types)}</h3>
+    h=`<h3>${aspr(n,false,56)} #${String(n).padStart(3,'0')} ${esc(m.name)} ${typeChips(m.types)}</h3>
     <p class="sub mb">${s.dex[n]?'<span class="tag-own">ya lo tenés</span>':'<span class="tag-new">NUEVO para tu Pokédex</span>'} · Poder base <b>${m.bst}</b> (cada ejemplar varía ±10%: entre ${Math.round(m.bst*0.9)} y ${Math.round(m.bst*1.1)}).</p>
     <p class="sub mb"><b>Cómo conseguirlo:</b></p>
     <ul class="sub mb" style="padding-left:18px;margin:0 0 10px">${w.map(x=>`<li style="margin-bottom:6px">${x.t}</li>`).join('')}</ul>
@@ -2492,7 +2796,12 @@ function modal(kind){
       <div style="display:block;width:100%"><div style="display:flex;justify-content:space-between"><b>Efectos</b><b id="auvs">${Math.round(c.sfx*100)}%</b></div><input type="range" min="0" max="100" value="${Math.round(c.sfx*100)}" style="width:100%" oninput="G.auSet('sfx',this.value)"></div>
     </div>
     <div class="row" style="margin-top:12px"><button class="btn" id="aumute" onclick="G.auMute()">${c.muted?'Activar sonido':'Silenciar todo'}</button><button class="btn" onclick="G.auTest()">Probar efecto</button></div>
-    <p class="sub" style="margin-top:10px">Los efectos suenan solo en momentos clave: cuando se suman los modificadores de una tirada, al revelarse el resultado, y cuando evoluciona o aparece un shiny.</p>`;
+    <p class="sub" style="margin-top:10px">Los efectos suenan solo en momentos clave: cuando se suman los modificadores de una tirada, al revelarse el resultado, y cuando evoluciona o aparece un shiny.</p>
+    <h3 style="margin-top:18px">✨ Animaciones y efectos</h3>
+    <p class="sub mb">Los sprites animados se cargan desde el repositorio PokeAPI/sprites cuando hay conexión; si no, se ven quietos. Los efectos (confeti, destellos, evolución, clima de la estación) se dibujan dentro del juego.</p>
+    <div class="row"><button class="btn ${VFX.cfg.anim?'primary':''}" onclick="G.vfxSet('anim',${!VFX.cfg.anim})">Sprites animados: ${VFX.cfg.anim?'sí':'no'}</button></div>
+    <div class="row" style="margin-top:8px">${[['full','Efectos completos'],['low','Reducidos'],['off','Apagados']].map(x=>`<button class="btn ${VFX.cfg.fx===x[0]?'primary':''}" onclick="G.vfxSet('fx','${x[0]}')">${x[1]}</button>`).join('')}</div>
+    <p class="sub" style="margin-top:8px">Si tu dispositivo pide «reducir movimiento», los efectos quedan apagados. Los sprites animados se aplican desde la próxima pantalla.</p>`;
   }else if(kind==='guia'){
     const S=guideSections();
     h=`<h3>📖 Guía y glosario</h3><p class="sub mb">Todo lo que puede generar dudas. Escribí una palabra para filtrar (por ejemplo «heat», «tipo» o «giovanni») o tocá una sección para abrirla.</p>
@@ -2606,6 +2915,7 @@ const G={
     phase=e?'ending':'menu';view();window.scrollTo(0,0);
   },
   auSet(k,v){AU.cfg[k]=Math.max(0,Math.min(100,+v))/100;if(AU.cfg.muted&&+v>0)AU.cfg.muted=false;auSave();auStart();auVol();auMusicSync();const e=$(k==='music'?'auvm':'auvs');if(e)e.textContent=Math.round(AU.cfg[k]*100)+'%';const b=$('aumute');if(b)b.textContent=AU.cfg.muted?'Activar sonido':'Silenciar todo';if(k==='sfx')sfx('tick',true,2);},
+  vfxSet(k,v){VFX.cfg[k]=v;vfxSave();fxAmbient();modal('opts');},
   auMute(){AU.cfg.muted=!AU.cfg.muted;auSave();auStart();auVol();auMusicSync();const b=$('aumute');if(b)b.textContent=AU.cfg.muted?'Activar sonido':'Silenciar todo';},
   auTest(){auStart();sfx('good');},
   modal(k){ctx.bagStone=null;if(k!=='team')ctx.pend=null;modal(k);},close(){$('modal').classList.remove('on');ctx.bagStone=null;ctx.pend=null;ctx.modalKind=null;head();},
@@ -2627,9 +2937,10 @@ const G={
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('modal').classList.contains('on')&&ctx.modalKind)G.close();});
 $('modal').addEventListener('click',e=>{if(e.target===$('modal')&&ctx.modalKind)G.close();});
 view();
-iconify(document.body);
+iconify(document.body);animate(document.body);fxAmbient();
+new MutationObserver(()=>{fxAmbient();}).observe($('main'),{childList:true});
 new MutationObserver(fnavUpdate).observe($('main'),{childList:true});fnavUpdate();
-new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes){if(n.nodeType===1)iconify(n);else if(n.nodeType===3&&n.parentNode)iconify(n.parentNode);}}).observe(document.body,{childList:true,subtree:true});
+new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes){if(n.nodeType===1){iconify(n);animate(n);}else if(n.nodeType===3&&n.parentNode)iconify(n.parentNode);}}).observe(document.body,{childList:true,subtree:true});
 </script>
 </body>
 </html>

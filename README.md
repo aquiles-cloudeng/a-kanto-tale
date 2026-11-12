@@ -31,6 +31,11 @@ Cada estación elegís una acción (explorar, entrenar, estudiar, el mercado, gi
 - Hay un menú **Sonido y música** (desde el título o el ícono del parlante) para subir, bajar o silenciar la música y los efectos. La música no empieza hasta que tocás algo en la página (así lo exigen los navegadores).
 - Si querés usar tus propios temas **libres de derechos** (por ejemplo, con licencia CC0), subilos al repositorio y poné sus rutas en la constante `MUSIC_FILES` del `index.html`. No incluyas música comercial de terceros.
 
+## Animaciones y efectos
+Los Pokémon se ven animados (los sprites animados de Gen 5 del repositorio público PokeAPI/sprites) en la selección de inicial, el panel del equipo, los gimnasios, las capturas, las evoluciones y los finales. **Se cargan desde internet cuando hay conexión**: no van dentro del archivo (los 151 normales y shiny pesarían unos 11 MB). Si no cargan, el juego muestra el sprite quieto que sí viene incluido, y todo funciona igual.
+
+También hay efectos dibujados dentro del juego: destellos y marco especial al capturar (más fuertes con raros y shiny), una pantalla de evolución, la pantalla «VS» en gimnasios, confeti y fuegos artificiales en victorias y finales, y partículas según la estación (pétalos, luciérnagas, hojas, nieve). En «Sonido y música» podés apagar los sprites animados o reducir/apagar los efectos. Si tu dispositivo pide «reducir movimiento», los efectos quedan apagados.
+
 ## Privacidad
 
 El juego es un único archivo (`index.html`). No envía datos a ningún servidor, no usa analíticas ni cookies de seguimiento y no carga recursos externos: los sprites vienen incluidos en el archivo y el audio se genera en tu navegador.
