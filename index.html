@@ -154,6 +154,10 @@ img.em{height:1.15em;width:auto;vertical-align:-.22em;image-rendering:pixelated}
 @media (max-width:380px){.stat .n{font-size:16px}.chip{font-size:12px}.se{width:26px}}
 
 /* ===== Efectos visuales ===== */
+#fxbg{position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:0}
+#wrap{position:relative;z-index:1}
+.card,.stat,.chip{background:rgba(21,32,51,.8)}
+.lines>div,.btn{background:rgba(28,42,66,.82)}
 #fxc{position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:50}
 #fxflash{position:fixed;inset:0;pointer-events:none;z-index:49;opacity:0}
 #fxflash.on{animation:fxflash .6s ease-out}
@@ -378,7 +382,7 @@ const LEAGUE=[
 ];
 // Dificultad: el poder de gimnasios y Liga crece en rampa (Brock queda igual; Giovanni y la Liga reciben el aumento completo).
 // Calibrado con un bot que juega "atento" para que gane la Liga con unas 10 estaciones de sobra. Para suavizar: bajá GYM_RAMP (40 = más holgado, 60 = muy duro).
-const GYM_RAMP=62;
+const GYM_RAMP=56;
 const GYM_RAMP_F={brock:0,misty:0.15,surge:0.3,erika:0.45,koga:0.6,sabrina:0.75,blaine:0.9,giovanni:1,lorelei:1,bruno:1,agatha:1,lance:1,blue:1};
 for(const g of GYMS.concat(LEAGUE))g.pw+=Math.round(GYM_RAMP*(GYM_RAMP_F[g.id]||0));
 
@@ -837,9 +841,9 @@ function applyFx(s,fx){
 // ---------- Gimnasios ----------
 // Ventaja de tipos: se mide Pokémon por Pokémon contra TODO el equipo rival (no alcanza con tener uno solo que le gane).
 // OFF = cuánto daño hace en promedio cada uno de los tuyos; DEF = cuánto daño reciben en promedio.
-const TYPE_OFF_K=18,TYPE_DEF_K=10;
+const TYPE_OFF_K=18,TYPE_DEF_W=3.5,TYPE_DEF_R=1.2;
 function typeMatchup(mons,opps){
-  let off=0,inc=0,n=0,adv=0,weakN=0;
+  let off=0,inc=0,n=0,adv=0,weakN=0,def=0;
   for(const m of mons){
     const mt=mon(m.sp).types;let oi=0,ii=0;
     for(const o of opps){
@@ -850,8 +854,9 @@ function typeMatchup(mons,opps){
     }
     oi/=opps.length;ii/=opps.length;off+=oi;inc+=ii;n++;
     if(oi>=1.5)adv++;if(ii>=1.5)weakN++;
+    def+=ii>1?-(ii-1)*TYPE_DEF_W:(1-ii)*TYPE_DEF_R; // cada Pokémon débil resta por sí solo; resistir suma mucho menos, así las resistencias no tapan las debilidades
   }
-  return n?{off:off/n,inc:inc/n,adv,weakN,n}:{off:1,inc:1,adv:0,weakN:0,n:0};
+  return n?{off:off/n,inc:inc/n,adv,weakN,n,def}:{off:1,inc:1,adv:0,weakN:0,n:0,def:0};
 }
 function gymPreview(s,gym){
   const mons=teamMons(s);const opps=gym.team.map(num);
@@ -871,7 +876,7 @@ function gymPreview(s,gym){
   const tp=teamPower(s);
   const parts=[];
   parts.push(['Ventaja de tipos ('+tm.adv+' de '+tm.n+' Pokémon con ventaja)',clamp((tm.off-1)*TYPE_OFF_K,-14,24)]);
-  parts.push(['Defensa de tipos ('+tm.weakN+' de '+tm.n+' con debilidad)',clamp((1-tm.inc)*TYPE_DEF_K,-14,8)]);
+  parts.push(['Defensa de tipos ('+tm.weakN+' de '+tm.n+' con debilidad)',clamp(tm.def,-20,6)]);
   parts.push(['Poder del equipo ('+Math.round(tp)+') vs rival ('+Math.round(oppPower)+')',clamp((tp-oppPower)*0.40,-60,30)]);
   parts.push(['Tamaño del equipo ('+mons.length+')',clamp(mons.length*1.5-4.5,-4.5,4.5)]);
   parts.push(['Valor '+s.st.valor,clamp((s.st.valor-4)*0.6,-5,8)]);
@@ -2024,7 +2029,7 @@ function guideSections(){
    '<b>Mercado:</b> por visita podés hacer hasta '+MK_LIMITS.trades+' cambios de Pokémon repetidos, '+MK_LIMITS.swaps+' de piedras y '+MK_LIMITS.evos+' evoluciones por intercambio. La Pepita de oro suma 1 cambio de cada tipo. Cada visita ocupa una estación.',
    '<b>Legendarios y raros:</b> los legendarios piden medallas (o ser Coleccionista con 100+ especies). Mew aparece por rumores y, con la Pokédex casi completa, de forma garantizada. Snorlax se consigue por evento, no salvaje.'])}`]);
   S.push(['🗺️ Zonas de exploración',`<p>Cada zona se abre con las <b>medallas</b> que pide <i>o</i> con un <b>poder de equipo</b> suficiente. Si tu vocación es Coleccionista o Profesor, las medallas no cuentan: solo el poder.</p>`+li(ZONES.map(z=>`<b>${esc(z.name)}</b>: `+(z.id==='celeste'?'8 medallas o '+CELESTE_DEX+' especies en la Pokédex (Coleccionista y Profesor: solo la Pokédex)':z.need?z.need+' medalla'+(z.need===1?'':'s')+' o poder de equipo '+zonePower(z.need):'libre'))) ]);
-  S.push(['🏅 Gimnasios y Liga',`<p>Antes de cada combate ves tu chance de ganar y qué la sube o baja. Se calcula así: parte de 40 y suma o resta la <b>ventaja de tipos</b> de tu equipo (cuantos más Pokémon tengan ataques fuertes contra los del rival, más suma: hasta +24; ir con todo agua contra un gimnasio de fuego pesa mucho), la <b>defensa de tipos</b> (resta hasta −14 si tus Pokémon son débiles a los del rival y suma hasta +8 si los resisten), tu <b>poder frente al del rival</b> (hasta +30 / −60), el tamaño del equipo, tu Valor, el Amuleto de la Suerte (+3), la vocación Campeón (+3) y un bono por intentos anteriores (hasta +10). El resultado queda entre 5% y 95%.</p>
+  S.push(['🏅 Gimnasios y Liga',`<p>Antes de cada combate ves tu chance de ganar y qué la sube o baja. Se calcula así: parte de 40 y suma o resta la <b>ventaja de tipos</b> de tu equipo (cuantos más Pokémon tengan ataques fuertes contra los del rival, más suma: hasta +24; ir con todo agua contra un gimnasio de fuego pesa mucho), la <b>defensa de tipos</b> (cada Pokémon tuyo débil a los del rival resta por sí solo, hasta −20 en total; los que resisten suman bastante menos, hasta +6, así que las resistencias no tapan las debilidades), tu <b>poder frente al del rival</b> (hasta +30 / −60), el tamaño del equipo, tu Valor, el Amuleto de la Suerte (+3), la vocación Campeón (+3) y un bono por intentos anteriores (hasta +10). El resultado queda entre 5% y 95%.</p>
   <p>Si ganás un gimnasio: medalla, +1 de reputación y +1 Valor. Si perdés: −1 de reputación y +2% de chance la próxima vez contra ese líder (hasta +6%).</p>`+
   li(GYMS.map((g,i)=>`<b>${i+1}. ${esc(g.leader)}</b> (${esc(g.city)}, tipo ${esc(g.type)}) · poder ${g.pw}`))+
   `<p><b>Liga Pokémon:</b> hace falta tener las 8 medallas y ${LEAGUE_AGE} años. Son 5 combates seguidos: si caés en uno, el intento termina ahí. En la Liga no hay bono por intentos anteriores, y el intento ocupa una estación; si caés, te cuesta dos.</p>`+li(LEAGUE.map(g=>`${esc(g.leader)} (${esc(g.type)}) · poder ${g.pw}`))]);
@@ -2200,6 +2205,7 @@ const SVG_TROPHY='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" sh
 const ICONS_SVG={book:'data:image/svg+xml;utf8,'+encodeURIComponent(SVG_BOOK),diary:'data:image/svg+xml;utf8,'+encodeURIComponent(SVG_DIARY),trophy:'data:image/svg+xml;utf8,'+encodeURIComponent(SVG_TROPHY)};
 const svgIc=(k,sz)=>`<img class="spr" width="${sz}" height="${sz}" alt="" src="${ICONS_SVG[k]}">`;
 const iconTrophy=sz=>svgIc('trophy',sz);
+const iconGear=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Opciones"><rect x="7" y="1" width="2" height="2" fill="#cfeaf2"/><rect x="7" y="13" width="2" height="2" fill="#cfeaf2"/><rect x="1" y="7" width="2" height="2" fill="#cfeaf2"/><rect x="13" y="7" width="2" height="2" fill="#cfeaf2"/><rect x="3" y="3" width="2" height="2" fill="#9fd8e8"/><rect x="11" y="3" width="2" height="2" fill="#9fd8e8"/><rect x="3" y="11" width="2" height="2" fill="#9fd8e8"/><rect x="11" y="11" width="2" height="2" fill="#9fd8e8"/><rect x="4" y="4" width="8" height="8" fill="#cfeaf2"/><rect x="6" y="6" width="4" height="4" fill="#1b2a44"/></svg>`;
 const iconSound=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Sonido"><rect x="1" y="5" width="3" height="6" fill="#9fd8e8"/><rect x="4" y="4" width="2" height="8" fill="#9fd8e8"/><rect x="6" y="3" width="2" height="10" fill="#cfeaf2"/><rect x="10" y="6" width="1" height="4" fill="#f2c94c"/><rect x="12" y="4" width="1" height="8" fill="#f2c94c"/><rect x="14" y="2" width="1" height="12" fill="#f2c94c"/></svg>`;
 
 const esc=x=>String(x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -2285,7 +2291,7 @@ const iconDex=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-r
 // ===== Sprites animados y efectos visuales =====
 // Los sprites estáticos están incluidos en el archivo. Las versiones animadas (Gen 5, del repositorio PokeAPI/sprites) se cargan
 // aparte cuando hay conexión; si no cargan, queda el sprite estático. Nada del juego depende de ellas.
-const VFX={cfg:{anim:true,fx:'full'}};
+const VFX={cfg:{anim:true,fx:'full',amb:40}};
 try{const c=JSON.parse(localStorage.getItem('aventura_pokemon_vfx')||'null');if(c&&typeof c==='object')Object.assign(VFX.cfg,c);}catch(e){}
 const vfxSave=()=>{try{localStorage.setItem('aventura_pokemon_vfx',JSON.stringify(VFX.cfg));}catch(e){}};
 const motionOK=()=>!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -2314,14 +2320,16 @@ function animate(root){
   }
 }
 const FX={cv:null,cx:null,w:0,h:0,P:[],A:[],raf:0,last:0,season:-1,n:-1,fw:0};
+const FX_AMB_MAX=140; // partículas de estación con la barra al 100%
 const FX_COL=['#ffd34d','#ff5a5f','#4ad1ff','#7dff7a','#c77dff','#ffffff'];
 function fxInit(){
   if(FX.cv)return;
   const c=document.createElement('canvas');c.id='fxc';document.body.appendChild(c);FX.cv=c;FX.cx=c.getContext('2d');
+  const bg=document.createElement('canvas');bg.id='fxbg';document.body.insertBefore(bg,document.body.firstChild);FX.bg=bg;FX.bx=bg.getContext('2d');
   const fl=document.createElement('div');fl.id='fxflash';document.body.appendChild(fl);
   fxSize();addEventListener('resize',fxSize);document.addEventListener('visibilitychange',()=>{if(!document.hidden)fxKick();});
 }
-function fxSize(){const d=Math.min(window.devicePixelRatio||1,2);FX.w=innerWidth;FX.h=innerHeight;FX.cv.width=FX.w*d;FX.cv.height=FX.h*d;FX.cx.setTransform(d,0,0,d,0,0);}
+function fxSize(){const d=Math.min(window.devicePixelRatio||1,2);FX.w=innerWidth;FX.h=innerHeight;FX.cv.width=FX.bg.width=FX.w*d;FX.cv.height=FX.bg.height=FX.h*d;FX.cx.setTransform(d,0,0,d,0,0);FX.bx.setTransform(d,0,0,d,0,0);}
 function fxKick(){if(!FX.raf&&!document.hidden)FX.raf=requestAnimationFrame(fxLoop);}
 function fxDraw(cx,p,a){
   cx.save();cx.globalAlpha=Math.max(0,Math.min(1,a));cx.translate(p.x,p.y);cx.rotate(p.rot||0);cx.fillStyle=p.col;
@@ -2341,11 +2349,11 @@ function fxAmb(si,init){
 }
 function fxLoop(ts){
   FX.raf=0;const cx=FX.cx;const dt=Math.min(.05,(ts-(FX.last||ts))/1000);FX.last=ts;
-  cx.clearRect(0,0,FX.w,FX.h);
+  cx.clearRect(0,0,FX.w,FX.h);const bx=FX.bx;bx.clearRect(0,0,FX.w,FX.h);
   for(const a of FX.A){
     a.ph+=dt*a.sp;a.x+=(a.vx+Math.sin(a.ph)*a.sw)*dt;a.y+=a.vy*dt;a.rot+=a.vr*dt;
     if(a.y>FX.h+16||a.x>FX.w+20||a.y<-30){Object.assign(a,fxAmb(FX.season,false));if(a.k==='glow')a.y=FX.h+10;}
-    fxDraw(cx,a,a.k==='glow'?(.45+.45*Math.sin(a.ph*2)):a.al);
+    fxDraw(bx,a,a.k==='glow'?(.45+.45*Math.sin(a.ph*2)):a.al);
   }
   for(let i=FX.P.length-1;i>=0;i--){
     const p=FX.P[i];p.life-=dt;
@@ -2354,13 +2362,14 @@ function fxLoop(ts){
     fxDraw(cx,p,p.life/p.fade);
   }
   if(FX.P.length||FX.A.length)FX.raf=requestAnimationFrame(fxLoop);
-  else{cx.clearRect(0,0,FX.w,FX.h);FX.last=0;}
+  else{cx.clearRect(0,0,FX.w,FX.h);bx.clearRect(0,0,FX.w,FX.h);FX.last=0;}
 }
 function fxAmbient(){
-  fxInit();const lv=fxLevel();
+  fxInit();
   const si=(S_&&typeof S_.t==='number'&&phase!=='title')?S_.t%4:0;
-  const n=lv==='full'?24:lv==='low'?10:0;
-  if(FX.season!==si||FX.n!==n){FX.season=si;FX.n=n;FX.A=[];for(let i=0;i<n;i++)FX.A.push(fxAmb(si,true));}
+  const n=motionOK()?Math.round(Math.max(0,Math.min(100,+VFX.cfg.amb||0))/100*FX_AMB_MAX):0;
+  if(FX.season!==si){FX.season=si;FX.A=[];FX.n=-1;}
+  if(FX.n!==n){FX.n=n;if(FX.A.length>n)FX.A.length=n;while(FX.A.length<n)FX.A.push(fxAmb(si,true));}
   if(n)fxKick();
 }
 const fxScale=n=>fxLevel()==='low'?Math.ceil(n/2):n;
@@ -2483,7 +2492,7 @@ function head(){
   sides();
   const yr=Math.min(Math.floor(s.t/4),MAXT/4-1),si=s.t%4;
   $('top').innerHTML=`<div><div class="when">Año ${yr+1} <span class="sub">de ${MAXT/4}</span> · ${10+yr} años</div><div class="seasons">${SEAS_I.map((ic,i)=>`<span class="se ${i<si?'done':i===si?'cur':''}" title="${SEAS[i]}">${ic}</span>`).join('')}<span class="sub" style="margin-left:6px">${SEAS[si]}</span></div></div>
-  <div class="tools"><button class="ico" title="Pokédex" onclick="G.modal('dex')">${iconDex(24)}</button><button class="ico" title="Equipo" onclick="G.modal('team')">${iconBall(24)}</button><button class="ico" title="Mochila" onclick="G.modal('bag')">🎒</button><button class="ico" title="Guía y glosario" onclick="G.modal('guia')">📖</button><button class="ico" title="Logros y récords" onclick="G.modal('logros')">${iconTrophy(24)}</button><button class="ico" title="Diario" onclick="G.modal('log')">📜</button><button class="ico" title="Sonido y música" onclick="G.modal('opts')">${iconSound(24)}</button></div>`;
+  <div class="tools"><button class="ico" title="Pokédex" onclick="G.modal('dex')">${iconDex(24)}</button><button class="ico" title="Equipo" onclick="G.modal('team')">${iconBall(24)}</button><button class="ico" title="Mochila" onclick="G.modal('bag')">🎒</button><button class="ico" title="Guía y glosario" onclick="G.modal('guia')">📖</button><button class="ico" title="Logros y récords" onclick="G.modal('logros')">${iconTrophy(24)}</button><button class="ico" title="Diario" onclick="G.modal('log')">📜</button><button class="ico" title="Opciones" onclick="G.modal('opts')">${iconGear(24)}</button></div>`;
   let c=(s.name?`<span class="chip">👤 <b>${esc(s.name)}</b></span>`:'')+`<span class="chip" title="Pokédex">${iconDex(16)} <b>${dexN(s)}</b>/151</span><span class="chip" title="Medallas">${s.badges.length?s.badges.map(id=>badgeIc(GYMS.findIndex(g=>g.id===id),18)).join(''):'🏅'} <b>${s.badges.length}</b>/8</span><span class="chip">✨ <b>${shinyN(s)}</b></span><span class="chip">⏳ <b>${Math.max(0,MAXT-s.t)}</b> estaciones</span>`;
   c+=`<span class="chip" style="cursor:pointer" onclick="G.modal('rep')" title="Tocá para ver cómo funciona">⭐ Reputación <b>${s.rep}</b> · ${repRank(s)}</span>`;
   if(s.voc)c+=`<span class="chip">${esc(VOCS[s.voc].name)}</span>`;
@@ -2572,7 +2581,7 @@ function view(){
     <button class="btn primary" onclick="G.new()">Nueva aventura</button>
     <div class="row"><button class="btn" onclick="G.modal('hall')">🏛️ Salón de la Fama</button><button class="btn" onclick="G.modal('logros')"><span style="display:inline-flex;vertical-align:middle;margin-right:6px">${iconTrophy(18)}</span>Logros</button></div>
     <button class="btn" onclick="G.modal('guia')">📖 Guía y glosario</button>
-    <button class="btn" onclick="G.modal('opts')"><span style="display:inline-flex;vertical-align:middle;margin-right:6px">${iconSound(18)}</span>Sonido y música</button>
+    <button class="btn" onclick="G.modal('opts')"><span style="display:inline-flex;vertical-align:middle;margin-right:6px">${iconGear(18)}</span>Opciones</button>
     <p class="sub center">Proyecto de fans sin fines de lucro. No está afiliado a Nintendo, Game Freak, Creatures ni The Pokémon Company. Los sprites de Pokémon y de objetos vienen incluidos en el archivo (tomados del repositorio público PokeAPI/sprites; las versiones animadas de los Pokémon se cargan desde ese mismo repositorio cuando hay conexión) y pertenecen a sus dueños: Nintendo, Game Freak y The Pokémon Company.</p>`;
   }else if(phase==='name'){
     M.innerHTML=`<div class="card"><div class="kicker">Antes de empezar</div><h2>¿Cómo te llamás?</h2><p class="sub mb">Es el nombre que van a usar tu rival Blue y la historia final. Se recuerda para la próxima partida, pero podés cambiarlo cuando quieras.</p>
@@ -2789,7 +2798,8 @@ function modal(kind){
     <div class="sub">No cuenta en los trabajos turbios ni en las misiones del Equipo Rocket.</div></div>`;
   }else if(kind==='opts'){
     const c=AU.cfg;
-    h=`<h3>${iconSound(20)} Sonido y música</h3>
+    h=`<h3>${iconGear(20)} Opciones</h3>
+    <h3 style="margin-top:10px">${iconSound(18)} Sonido y música</h3>
     <p class="sub mb">La música ambiental y los efectos se generan dentro del juego: no usa archivos ni música con derechos de autor. Los cambios se guardan en este navegador.</p>
     <div class="lines" style="gap:14px">
       <div style="display:block;width:100%"><div style="display:flex;justify-content:space-between"><b>Música</b><b id="auvm">${Math.round(c.music*100)}%</b></div><input type="range" min="0" max="100" value="${Math.round(c.music*100)}" style="width:100%" oninput="G.auSet('music',this.value)"></div>
@@ -2798,10 +2808,11 @@ function modal(kind){
     <div class="row" style="margin-top:12px"><button class="btn" id="aumute" onclick="G.auMute()">${c.muted?'Activar sonido':'Silenciar todo'}</button><button class="btn" onclick="G.auTest()">Probar efecto</button></div>
     <p class="sub" style="margin-top:10px">Los efectos suenan solo en momentos clave: cuando se suman los modificadores de una tirada, al revelarse el resultado, y cuando evoluciona o aparece un shiny.</p>
     <h3 style="margin-top:18px">✨ Animaciones y efectos</h3>
-    <p class="sub mb">Los sprites animados se cargan desde el repositorio PokeAPI/sprites cuando hay conexión; si no, se ven quietos. Los efectos (confeti, destellos, evolución, clima de la estación) se dibujan dentro del juego.</p>
+    <p class="sub mb">Los sprites animados se cargan desde el repositorio PokeAPI/sprites cuando hay conexión; si no, se ven quietos. Los efectos (confeti, destellos, evolución y fuegos artificiales) se dibujan dentro del juego.</p>
+    <div style="display:block;width:100%;margin-bottom:12px"><div style="display:flex;justify-content:space-between"><b>Partículas de estación</b><b id="vfxambv">${Math.round(VFX.cfg.amb)}%</b></div><input type="range" min="0" max="100" value="${Math.round(VFX.cfg.amb)}" style="width:100%" oninput="G.vfxAmb(this.value)"><div class="sub">Pétalos, luciérnagas, hojas y nieve. Más barra, más partículas; en 0 no hay ninguna.</div></div>
     <div class="row"><button class="btn ${VFX.cfg.anim?'primary':''}" onclick="G.vfxSet('anim',${!VFX.cfg.anim})">Sprites animados: ${VFX.cfg.anim?'sí':'no'}</button></div>
-    <div class="row" style="margin-top:8px">${[['full','Efectos completos'],['low','Reducidos'],['off','Apagados']].map(x=>`<button class="btn ${VFX.cfg.fx===x[0]?'primary':''}" onclick="G.vfxSet('fx','${x[0]}')">${x[1]}</button>`).join('')}</div>
-    <p class="sub" style="margin-top:8px">Si tu dispositivo pide «reducir movimiento», los efectos quedan apagados. Los sprites animados se aplican desde la próxima pantalla.</p>`;
+    <div class="sub" style="margin-top:10px"><b>Efectos</b> (confeti, destellos, evolución)</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px">${[['full','Completos'],['low','Reducidos'],['off','Apagados']].map(x=>`<button class="btn sm ${VFX.cfg.fx===x[0]?'primary':''}" style="text-align:center" onclick="G.vfxSet('fx','${x[0]}')">${x[1]}</button>`).join('')}</div>
+    <p class="sub" style="margin-top:8px">Los botones cambian el confeti, los destellos y la evolución; la barra, solo las partículas de estación. Si tu dispositivo pide «reducir movimiento», todo queda apagado. Los sprites animados se aplican desde la próxima pantalla.</p>`;
   }else if(kind==='guia'){
     const S=guideSections();
     h=`<h3>📖 Guía y glosario</h3><p class="sub mb">Todo lo que puede generar dudas. Escribí una palabra para filtrar (por ejemplo «heat», «tipo» o «giovanni») o tocá una sección para abrirla.</p>
@@ -2915,6 +2926,7 @@ const G={
     phase=e?'ending':'menu';view();window.scrollTo(0,0);
   },
   auSet(k,v){AU.cfg[k]=Math.max(0,Math.min(100,+v))/100;if(AU.cfg.muted&&+v>0)AU.cfg.muted=false;auSave();auStart();auVol();auMusicSync();const e=$(k==='music'?'auvm':'auvs');if(e)e.textContent=Math.round(AU.cfg[k]*100)+'%';const b=$('aumute');if(b)b.textContent=AU.cfg.muted?'Activar sonido':'Silenciar todo';if(k==='sfx')sfx('tick',true,2);},
+  vfxAmb(v){VFX.cfg.amb=Math.max(0,Math.min(100,+v));vfxSave();fxAmbient();const e=$('vfxambv');if(e)e.textContent=Math.round(VFX.cfg.amb)+'%';},
   vfxSet(k,v){VFX.cfg[k]=v;vfxSave();fxAmbient();modal('opts');},
   auMute(){AU.cfg.muted=!AU.cfg.muted;auSave();auStart();auVol();auMusicSync();const b=$('aumute');if(b)b.textContent=AU.cfg.muted?'Activar sonido':'Silenciar todo';},
   auTest(){auStart();sfx('good');},
