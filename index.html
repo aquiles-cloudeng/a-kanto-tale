@@ -300,6 +300,23 @@ img[src^="data:image/svg"]{image-rendering:auto}
 @keyframes scRing{0%{transform:scale(1);opacity:.8}100%{transform:scale(14);opacity:0}}
 @keyframes scSweep{from{transform:rotate(-16deg)}to{transform:rotate(16deg)}}
 @media (prefers-reduced-motion:reduce){.scene *,.zbtn *{animation:none!important}.scp{display:none}}
+/* ===== mercado: acordeón ===== */
+.acc{border:1px solid var(--line);border-radius:12px;background:var(--panel2);overflow:hidden;box-shadow:0 3px 0 #0a1220}
+.acc-h{display:flex;align-items:center;gap:10px;width:100%;padding:11px 13px;background:none;border:0;color:var(--tx);font:inherit;text-align:left;cursor:pointer}
+.acc-h:hover{background:#ffffff08}
+.acc-i{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:18px;flex:none;background:var(--c);box-shadow:inset 0 -3px 0 #0003}
+.acc-t{flex:1;font-weight:700;line-height:1.2}.acc-t small{display:block;font-weight:400;color:var(--mut);font-size:12.5px;margin-top:1px}
+.acc-n{font-size:12.5px;padding:2px 9px;border-radius:99px;background:#0003;border:1px solid var(--line);color:var(--tx);white-space:nowrap}
+.acc.off .acc-n{color:var(--mut)}
+.acc-c{width:10px;height:10px;border-right:2px solid var(--mut);border-bottom:2px solid var(--mut);transform:rotate(45deg);transition:transform .25s;margin:0 4px 3px 2px;flex:none}
+.acc.open .acc-c{transform:rotate(225deg);margin-bottom:-3px}
+.acc-b{display:grid;grid-template-rows:0fr;transition:grid-template-rows .26s ease}
+.acc.open .acc-b{grid-template-rows:1fr}
+.acc-b>div{overflow:hidden;min-height:0}
+.acc-in{padding:2px 12px 12px;display:flex;flex-direction:column;gap:7px}
+.acc-note{font-size:13px;color:var(--mut);padding:0 2px 4px;line-height:1.4}
+.mkchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}.mkchips span{font-size:12.5px;background:#0006;border:1px solid #fff2;border-radius:99px;padding:2px 9px}
+@media (prefers-reduced-motion:reduce){.acc-b,.acc-c{transition:none}}
 </style>
 </head>
 <body>
@@ -771,7 +788,7 @@ function tradeEvos(s){
   return [...seen.values()];
 }
 const marketOk=s=>dupes(s).length>0||stoneCount(s)>0||tradeEvos(s).length>0;
-const MK_LIMITS={swaps:3,trades:2,evos:2};
+const MK_LIMITS={swaps:3,trades:2,evos:1};
 const mkL=s=>({swaps:MK_LIMITS.swaps+(s.items.pepita?1:0),trades:MK_LIMITS.trades+(s.items.pepita?1:0),evos:MK_LIMITS.evos});
 function tradeCandidates(s,m){
   const L=[];
@@ -2118,7 +2135,7 @@ function guideSections(){
    '<b>Entrenar (automático):</b> todo el equipo gana +'+XP_TRAIN+' de poder (hasta +'+XP_CAP+') y hasta 8 Pokémon que evolucionan por nivel tienen chance de evolucionar: 40% + 2% por punto de Cuidado, hasta 65%.',
    '<b>Entrenar (específico):</b> elegís hasta 6 Pokémon de tu colección; solo esos ganan +'+XP_TRAIN+' y tienen chance de evolucionar. El equipo no mejora esa estación si no los incluís.',
    '<b>Evolución:</b> por nivel (entrenando), por piedra (Mochila → Usar) o por intercambio (Mercado).',
-   '<b>Mercado:</b> por visita podés hacer hasta '+MK_LIMITS.trades+' cambios de Pokémon repetidos, '+MK_LIMITS.swaps+' de piedras y '+MK_LIMITS.evos+' evoluciones por intercambio. La Pepita de oro suma 1 cambio de cada tipo. Cada visita ocupa una estación.',
+   '<b>Mercado:</b> por visita podés hacer hasta '+MK_LIMITS.trades+' cambios de Pokémon repetidos, '+MK_LIMITS.swaps+' de piedras y '+MK_LIMITS.evos+(MK_LIMITS.evos>1?' evoluciones':' evolución')+' por intercambio. La Pepita de oro suma 1 cambio de cada tipo. Cada visita ocupa una estación.',
    '<b>Legendarios y raros:</b> los legendarios piden medallas (o ser Coleccionista con 100+ especies). Mew aparece por rumores y, con la Pokédex casi completa, de forma garantizada. Snorlax se consigue por evento, no salvaje.'])}`]);
   S.push(['🗺️ Zonas de exploración',`<p>Cada zona se abre con las <b>medallas</b> que pide <i>o</i> con un <b>poder de equipo</b> suficiente. Si tu vocación es Coleccionista o Profesor, las medallas no cuentan: solo el poder.</p>`+li(ZONES.map(z=>`<b>${esc(z.name)}</b>: `+(z.id==='celeste'?'8 medallas o '+CELESTE_DEX+' especies en la Pokédex (Coleccionista y Profesor: solo la Pokédex)':z.need?z.need+' medalla'+(z.need===1?'':'s')+' o poder de equipo '+zonePower(z.need):'libre'))) ]);
   S.push(['🏅 Gimnasios y Liga',`<p>Antes de cada combate ves tu chance de ganar y qué la sube o baja. Se calcula así: parte de 40 y suma o resta la <b>ventaja de tipos</b> de tu equipo (cuantos más Pokémon tengan ataques fuertes contra los del rival, más suma: hasta +24; ir con todo agua contra un gimnasio de fuego pesa mucho), la <b>defensa de tipos</b> (cada Pokémon tuyo débil a los del rival resta por sí solo, hasta −20 en total; los que resisten suman bastante menos, hasta +6, así que las resistencias no tapan las debilidades), tu <b>poder frente al del rival</b> (hasta +30 / −60), el tamaño del equipo, tu Valor, el Amuleto de la Suerte (+3), la vocación Campeón (+3) y un bono por intentos anteriores (hasta +10). El resultado queda entre 5% y 95%.</p>
@@ -2386,7 +2403,7 @@ const itemIc=(k,sz)=>ICONS_IT[k]?`<img class="spr" width="${sz||24}" height="${s
 const iconBall=sz=>`<img width="${sz}" height="${sz}" alt="Equipo" src="${ICON_BALL}">`;
 const iconDex=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Pokédex"><rect x="2" y="1" width="12" height="14" rx="1" fill="#c9383f"/><rect x="2" y="1" width="12" height="14" rx="1" fill="none" stroke="#5b1217"/><rect x="4" y="3" width="8" height="6" fill="#9fd8e8" stroke="#1d3a52"/><rect x="5" y="4" width="3" height="2" fill="#eaf7fb"/><circle cx="5" cy="12" r="1.3" fill="#ffd84a" stroke="#5b1217" stroke-width=".4"/><rect x="8" y="11" width="4" height="1" fill="#5b1217"/><rect x="8" y="13" width="4" height="1" fill="#5b1217"/></svg>`;
 
-const VERSION='5.29'; // se sube en cada entrega y se muestra en el título y en Opciones
+const VERSION='5.31'; // se sube en cada entrega y se muestra en el título y en Opciones
 // ===== Sprites animados y efectos visuales =====
 // Los sprites estáticos están incluidos en el archivo. Las versiones animadas (Gen 5, del repositorio PokeAPI/sprites) se cargan
 // aparte cuando hay conexión; si no cargan, queda el sprite estático. Nada del juego depende de ellas.
@@ -2637,6 +2654,11 @@ function scLayer(o){
   }else if(sh==='clouds'){
     const n=o.n||4;for(let rep=0;rep<2;rep++)for(let i=0;i<n;i++){const cx=(i+.5)*W/n+(R()-.5)*40+rep*W,cy=H*(.3+R()*.4),r=o.r||16;
       [[-1.3,.3,.7],[-.4,0,1],[.5,.1,.9],[1.4,.35,.65]].forEach(c=>{const x=cx+c[0]*r,y=cy+c[1]*r,rr=r*c[2];d+='M'+f(x-rr)+' '+f(y)+'a'+f(rr)+' '+f(rr)+' 0 1 0 '+f(2*rr)+' 0a'+f(rr)+' '+f(rr)+' 0 1 0 '+f(-2*rr)+' 0Z';});}
+  }else if(sh==='stalls'){
+    const n=o.n||4;for(let rep=0;rep<2;rep++)for(let i=0;i<n;i++){const cx=(i+.5)*W/n+(R()-.5)*20+rep*W,w=34+R()*14,th=H*(.55+R()*.2);
+      d+='M'+f(cx-w)+' '+H+'V'+f(H-th+12)+'h3V'+H+'ZM'+f(cx+w-3)+' '+H+'V'+f(H-th+12)+'h3V'+H+'Z';
+      d+='M'+f(cx-w-6)+' '+f(H-th+14)+'L'+f(cx-w+8)+' '+f(H-th-6)+'H'+f(cx+w-8)+'L'+f(cx+w+6)+' '+f(H-th+14)+'Q'+f(cx+w*.5)+' '+f(H-th+20)+' '+f(cx)+' '+f(H-th+14)+'Q'+f(cx-w*.5)+' '+f(H-th+20)+' '+f(cx-w-6)+' '+f(H-th+14)+'Z';
+      d+='M'+f(cx-w+6)+' '+H+'V'+f(H-th*.38)+'h'+f(w*.8)+'V'+H+'Z';}
   }else if(sh==='acacia'){
     const n=o.n||4;for(let rep=0;rep<2;rep++)for(let i=0;i<n;i++){const cx=(i+.5)*W/n+(R()-.5)*50+rep*W,th=H*(.55+R()*.3),w=34+R()*18;
       d+='M'+f(cx-2)+' '+H+'L'+f(cx-1)+' '+f(H-th)+'h2L'+f(cx+2)+' '+H+'Z';d+='M'+f(cx-w)+' '+f(H-th+4)+'Q'+f(cx)+' '+f(H-th-14)+' '+f(cx+w)+' '+f(H-th+4)+'Q'+f(cx)+' '+f(H-th-1)+' '+f(cx-w)+' '+f(H-th+4)+'Z';}
@@ -2699,6 +2721,9 @@ const SCENES={
   safari:{sky:['#8a2f2a','#ffc062'],glow:{x:72,y:60,c:'rgba(255,215,120,.95)',s:120,disk:1},gnd:'#4a3418',
     layers:[{shape:'hills',color:'#9a6a2e',h:70,sp:110,seed:3,op:.8},{shape:'acacia',color:'#3d2a14',h:90,sp:60,seed:2,n:3},{shape:'hills',color:'#3a2812',h:34,sp:40,seed:8}],
     parts:[{k:'dust',a:'drift',n:16,c:['rgba(255,210,140,.55)'],s:[2,4],dx:[20,70]},{k:'mote',a:'drift',n:6,c:['rgba(255,240,200,.8)'],s:[2,3]}]},
+  mercado:{sky:['#2a1840','#f4a45c'],glow:{x:20,y:62,c:'rgba(255,205,130,.9)',s:150},gnd:'#2b1a12',bunting:true,
+    layers:[{shape:'skyline',color:'#4a2a4a',h:96,sp:150,seed:12,op:.75,win:'#ffd890'},{shape:'stalls',color:'#2a1722',h:100,sp:80,seed:3,n:4},{shape:'hills',color:'#1c100c',h:26,sp:0,seed:1}],
+    parts:[{k:'orb',a:'blink',n:12,c:['#ffd27a','#ffb04a','#fff0b0'],s:[4,8],dx:[-4,4],dy:[-6,6]},{k:'spark',a:'rise',n:8,c:['#ffe27a','#ffd23d'],s:[2,4]},{k:'mote',a:'drift',n:10,c:['rgba(255,225,170,.6)'],s:[2,3]}]},
   cueva:{sky:['#041a2a','#1c6a8a'],glow:{x:60,y:60,c:'rgba(120,230,255,.55)',s:170},gnd:'#04141f',
     layers:[{shape:'crystals',color:'#2a9ac0',h:110,sp:120,seed:2,op:.5,n:8},{shape:'crystals',color:'#57d6f0',h:70,sp:70,seed:5,op:.8,n:10},{shape:'hills',color:'#062233',h:30,sp:50,seed:3}],
     parts:[{k:'orb',a:'blink',n:16,c:['#9be8ff','#d0f8ff'],s:[2,5],dx:[-6,6],dy:[-14,6]},{k:'bub',a:'rise',n:4,c:['rgba(160,235,255,.7)'],s:[3,6]}]}
@@ -2718,6 +2743,7 @@ function sceneBg(name,H){
   h+=T.layers.map(l=>scLayer(Object.assign({},l,{h:Math.round(l.h*(H/200)),b:Math.round((l.b||0)*(H/200))}))).join('');
   if(T.fog)h+=`<div class="scfog" style="--fc:${T.fog}"></div>`;
   h+=`<div class="scgnd" style="background:linear-gradient(transparent,${T.gnd});--gh:${H<120?10:26}px"></div>`;
+  if(T.bunting){const cols=['#e5555d','#ffcb3d','#3fbf7f','#4a86e8','#c9a0ff'];let b='';[[0,300],[300,600]].forEach(([x0,x1])=>{b+=`<path d="M${x0} 4Q${(x0+x1)/2} 30 ${x1} 4" fill="none" stroke="#2a1a22" stroke-width="1.2"/>`;for(let i=1;i<9;i++){const x=x0+i*(x1-x0)/9,u=(x-x0)/(x1-x0),y=4+26*4*u*(1-u)*.5+0;b+=`<path d="M${(x-6).toFixed(1)} ${y.toFixed(1)}L${(x+6).toFixed(1)} ${y.toFixed(1)}L${x.toFixed(1)} ${(y+13).toFixed(1)}Z" fill="${cols[i%5]}"/>`;}});h+=`<svg style="left:0;top:0;width:100%;height:${Math.round(H*.28)}px;transform-origin:50% 0;animation:scBob 5s ease-in-out infinite" viewBox="0 0 600 40" preserveAspectRatio="none">${b}</svg>`;}
   if(T.rings)h+=[0,1.4,2.8].map(w=>`<div class="scring" style="--x:78%;--y:58%;--c:${T.ringc||'rgba(255,170,255,.8)'};--w:${-w}s"></div>`).join('');
   if(T.flash)h+=`<div class="scflash"></div>`+(T.layers[0].shape==='skyline'?`<svg class="scbolt" style="left:58%" viewBox="0 0 46 100"><path d="M30 0 L12 46 L24 46 L10 100 L38 38 L25 38 L36 0Z" fill="#fff6b0"/></svg>`:'');
   let ps='';
@@ -2939,25 +2965,28 @@ function view(){
     M.innerHTML=sceneBanner('liga',{kicker:'Liga Pokémon',title:'Alto Mando y Campeón',sub:'Cinco batallas seguidas',spr:aspr(aceNum(LEAGUE[4]),false,96)})+`<div class="card scn-card"><p class="sub">Tenés que ganar cinco batallas seguidas con el mismo equipo. Chance de cada una:</p><div class="lines">${rows}</div><p class="sub" style="margin-top:8px">Si caés, perdés una estación y no ganás ningún bonus: para el siguiente intento necesitás un equipo mejor.</p></div>
     <button class="btn primary" onclick="G.go()">Entrar a la Liga</button><button class="btn" onclick="G.back()">← Prepararme más</button>`;
   }else if(phase==='market'){
-    const mk=ctx.mk;const ds=dupeStacks(s);const te=tradeEvos(s);
-    let h=`<div class="card"><div class="kicker">Mercado de intercambio</div><h2>¿Qué querés cambiar?</h2><p class="sub">Toda la visita ocupa una estación, y en ella tenés un máximo de <b>${mkL(s).trades}</b> cambios de Pokémon, <b>${mkL(s).swaps}</b> de piedras y <b>${mkL(s).evos}</b> evoluciones por intercambio. <b>Te quedan:</b> ${mk.trades} de Pokémon · ${mk.swaps} de piedras · ${mk.evos} evoluciones.</p>
-    <div class="lines" style="margin-top:8px"><div>🔁 Intercambio evolutivo: los Pokémon que evolucionan por intercambio (Kadabra, Machoke, Graveler, Haunter) evolucionan en la visita.</div><div>🪨 Una piedra se cambia 1 por 1 por otra a elección.</div><div>🔄 Pokémon repetido: elegís uno y ves las ofertas, de otra especie con un poder base dentro de ±15% del tuyo. No hay azar: lo que ves es lo que te llevás.</div><div>📈 Cada cambio que cerrás suma una práctica de <b>Carisma</b> (cuanto más negociás, más rápido sube).</div></div>${mk.lines.length?`<div class="lines">${mk.lines.map(lineHtml).join('')}</div>`:''}</div>`;
-    h+=`<div class="sec">Intercambio evolutivo</div>`;
-    h+=te.length&&mk.evos>0?te.map(m=>{const ev=mon(m.sp).evo.find(e=>e[1]==='t');return `<button class="btn sm" onclick="G.mkEvo(${m.id})"><div class="mi">${spr(m.sp,m.shiny,40)}<div>Intercambiar ${esc(mon(m.sp).name)} → ${esc(mon(ev[0]).name)} ${s.dex[ev[0]]?'<span class="tag-own">ya lo tenés</span>':'<span class="tag-new">✨ NUEVO en tu Pokédex</span>'}</div></div></button>`;}).join(''):`<p class="sub">${te.length?'Ya hiciste todas las evoluciones por intercambio de esta visita.':'No tenés Pokémon que evolucionen por intercambio.'}</p>`;
-    h+=`<div class="sec">Piedras</div>`;
-    h+=stoneCount(s)>0&&mk.swaps>0?STONE_KEYS.filter(k=>s.items[k]>0).map(k=>`<button class="btn sm" onclick="G.mkStone('${k}')">${itemIc(k,18)} Cambiar una ${esc(ITEMS[k].name)} <span class="sub">(tenés ${s.items[k]})</span></button>`).join(''):`<p class="sub">${stoneCount(s)?'Ya hiciste todos los cambios de piedras de esta visita.':'No tenés piedras.'}</p>`;
-    h+=`<div class="sec">Pokémon repetidos (poder similar, ±15%)</div>`;
-    h+=ds.length&&mk.trades>0?ds.map(e=>`<button class="btn sm" onclick="G.mkOffer(${e.sp})"><div class="mi">${spr(e.sp,false,40)}<div>Ofrecer un ${esc(mon(e.sp).name)} repetido <span class="sub">(poder ${pw(e.weakest)} · tenés ${e.count} de más)</span></div></div></button>`).join(''):`<p class="sub">${ds.length?'Ya hiciste todos los cambios de Pokémon de esta visita.':'No tenés repetidos para ofrecer.'}</p>`;
-    h+=`<button class="btn primary" style="margin-top:8px" onclick="G.mkDone()">Terminar la visita</button>`;
+    const mk=ctx.mk;const ds=dupeStacks(s);const te=tradeEvos(s);const L=mkL(s);
+    const okE=te.length&&mk.evos>0,okS=stoneCount(s)>0&&mk.swaps>0,okM=ds.length&&mk.trades>0;
+    if(mk.open===undefined)mk.open=okE?'evo':okS?'stone':okM?'mon':'';
+    const sec=(id,ic,col,title,sub,cnt,ok,note,body)=>`<div class="acc${mk.open===id?' open':''}${ok?'':' off'}" id="acc-${id}"><button class="acc-h" onclick="G.mkTog('${id}')"><span class="acc-i" style="--c:${col}">${ic}</span><span class="acc-t">${title}<small>${sub}</small></span><span class="acc-n">${cnt}</span><span class="acc-c"></span></button><div class="acc-b"><div><div class="acc-in"><div class="acc-note">${note}</div>${body}</div></div></div></div>`;
+    let h=sceneBanner('mercado',{h:150,kicker:'Mercado de intercambio',title:'¿Qué querés cambiar?',sub:`<div class="mkchips"><span>🔁 Evol. ${mk.evos}/${L.evos}</span><span>🪨 Piedras ${mk.swaps}/${L.swaps}</span><span>🔄 Pokémon ${mk.trades}/${L.trades}</span></div>`,spr:''});
+    h+=`<div class="card scn-card"><p class="sub">Toda la visita ocupa una estación. Los contadores muestran cuántos cambios te quedan de los máximos de esta visita. Cada trato cerrado suma una práctica de <b>Carisma</b>.</p>${mk.lines.length?`<div class="lines" style="margin-top:6px">${mk.lines.map(lineHtml).join('')}</div>`:''}</div>`;
+    h+=sec('evo','🔁','#e0a91c','Intercambio evolutivo','Kadabra, Machoke, Graveler, Haunter',okE?mk.evos+' evol.':'—',okE,'Los Pokémon que evolucionan por intercambio evolucionan durante la visita.',
+      okE?te.map(m=>{const ev=mon(m.sp).evo.find(e=>e[1]==='t');return `<button class="btn sm" onclick="G.mkEvo(${m.id})"><div class="mi">${spr(m.sp,m.shiny,40)}<div>Intercambiar ${esc(mon(m.sp).name)} → ${esc(mon(ev[0]).name)} ${s.dex[ev[0]]?'<span class="tag-own">ya lo tenés</span>':'<span class="tag-new">✨ NUEVO en tu Pokédex</span>'}</div></div></button>`;}).join(''):`<p class="sub">${te.length?'Ya hiciste todas las evoluciones por intercambio de esta visita.':'No tenés Pokémon que evolucionen por intercambio.'}</p>`);
+    h+=sec('stone','🪨','#8a6bd0','Piedras','Una por otra, a elección',okS?mk.swaps+' cambios':'—',okS,'Una piedra se cambia 1 por 1 por otra a elección.',
+      okS?STONE_KEYS.filter(k=>s.items[k]>0).map(k=>`<button class="btn sm" onclick="G.mkStone('${k}')">${itemIc(k,18)} Cambiar una ${esc(ITEMS[k].name)} <span class="sub">(tenés ${s.items[k]})</span></button>`).join(''):`<p class="sub">${stoneCount(s)?'Ya hiciste todos los cambios de piedras de esta visita.':'No tenés piedras.'}</p>`);
+    h+=sec('mon','🔄','#3d8fd9','Pokémon repetidos','Cambialos por otra especie de poder similar',okM?mk.trades+' cambios':'—',okM,'Elegís uno y ves las ofertas: otra especie con poder base dentro de ±15% del tuyo. No hay azar: lo que ves es lo que te llevás.',
+      okM?ds.map(e=>`<button class="btn sm" onclick="G.mkOffer(${e.sp})"><div class="mi">${spr(e.sp,false,40)}<div>Ofrecer un ${esc(mon(e.sp).name)} repetido <span class="sub">(poder ${pw(e.weakest)} · tenés ${e.count} de más)</span></div></div></button>`).join(''):`<p class="sub">${ds.length?'Ya hiciste todos los cambios de Pokémon de esta visita.':'No tenés repetidos para ofrecer.'}</p>`);
+    h+=`<button class="btn primary" style="margin-top:2px" onclick="G.mkDone()">Terminar la visita</button>`;
     M.innerHTML=h;
   }else if(phase==='mkoffer'){
     const m=s.box.find(x=>x.id===ctx.mkSel);const cands=ctx.mkCands||tradeCandidates(s,m);
-    M.innerHTML=`<div class="card"><div class="kicker">Mercado de intercambio</div><h2>Ofrecés un ${esc(mon(m.sp).name)} (poder ${pw(m)})</h2><p class="sub">Estos comerciantes aceptan cambiarlo por un Pokémon de poder parecido. La comparación usa el poder base; el ejemplar que te llevás tiene su propio talento (±10%), igual que todo Pokémon que capturás.</p></div>`+
+    M.innerHTML=sceneBanner('mercado',{h:120,kicker:'Mercado de intercambio',title:'Ofrecés un '+esc(mon(m.sp).name),sub:'Poder '+pw(m),spr:aspr(m.sp,m.shiny,72)})+`<div class="card scn-card"><p class="sub">Estos comerciantes aceptan cambiarlo por un Pokémon de poder parecido. La comparación usa el poder base; el ejemplar que te llevás tiene su propio talento (±10%), igual que todo Pokémon que capturás.</p></div>`+
       (cands.length?cands.map(n=>`<button class="btn" onclick="G.mkTake(${n})"><div class="mi">${spr(n,false,48)}<div><div class="t">${esc(mon(n).name)} ${typeChips(mon(n).types)}</div><div class="d">Poder base ${mon(n).bst} (el tuyo: ${pw(m)}, ${(mon(n).bst-pw(m))>=0?'+':''}${Math.round((mon(n).bst-pw(m))/pw(m)*100)}%) · ${s.dex[n]?'<span class="tag-own">ya lo tenés</span>':'<span class="tag-new">✨ NUEVO en tu Pokédex</span>'}</div></div></div></button>`).join(''):`<p class="sub">Nadie ofrece nada de poder parecido.</p>`)+
       `<button class="btn" onclick="G.mkBack()">← Volver al mercado</button>`;
   }else if(phase==='mkstone'){
     const k=ctx.mkFrom;
-    M.innerHTML=`<div class="card"><div class="kicker">Mercado de intercambio</div><h2>Cambiar una ${esc(ITEMS[k].name)}</h2><p class="sub">¿Por cuál querés cambiarla?</p></div>`+
+    M.innerHTML=sceneBanner('mercado',{h:110,kicker:'Mercado de intercambio',title:'Cambiar una '+esc(ITEMS[k].name),sub:'¿Por cuál querés cambiarla?',spr:''})+`<div class="card scn-card" style="height:14px;padding:0"></div>`+
       STONE_KEYS.filter(x=>x!==k).map(x=>`<button class="btn" onclick="G.mkSwap('${x}')"><div class="t">${itemIc(x,22)} ${esc(ITEMS[x].name)}</div><div class="d">Tenés ${s.items[x]||0} · Evoluciona: ${stoneUses(x)}</div></button>`).join('')+
       `<button class="btn" onclick="G.mkBack()">← Volver al mercado</button>`;
   }else if(phase==='report'){
@@ -3179,6 +3208,7 @@ const G={
   mkStone(k){ctx.mkFrom=k;phase='mkstone';view();window.scrollTo(0,0);},
   mkSwap(k){const l=swapStone(S_,ctx.mkFrom,k);if(l){ctx.mk.lines.push(l);ctx.mk.swaps--;}phase='market';view();save();},
   mkEvo(id){const l=tradeEvolve(S_,id);if(l){ctx.mk.lines.push(l);ctx.mk.evos--;}view();save();},
+  mkTog(id){const mk=ctx.mk;mk.open=mk.open===id?'':id;['evo','stone','mon'].forEach(k=>{const e=document.getElementById('acc-'+k);if(e)e.classList.toggle('open',mk.open===k);});},
   mkBack(){phase='market';view();window.scrollTo(0,0);},
   mkDone(){G.exec('market',ctx.mk.lines.length?ctx.mk.lines:['Recorriste el mercado sin cerrar ningún trato.']);},
   exec(id,arg){
