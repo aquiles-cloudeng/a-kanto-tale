@@ -573,7 +573,7 @@ const LEAGUE=[
 ];
 // Dificultad: el poder de gimnasios y Liga crece en rampa (Brock queda igual; Giovanni y la Liga reciben el aumento completo).
 // Calibrado con un bot que juega "atento" para que gane la Liga con unas 10 estaciones de sobra. Para suavizar: bajá GYM_RAMP (40 = más holgado, 60 = muy duro).
-const GYM_RAMP=56;
+const GYM_RAMP=48;
 const GYM_RAMP_F={brock:0,misty:0.15,surge:0.3,erika:0.45,koga:0.6,sabrina:0.75,blaine:0.9,giovanni:1,lorelei:1,bruno:1,agatha:1,lance:1,blue:1};
 for(const g of GYMS.concat(LEAGUE))g.pw+=Math.round(GYM_RAMP*(GYM_RAMP_F[g.id]||0));
 
@@ -1118,8 +1118,8 @@ function leagueRun(s){
   }
   s.boost=0;if(boosted)lines.push('🎯 Usaste la ventaja de tu Carisma máximo en esta Liga.');
   if(all){s.leagueWon=true;s.counters.leagueT=s.t;s.leagueTeam=teamMons(s).map(m=>m.sp);s.leagueMoral=s.moral;lines.push('🏆 ¡Sos el nuevo Campeón de la Liga Pokémon!');}
-  else{s.leagueFails++;lines.push('Caíste en la Liga. No hay bonus por intentos anteriores: para volver a intentarlo necesitás un equipo mejor. Caer en la Liga te cuesta dos estaciones: te toca recuperarte.');}
-  return {title:'Liga Pokémon',lines,seasons:all?1:2};
+  else{s.leagueFails++;lines.push('Caíste en la Liga. No hay bonus por intentos anteriores: para volver a intentarlo necesitás un equipo mejor. Caer en la Liga cuesta una estación, igual que intentarlo.');}
+  return {title:'Liga Pokémon',lines,seasons:1};
 }
 
 // ---------- Práctica: cada acción entrena su stat afín; con los usos suficientes sube +1 (cada vez cuesta más) ----------
@@ -1152,7 +1152,7 @@ function getActions(s){
   if(!s.rocket&&!s.gymOwner){
     const ok=s.badges.length<8;
     A.push({id:'gym',icon:'🏅',title:ok?'Desafiar el gimnasio de '+nextGym.city:'Gimnasios completados',desc:ok?nextGym.leader+' · tipo '+nextGym.type+'. Primero ves las probabilidades.':'Ya tenés las 8 medallas.',ok,why:''});
-    if(s.badges.length>=8&&!s.leagueWon)A.push({id:'league',icon:'🏆',title:'Desafiar a la Liga Pokémon',desc:'Cuatro Alto Mando y el Campeón, uno tras otro. El intento ocupa una estación y, si caés, te cuesta dos (te toca recuperarte). La Liga solo acepta aspirantes de '+LEAGUE_AGE+' años o más.',ok:age(s)>=LEAGUE_AGE,why:'Todavía sos muy joven para la Liga: te aceptan a los '+LEAGUE_AGE+' años (tenés '+age(s)+')'});
+    if(s.badges.length>=8&&!s.leagueWon)A.push({id:'league',icon:'🏆',title:'Desafiar a la Liga Pokémon',desc:'Cuatro Alto Mando y el Campeón, uno tras otro. El intento ocupa una estación, ganes o caigas. La Liga solo acepta aspirantes de '+LEAGUE_AGE+' años o más.',ok:age(s)>=LEAGUE_AGE,why:'Todavía sos muy joven para la Liga: te aceptan a los '+LEAGUE_AGE+' años (tenés '+age(s)+')'});
     A.push({id:'help',icon:'🤝',title:'Ayudar a la gente',desc:'Siempre pasa algo: ayudás a alguien y, según cómo te vaya, ganás reputación y a veces un premio (piedras, objetos, Pokémon o stats). La reputación mejora tus chances en eventos sociales.',ok:true});
   }
   A.push({id:'study',icon:'📚',title:'Estudiar en la academia',desc:'1 año: +3 en un stat · 2 años: +6 en un stat y +1 Ingenio. Es tiempo que no explorás. Máximo 2 veces ('+s.studied+'/2).',ok:s.studied<2&&s.t+4<=MAXT,why:s.studied>=2?'Ya estudiaste dos veces':'Queda muy poco tiempo'});
@@ -2237,7 +2237,7 @@ function guideSections(){
   S.push(['🏅 Gimnasios y Liga',`<p>Antes de cada combate ves tu chance de ganar y qué la sube o baja. Se calcula así: parte de 40 y suma o resta la <b>ventaja de tipos</b> de tu equipo (cuantos más Pokémon tengan ataques fuertes contra los del rival, más suma: hasta +24; ir con todo agua contra un gimnasio de fuego pesa mucho), la <b>defensa de tipos</b> (cada Pokémon tuyo débil a los del rival resta por sí solo, hasta −20 en total; los que resisten suman bastante menos, hasta +6, así que las resistencias no tapan las debilidades), tu <b>poder frente al del rival</b> (hasta +30 / −60), el tamaño del equipo, tu Valor, el Amuleto de la Suerte (+3), la vocación Campeón (+3) y un bono por intentos anteriores (hasta +10). El resultado queda entre 5% y 95%.</p>
   <p>Si ganás un gimnasio: medalla, +1 de reputación y +1 Valor. Si perdés: −1 de reputación y +2% de chance la próxima vez contra ese líder (hasta +6%).</p>`+
   li(GYMS.map((g,i)=>`<b>${i+1}. ${esc(g.leader)}</b> (${esc(g.city)}, tipo ${esc(g.type)}) · poder ${g.pw}`))+
-  `<p><b>Liga Pokémon:</b> hace falta tener las 8 medallas y ${LEAGUE_AGE} años. Son 5 combates seguidos: si caés en uno, el intento termina ahí. En la Liga no hay bono por intentos anteriores, y el intento ocupa una estación; si caés, te cuesta dos.</p>`+li(LEAGUE.map(g=>`${esc(g.leader)} (${esc(g.type)}) · poder ${g.pw}`))]);
+  `<p><b>Liga Pokémon:</b> hace falta tener las 8 medallas y ${LEAGUE_AGE} años. Son 5 combates seguidos: si caés en uno, el intento termina ahí. En la Liga no hay bono por intentos anteriores, y cada intento ocupa una estación, ganes o caigas.</p>`+li(LEAGUE.map(g=>`${esc(g.leader)} (${esc(g.type)}) · poder ${g.pw}`))]);
   S.push(['⚔️ Tu rival Blue',`<p>Blue te desafía <b>4 veces en momentos fijos</b> (estaciones ${RIVAL_T.join(', ')}); además es el último rival de la Liga. Su equipo se ajusta al tuyo para que nunca te pase muy por arriba, pero siempre sea un desafío. Su inicial tiene ventaja de tipo sobre el tuyo. Si ganás recibís reputación, piedras y +1 Valor; si perdés, −1 de reputación.</p>`]);
   S.push(['🎭 Vocaciones y orígenes',`<p>Elegís una vocación a los 12 años. Da un impulso, pero no te encierra en un camino.</p>`+li(Object.keys(VOCS).map(k=>`<b>${esc(VOCS[k].name)}</b>: ${esc(VOCS[k].hint)}`))+`<p>El origen define tus stats iniciales, un Pokémon extra y un objeto propio:</p>`+li(ORIGINS.map(o=>`<b>${esc(o.name)}</b>: ${Object.keys(o.st).map(k=>'+'+o.st[k]+' '+SL[k]).join(', ')}${o.rep?', +'+o.rep+' reputación':''} · ${esc(o.mon)}${o.item&&ITEMS[o.item]?' · '+esc(ITEMS[o.item].name)+': '+esc(ITEMS[o.item].desc):''}`))]);
   S.push(['🅡 Equipo Rocket',`<p>Podés unirte por una oferta (aparece con ciertas condiciones: conciencia baja, vocación Aspirante a Rocket, origen Carmín o Familia, entre otras). <b>Una vez adentro no podés irte</b>, y gimnasios, Liga y «ayudar a la gente» quedan fuera de tu alcance sin importar tu vocación.</p>
@@ -2499,7 +2499,7 @@ const itemIc=(k,sz)=>ICONS_IT[k]?`<img class="spr" width="${sz||24}" height="${s
 const iconBall=sz=>`<img width="${sz}" height="${sz}" alt="Equipo" src="${ICON_BALL}">`;
 const iconDex=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Pokédex"><rect x="2" y="1" width="12" height="14" rx="1" fill="#c9383f"/><rect x="2" y="1" width="12" height="14" rx="1" fill="none" stroke="#5b1217"/><rect x="4" y="3" width="8" height="6" fill="#9fd8e8" stroke="#1d3a52"/><rect x="5" y="4" width="3" height="2" fill="#eaf7fb"/><circle cx="5" cy="12" r="1.3" fill="#ffd84a" stroke="#5b1217" stroke-width=".4"/><rect x="8" y="11" width="4" height="1" fill="#5b1217"/><rect x="8" y="13" width="4" height="1" fill="#5b1217"/></svg>`;
 
-const VERSION='5.47'; // se sube en cada entrega y se muestra en el título y en Opciones
+const VERSION='5.48'; // se sube en cada entrega y se muestra en el título y en Opciones
 // ===== Sprites animados y efectos visuales =====
 // Los sprites estáticos están incluidos en el archivo. Las versiones animadas (Gen 5, del repositorio PokeAPI/sprites) se cargan
 // aparte cuando hay conexión; si no cargan, queda el sprite estático. Nada del juego depende de ellas.
