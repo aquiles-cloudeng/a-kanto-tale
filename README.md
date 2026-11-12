@@ -28,13 +28,13 @@ Cada estación elegís una acción (explorar, entrenar, estudiar, el mercado, gi
 ## Sonido
 
 - La música ambiental y los efectos **se generan dentro del juego** (Web Audio): no hay archivos de audio ni música con derechos de autor.
-- Hay un menú **Sonido y música** (desde el título o el ícono del parlante) para subir, bajar o silenciar la música y los efectos. La música no empieza hasta que tocás algo en la página (así lo exigen los navegadores).
+- Hay un menú **Opciones** (desde el título o el ícono del engranaje) con una sección de sonido para subir, bajar o silenciar la música y los efectos. La música no empieza hasta que tocás algo en la página (así lo exigen los navegadores).
 - Si querés usar tus propios temas **libres de derechos** (por ejemplo, con licencia CC0), subilos al repositorio y poné sus rutas en la constante `MUSIC_FILES` del `index.html`. No incluyas música comercial de terceros.
 
 ## Animaciones y efectos
 Los Pokémon se ven animados (los sprites animados de Gen 5 del repositorio público PokeAPI/sprites) en la selección de inicial, el panel del equipo, los gimnasios, las capturas, las evoluciones y los finales. **Se cargan desde internet cuando hay conexión**: no van dentro del archivo (los 151 normales y shiny pesarían unos 11 MB). Si no cargan, el juego muestra el sprite quieto que sí viene incluido, y todo funciona igual.
 
-También hay efectos dibujados dentro del juego: destellos y marco especial al capturar (más fuertes con raros y shiny), una pantalla de evolución, la pantalla «VS» en gimnasios, confeti y fuegos artificiales en victorias y finales, y partículas según la estación (pétalos, luciérnagas, hojas, nieve). En «Sonido y música» podés apagar los sprites animados o reducir/apagar los efectos. Si tu dispositivo pide «reducir movimiento», los efectos quedan apagados.
+También hay efectos dibujados dentro del juego: destellos y marco especial al capturar (más fuertes con raros y shiny), una pantalla de evolución, la pantalla «VS» en gimnasios, confeti y fuegos artificiales en victorias y finales, y partículas según la estación (pétalos, luciérnagas, hojas, nieve). En «Opciones» podés apagar los sprites animados, elegir cuántos efectos querés (completos, reducidos o apagados) y mover una barra de **partículas de estación**, de 0 a 100%. Si tu dispositivo pide «reducir movimiento», los efectos quedan apagados.
 
 ## Privacidad
 
@@ -62,3 +62,5 @@ Si encontrás un error o tenés una sugerencia, abrí un *issue* en este reposit
 ## Créditos
 
 Creado por **[tu nombre]**.
+
+Los íconos de los menús (Pokédex, mochila, guía, logros, diario, opciones y sonido) son de [pixelarticons](https://github.com/halfmage/pixelarticons), de Gerrit Halfmann, con licencia MIT (Copyright (c) 2019 Gerrit Halfmann).
