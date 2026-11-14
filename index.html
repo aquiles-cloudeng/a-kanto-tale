@@ -155,6 +155,17 @@ img[src^="data:image/svg"]{image-rendering:auto}
 @media (max-width:380px){.stat .n{font-size:16px}.chip{font-size:12px}.se{width:26px}}
 
 /* ===== Efectos visuales ===== */
+/* Sirena de policía cuando el Heat está alto (3 a 5): destellos rojo y azul en los bordes */
+#siren{position:fixed;inset:0;pointer-events:none;z-index:14;opacity:0;transition:opacity .8s;mix-blend-mode:screen;--si:.2;--sp:1.8s}
+#siren::before,#siren::after{content:"";position:absolute;top:0;bottom:0;width:60%;opacity:0}
+#siren::before{left:0;background:radial-gradient(ellipse 100% 70% at 0% 50%,rgba(255,40,60,.9),transparent 70%);animation:sirR var(--sp) ease-in-out infinite}
+#siren::after{right:0;background:radial-gradient(ellipse 100% 70% at 100% 50%,rgba(50,110,255,.9),transparent 70%);animation:sirB var(--sp) ease-in-out infinite}
+@keyframes sirR{0%,38%{opacity:var(--si)}50%,90%{opacity:0}100%{opacity:var(--si)}}
+@keyframes sirB{0%,38%{opacity:0}50%,88%{opacity:var(--si)}100%{opacity:0}}
+body[data-siren="3"] #siren{opacity:1}
+body[data-siren="4"] #siren{opacity:1;--si:.3;--sp:1.4s}
+body[data-siren="5"] #siren{opacity:1;--si:.42;--sp:1s}
+body[data-siren-calm] #siren::before,body[data-siren-calm] #siren::after{animation:none;opacity:calc(var(--si)*.5)}
 #fxbg{position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:0}
 #wrap{position:relative;z-index:1}
 .card,.stat,.chip{background:rgba(21,32,51,.8)}
@@ -700,7 +711,11 @@ function evolveMon(s,m,to){
 
 // ---------- Captura ----------
 // Los legendarios piden medallas (3er valor de la entrada); un Coleccionista con 100+ especies también puede cruzarse con ellos
-const legendOk=(s,x)=>!x[2]||s.badges.length>=x[2]||(s.voc==='coleccionista'&&dexN(s)>=100);
+// El Equipo Rocket no puede ganar medallas: sus legendarios se abren por rango (Teniente, Comandante, Alto mando)
+const rkLegendAt=b=>RK_RANKS[b>=8?5:b>=7?4:3][0];
+const legendOk=(s,x)=>!x[2]||s.badges.length>=x[2]||(s.voc==='coleccionista'&&dexN(s)>=100)||(s.rocket&&s.rocketPts>=rkLegendAt(x[2]));
+const legendLocked=(s,z)=>z.list.filter(x=>x[2]&&!legendOk(s,x));
+const legendReq=(s,x)=>s.rocket?'rango '+RK_RANKS.find(r=>r[0]===rkLegendAt(x[2]))[1]+' del Equipo Rocket (tenés '+s.rocketPts+'/'+rkLegendAt(x[2])+' pts)':x[2]+' medallas (tenés '+s.badges.length+')'+(s.voc==='coleccionista'?' o 100 especies en la Pokédex (tenés '+dexN(s)+')':'');
 const zoneList=(s,z)=>z.list.filter(x=>legendOk(s,x));
 function rollEncounter(s,z){
   const rm=(s.items.incienso?1.5:1)*(s.voc==='coleccionista'?1.25:1)*(1+0.15*Math.min(s.pity,10));
@@ -2246,7 +2261,7 @@ function guideSections(){
    '<b>Entrenar (específico):</b> elegís hasta 6 Pokémon de tu colección; solo esos ganan +'+XP_TRAIN+' y tienen chance de evolucionar. El equipo no mejora esa estación si no los incluís.',
    '<b>Evolución:</b> por nivel (entrenando), por piedra (Mochila → Usar) o por intercambio (Mercado).',
    '<b>Mercado:</b> por visita podés hacer hasta '+MK_LIMITS.trades+' cambios de Pokémon repetidos, '+MK_LIMITS.swaps+' de piedras y '+MK_LIMITS.evos+(MK_LIMITS.evos>1?' evoluciones':' evolución')+' por intercambio. La Pepita de oro suma 1 cambio de cada tipo. Cada visita ocupa una estación.',
-   '<b>Legendarios y raros:</b> los legendarios piden medallas (o ser Coleccionista con 100+ especies). Mew aparece por rumores y, con la Pokédex casi completa, de forma garantizada. Snorlax se consigue por evento, no salvaje.'])}`]);
+   '<b>Legendarios y raros:</b> los legendarios piden medallas (Articuno 6, Zapdos y Moltres 7, Mewtwo 8), ser Coleccionista con 100+ especies o, en el Equipo Rocket, rango Teniente (Articuno), Comandante (Zapdos y Moltres) y Alto mando (Mewtwo). En las zonas, un 🔒 te avisa cuántos faltan. Mew aparece por rumores y, con la Pokédex casi completa, de forma garantizada. Snorlax se consigue por evento, no salvaje.'])}`]);
   S.push(['🗺️ Zonas de exploración',`<p>Cada zona se abre con las <b>medallas</b> que pide <i>o</i> con un <b>poder de equipo</b> suficiente. Si tu vocación es Coleccionista o Profesor, las medallas no cuentan: solo el poder.</p>`+li(ZONES.map(z=>`<b>${esc(z.name)}</b>: `+(z.id==='celeste'?'8 medallas o '+CELESTE_DEX+' especies en la Pokédex (Coleccionista y Profesor: solo la Pokédex)':z.need?z.need+' medalla'+(z.need===1?'':'s')+' o poder de equipo '+zonePower(z.need):'libre'))) ]);
   S.push(['🏅 Gimnasios y Liga',`<p>Antes de cada combate ves tu chance de ganar y qué la sube o baja. Se calcula así: parte de 40 y suma o resta la <b>ventaja de tipos</b> de tu equipo (cuantos más Pokémon tengan ataques fuertes contra los del rival, más suma: hasta +24; ir con todo agua contra un gimnasio de fuego pesa mucho), la <b>defensa de tipos</b> (cada Pokémon tuyo débil a los del rival resta por sí solo, hasta −20 en total; los que resisten suman bastante menos, hasta +6, así que las resistencias no tapan las debilidades), tu <b>poder frente al del rival</b> (hasta +30 / −60), el tamaño del equipo, tu Valor, el Amuleto de la Suerte (+3), la vocación Campeón (+3) y un bono por intentos anteriores (hasta +10). El resultado queda entre 5% y 95%.</p>
   <p>Si ganás un gimnasio: medalla, +1 de reputación y +1 Valor. Si perdés: −1 de reputación y +2% de chance la próxima vez contra ese líder (hasta +6%).</p>`+
@@ -2513,7 +2528,7 @@ const itemIc=(k,sz)=>ICONS_IT[k]?`<img class="spr" width="${sz||24}" height="${s
 const iconBall=sz=>`<img width="${sz}" height="${sz}" alt="Equipo" src="${ICON_BALL}">`;
 const iconDex=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Pokédex"><rect x="2" y="1" width="12" height="14" rx="1" fill="#c9383f"/><rect x="2" y="1" width="12" height="14" rx="1" fill="none" stroke="#5b1217"/><rect x="4" y="3" width="8" height="6" fill="#9fd8e8" stroke="#1d3a52"/><rect x="5" y="4" width="3" height="2" fill="#eaf7fb"/><circle cx="5" cy="12" r="1.3" fill="#ffd84a" stroke="#5b1217" stroke-width=".4"/><rect x="8" y="11" width="4" height="1" fill="#5b1217"/><rect x="8" y="13" width="4" height="1" fill="#5b1217"/></svg>`;
 
-const VERSION='5.53'; // se sube en cada entrega y se muestra en el título y en Opciones
+const VERSION='5.55'; // se sube en cada entrega y se muestra en el título y en Opciones
 // ===== Sprites animados y efectos visuales =====
 // Los sprites estáticos están incluidos en el archivo. Las versiones animadas (Gen 5, del repositorio PokeAPI/sprites) se cargan
 // aparte cuando hay conexión; si no cargan, queda el sprite estático. Nada del juego depende de ellas.
@@ -3057,7 +3072,15 @@ function spin(r){
     if(k<1)raf=requestAnimationFrame(step);else setTimeout(finish,250);};
   raf=requestAnimationFrame(step);
 }
+function sirenUpdate(){
+  const s=S_,b=document.body;
+  const lv=(s&&!s.ending&&phase!=='title'&&phase!=='name'&&phase!=='origin'&&phase!=='starter'&&s.heat>=3)?Math.min(5,s.heat):0;
+  if(!document.getElementById('siren')){const d=document.createElement('div');d.id='siren';d.setAttribute('aria-hidden','true');b.appendChild(d);}
+  if(lv)b.dataset.siren=lv;else delete b.dataset.siren;
+  if(lv&&fxLevel()==='off')b.dataset.sirenCalm='1';else delete b.dataset.sirenCalm;
+}
 function view(){
+  sirenUpdate();
   if(typeof tipHide==='function')tipHide();
   if(phase!=='report'&&phase!=='eventres')ctx.hold=false;
   head();
@@ -3122,10 +3145,10 @@ function view(){
   }else if(phase==='zone'){
     M.innerHTML=`<div class="card"><div class="kicker">Explorar</div><h2>¿Adónde vas?</h2><p class="sub">${powerOnly(s)?'Tu vocación no depende de las medallas: las zonas se abren solo con un equipo lo bastante fuerte (poder de equipo).':'Las zonas se abren con medallas o con un equipo lo bastante fuerte (poder de equipo).'} Tu poder actual: <b>${Math.round(teamPower(s))}</b>. Ves cuántas especies nuevas podrías encontrar.</p></div>`+
       `<div class="zgrid">`+ZONES.map(z=>{
-        const open=zoneOpen(s,z);const sp=[...new Set(zoneList(s,z).map(e=>num(e[0])))];const nw=sp.filter(n=>!s.dex[n]).length;
+        const open=zoneOpen(s,z);const lk=legendLocked(s,z);const sp=[...new Set(zoneList(s,z).map(e=>num(e[0])))];const nw=sp.filter(n=>!s.dex[n]).length;
         const need=zoneNeed(s,z);
         const lock=z.id==='celeste'?`${powerOnly(s)?'':'8 medallas o '}${CELESTE_DEX} en Pokédex (tenés ${dexN(s)})`:`${powerOnly(s)?'':need+' medalla'+(need===1?'':'s')+' o '}poder ${zonePower(need)} (tenés ${Math.round(teamPower(s))})`;
-        return `<button class="btn zbtn${fxLevel()==='off'?' calm':''}" style="--H:104px" title="${esc(z.desc)}" ${open?'':'disabled'} onclick="G.zone('${z.id}')"><div class="scene-bg">${sceneBg(SC_ZONE[z.id]||'dia',104)}</div><div class="zin">${spr(num(ZONE_SP[z.id]),false,44)}<div class="zt"><div class="t">${esc(z.name)}</div>${open?`<div class="d">Nuevas: <b>${nw}</b> de ${sp.length}</div>`:`<div class="why">🔒 ${lock}</div>`}</div></div></button>`;
+        return `<button class="btn zbtn${fxLevel()==='off'?' calm':''}" style="--H:104px" title="${esc(z.desc+(lk.length?' · Legendarios bloqueados: '+lk.map(x=>x[0]+' ('+legendReq(s,x)+')').join('; '):''))}" ${open?'':'disabled'} onclick="G.zone('${z.id}')"><div class="scene-bg">${sceneBg(SC_ZONE[z.id]||'dia',104)}</div><div class="zin">${spr(num(ZONE_SP[z.id]),false,44)}<div class="zt"><div class="t">${esc(z.name)}</div>${open?`<div class="d">Nuevas: <b>${nw}</b> de ${sp.length}${lk.length?` · <span title="${esc(lk.map(x=>x[0]+': '+legendReq(s,x)).join('. '))}">🔒${lk.length} legendario${lk.length>1?'s':''}</span>`:''}</div>`:`<div class="why">🔒 ${lock}</div>`}</div></div></button>`;
       }).join('')+`</div><button class="btn" onclick="G.back()">← Volver</button>`;
   }else if(phase==='study'){
     const y=ctx.years||1,g=y===1?3:6;
