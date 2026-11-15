@@ -29,7 +29,6 @@ Cada estación elegís una acción (explorar, entrenar, estudiar, el mercado, gi
 
 - La música ambiental y los efectos **se generan dentro del juego** (Web Audio): no hay archivos de audio ni música con derechos de autor.
 - Hay un menú **Opciones** (desde el título o el ícono del engranaje) con una sección de sonido para subir, bajar o silenciar la música y los efectos. La música no empieza hasta que tocás algo en la página (así lo exigen los navegadores).
-- Si querés usar tus propios temas **libres de derechos** (por ejemplo, con licencia CC0), subilos al repositorio y poné sus rutas en la constante `MUSIC_FILES` del `index.html`. No incluyas música comercial de terceros.
 
 ## Animaciones y efectos
 Los Pokémon se ven animados (los sprites animados de Gen 5 del repositorio público PokeAPI/sprites) en la selección de inicial, el panel del equipo, los gimnasios, las capturas, las evoluciones y los finales. **Se cargan desde internet cuando hay conexión**: no van dentro del archivo (los 151 normales y shiny pesarían unos 11 MB). Si no cargan, el juego muestra el sprite quieto que sí viene incluido, y todo funciona igual.
@@ -39,15 +38,6 @@ También hay efectos dibujados dentro del juego: destellos y marco especial al c
 ## Privacidad
 
 El juego es un único archivo (`index.html`). No envía datos a ningún servidor, no usa analíticas ni cookies de seguimiento y no carga recursos externos: los sprites vienen incluidos en el archivo y el audio se genera en tu navegador.
-
-## Publicarlo en GitHub Pages
-
-1. Creá un repositorio **público** en GitHub.
-2. Subí `index.html` y este `README.md` a la rama principal.
-3. En **Settings → Pages**, elegí publicar desde esa rama (carpeta raíz).
-4. Esperá un momento y abrí la dirección que te muestra GitHub.
-
-Para actualizar el juego, reemplazá `index.html` por la versión nueva. Elegí bien el nombre del repositorio desde el principio: si cambia la dirección, los jugadores pierden sus partidas guardadas (el navegador las guarda por dirección).
 
 ## Aviso legal
 
