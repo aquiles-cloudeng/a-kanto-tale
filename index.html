@@ -1223,6 +1223,7 @@ function getActions(s){
   return A;
 }
 function runAction(s,id,arg){
+  {const c=s.counters;c.acts=c.acts||{};c.acts[id]=(c.acts[id]||0)+1;if(id==='explore'&&arg){c.zx=c.zx||{};c.zx[arg]=(c.zx[arg]||0)+1;}}
   const r=runActionCore(s,id,arg);
   if(s.freeSeason>0&&(r.seasons||1)>0){r.seasons=Math.max(0,(r.seasons||1)-1);s.freeSeason--;r.lines.push('⏳ Gracias a tu Ingenio, esta acción no te costó una estación'+(s.freeSeason?' (te quedan '+s.freeSeason+').':'.'));}
   if(PRAC[id]){const l=practice(s,PRAC[id]);if(l)r.lines.push(l);}
@@ -2553,7 +2554,7 @@ const itemIc=(k,sz)=>ICONS_IT[k]?`<img class="spr" width="${sz||24}" height="${s
 const iconBall=sz=>`<img width="${sz}" height="${sz}" alt="Equipo" src="${ICON_BALL}">`;
 const iconDex=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Pokédex"><rect x="2" y="1" width="12" height="14" rx="1" fill="#c9383f"/><rect x="2" y="1" width="12" height="14" rx="1" fill="none" stroke="#5b1217"/><rect x="4" y="3" width="8" height="6" fill="#9fd8e8" stroke="#1d3a52"/><rect x="5" y="4" width="3" height="2" fill="#eaf7fb"/><circle cx="5" cy="12" r="1.3" fill="#ffd84a" stroke="#5b1217" stroke-width=".4"/><rect x="8" y="11" width="4" height="1" fill="#5b1217"/><rect x="8" y="13" width="4" height="1" fill="#5b1217"/></svg>`;
 
-const VERSION='5.67'; // se sube en cada entrega y se muestra en el título y en Opciones
+const VERSION='5.68'; // se sube en cada entrega y se muestra en el título y en Opciones
 // ===== Sprites animados y efectos visuales =====
 // Los sprites estáticos están incluidos en el archivo. Las versiones animadas (Gen 5, del repositorio PokeAPI/sprites) se cargan
 // aparte cuando hay conexión; si no cargan, queda el sprite estático. Nada del juego depende de ellas.
@@ -2966,7 +2967,7 @@ function writeSlots(a){try{localStorage.setItem(SLOTS_KEY,JSON.stringify(a));ret
 // ===== Estadísticas anónimas de uso (opcionales) =====
 // Para activarlas: pegá acá la URL de tu Apps Script (ver apps_script_stats.gs). Vacía = no se envía nada.
 const TRK_URL='https://script.google.com/macros/s/AKfycbwu38fz4ciZI_L0-zld2nR7s2qM47wofhOvvt_HWssSrIRtaqBAJPNomxdquFsYCwBt-w/exec';
-const TRK_EVENTS=['open','start','continue','season','voc','badge','gym_loss','league_fail','league_win','end'];
+const TRK_EVENTS=['open','start','continue','season','voc','badge','gym_loss','league_fail','league_win','end','end2'];
 function trkOn(){try{return localStorage.getItem('aventura_trk_off')!=='1';}catch(e){return true;}}
 function trkId(){try{let v=localStorage.getItem('aventura_trk_id');if(!v){v=Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);localStorage.setItem('aventura_trk_id',v);}return v;}catch(e){return 'x';}}
 function trk(ev,d){
@@ -2974,18 +2975,33 @@ function trk(ev,d){
   try{fetch(TRK_URL,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({p:trkId(),g:S_&&S_.slotId||0,e:ev,t:S_?S_.t:null,v:VERSION,d:d||{}})}).catch(()=>{});}catch(e){}
 }
 const TRK_LAST={};
+function trkState(s){ // foto del estado para la telemetría (solo números y nombres, nada personal)
+  const o={dex:dexN(s),sh:Object.keys(s.shinyDex||{}).length,pw:Math.round(teamPower(s)),st:[s.st.valor,s.st.ingenio,s.st.carisma,s.st.cuidado,s.st.sigilo]};
+  try{o.team=teamMons(s).map(m=>m.sp);}catch(e){}
+  return o;
+}
+function trkEndState(s){
+  const o=trkState(s);
+  o.pubs=s.pubs||0;o.rp=s.rp||0;o.rk=s.rocketPts||0;o.heat=s.heat||0;o.rep=s.rep||0;o.fame=s.fame||0;o.go=s.gymOwner?1:0;o.lf=s.leagueFails||0;o.gl=s.counters.gymLoss||0;
+  return o;
+}
+function trkEnd2(s){ // segundo mensaje del final: acciones, exploraciones y especies que faltan por zona
+  const o={acts:s.counters.acts||{},zx:s.counters.zx||{}};
+  try{const zl={};for(const z of ZONES){const sp=[...new Set(zoneList(s,z).map(e=>num(e[0])))];const left=sp.filter(n=>!s.dex[n]).length;if(zoneOpen(s,z))zl[z.id]=left;}o.zl=zl;}catch(e){}
+  return o;
+}
 function trkSnap(s){return {t:s.t,b:s.badges.length,gl:s.counters.gymLoss||0,lf:s.leagueFails||0,lw:!!s.leagueWon,voc:s.voc||null,end:s.ending||null};}
 function trkDiff(s){
   if(!TRK_URL||!s)return;
   const id=s.slotId,L=TRK_LAST[id],n=trkSnap(s);
   if(!L){TRK_LAST[id]=n;return;}
-  if(Math.floor(n.t/5)>Math.floor(L.t/5))trk('season',{t5:Math.floor(n.t/5)*5});
+  if(Math.floor(n.t/5)>Math.floor(L.t/5))trk('season',Object.assign({t5:Math.floor(n.t/5)*5},trkState(s)));
   if(n.voc&&n.voc!==L.voc)trk('voc',{voc:n.voc});
   if(n.b>L.b)trk('badge',{n:n.b});
-  if(n.gl>L.gl)trk('gym_loss',{n:n.gl,badges:n.b});
-  if(n.lf>L.lf)trk('league_fail',{n:n.lf});
+  if(n.gl>L.gl)trk('gym_loss',{n:n.gl,badges:n.b,pw:Math.round(teamPower(s))});
+  if(n.lf>L.lf)trk('league_fail',{n:n.lf,pw:Math.round(teamPower(s))});
   if(n.lw&&!L.lw)trk('league_win',{fails:n.lf});
-  if(n.end&&!L.end){let sc=null;try{sc=scoreOf(s).total;}catch(e){}trk('end',{ending:n.end,score:sc,badges:n.b,voc:n.voc,origin:s.origin});}
+  if(n.end&&!L.end){let sc=null;try{sc=scoreOf(s).total;}catch(e){}trk('end',Object.assign({ending:n.end,score:sc,badges:n.b,voc:n.voc,origin:s.origin},trkEndState(s)));trk('end2',trkEnd2(s));}
   TRK_LAST[id]=n;
 }
 function trkOptHtml(){
