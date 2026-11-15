@@ -195,7 +195,7 @@ body[data-siren-calm] #siren::before,body[data-siren-calm] #siren::after{animati
 .parade{display:flex;justify-content:center;gap:6px;margin-bottom:6px}
 .parade .spr{animation:bob 1.8s ease-in-out infinite;filter:drop-shadow(0 4px 6px #0008)}
 .parade .spr:nth-child(2){animation-delay:-.45s}.parade .spr:nth-child(3){animation-delay:-.9s}.parade .spr:nth-child(4){animation-delay:-1.35s}
-.endspr .spr{animation:bob 2.2s ease-in-out infinite;filter:drop-shadow(0 0 16px var(--acc))}
+.endspr{filter:drop-shadow(0 0 16px var(--acc))}.endspr .spr{animation:bob 2.2s ease-in-out infinite}
 .vs{display:flex;align-items:center;justify-content:space-around;margin:10px 0 4px;padding:12px 6px;border-radius:12px;background:radial-gradient(ellipse at center,#2c4670 0,#14213a 78%);position:relative;overflow:hidden}
 .vs .vsm .spr{transform:scaleX(-1)}
 .vs .vsm,.vs .vsf{animation:slideL .6s cubic-bezier(.2,1,.3,1) both,bob 1.6s .7s ease-in-out infinite}
@@ -2553,7 +2553,7 @@ const itemIc=(k,sz)=>ICONS_IT[k]?`<img class="spr" width="${sz||24}" height="${s
 const iconBall=sz=>`<img width="${sz}" height="${sz}" alt="Equipo" src="${ICON_BALL}">`;
 const iconDex=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Pokédex"><rect x="2" y="1" width="12" height="14" rx="1" fill="#c9383f"/><rect x="2" y="1" width="12" height="14" rx="1" fill="none" stroke="#5b1217"/><rect x="4" y="3" width="8" height="6" fill="#9fd8e8" stroke="#1d3a52"/><rect x="5" y="4" width="3" height="2" fill="#eaf7fb"/><circle cx="5" cy="12" r="1.3" fill="#ffd84a" stroke="#5b1217" stroke-width=".4"/><rect x="8" y="11" width="4" height="1" fill="#5b1217"/><rect x="8" y="13" width="4" height="1" fill="#5b1217"/></svg>`;
 
-const VERSION='5.66'; // se sube en cada entrega y se muestra en el título y en Opciones
+const VERSION='5.67'; // se sube en cada entrega y se muestra en el título y en Opciones
 // ===== Sprites animados y efectos visuales =====
 // Los sprites estáticos están incluidos en el archivo. Las versiones animadas (Gen 5, del repositorio PokeAPI/sprites) se cargan
 // aparte cuando hay conexión; si no cargan, queda el sprite estático. Nada del juego depende de ellas.
