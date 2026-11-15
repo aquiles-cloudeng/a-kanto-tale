@@ -2,6 +2,11 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 5.72 — Arreglos de errores
+
+- La Tabla de tipos no se abría desde la pantalla de inicio si todavía no tenías una partida: ahora abre siempre.
+- En celulares angostos (360 px o menos) la barra de iconos y la pantalla de inicio se salían del ancho y se podía deslizar de costado: ahora entran en pantalla.
+
 ## 5.71 — Ícono de la tabla de tipos
 
 - La tabla de tipos ahora usa el sprite de una MT (el disco de movimiento) en la barra de iconos, en el título y en su ventana, en lugar del cuadrado naranja anterior.
