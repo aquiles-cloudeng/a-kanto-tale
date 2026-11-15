@@ -2047,7 +2047,7 @@ function endSeason(s,seasons){
 
 // ===================== Puntaje, logros y epílogo =====================
 const RK_OPS_PTS=60,RK_OPS_CAP=12,RK_RANK_PTS=30; // cada operación de mando exitosa (Teniente en adelante) suma al puntaje de quien sigue el camino Rocket
-const SC={dex:3,shiny:6,medal:35,spare:10,pub:60,fame:12,ach:30}; // puntos por: especie, shiny, medalla, estación sobrante, publicación (Profesor), punto de fama (gimnasio propio), logro
+const SC={dex:3,shiny:6,medal:35,spare:10,pub:140,fame:12,ach:30}; // puntos por: especie, shiny, medalla, estación sobrante, publicación (Profesor), punto de fama (gimnasio propio), logro
 const END_FLAT=600; // mismo puntaje base para todos los finales: así nadie fuerza uno solo por el puntaje
 const END_BASE=Object.fromEntries(Object.keys(ENDINGS).map(k=>[k,END_FLAT]));
 const ALL_TYPES=[...new Set(MON.flatMap(m=>m.types))];
@@ -2548,7 +2548,7 @@ const itemIc=(k,sz)=>ICONS_IT[k]?`<img class="spr" width="${sz||24}" height="${s
 const iconBall=sz=>`<img width="${sz}" height="${sz}" alt="Equipo" src="${ICON_BALL}">`;
 const iconDex=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Pokédex"><rect x="2" y="1" width="12" height="14" rx="1" fill="#c9383f"/><rect x="2" y="1" width="12" height="14" rx="1" fill="none" stroke="#5b1217"/><rect x="4" y="3" width="8" height="6" fill="#9fd8e8" stroke="#1d3a52"/><rect x="5" y="4" width="3" height="2" fill="#eaf7fb"/><circle cx="5" cy="12" r="1.3" fill="#ffd84a" stroke="#5b1217" stroke-width=".4"/><rect x="8" y="11" width="4" height="1" fill="#5b1217"/><rect x="8" y="13" width="4" height="1" fill="#5b1217"/></svg>`;
 
-const VERSION='5.63'; // se sube en cada entrega y se muestra en el título y en Opciones
+const VERSION='5.64'; // se sube en cada entrega y se muestra en el título y en Opciones
 // ===== Sprites animados y efectos visuales =====
 // Los sprites estáticos están incluidos en el archivo. Las versiones animadas (Gen 5, del repositorio PokeAPI/sprites) se cargan
 // aparte cuando hay conexión; si no cargan, queda el sprite estático. Nada del juego depende de ellas.
