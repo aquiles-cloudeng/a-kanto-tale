@@ -2,7 +2,7 @@
 
 Un juego de aventura por elecciones, hecho por fans y sin fines de lucro, que se juega directo en el navegador. Vivís la vida de un entrenador desde los **10 hasta los 35 años**, a lo largo de **100 estaciones**, y cada decisión te lleva a un final distinto.
 
-👉 **Jugar:** `https://[tu-usuario].github.io/[nombre-del-repo]/`
+👉 **Jugar:** `https://aquiles-cloudeng.github.io/a-kanto-tale/`
 
 ## Qué podés hacer
 
@@ -57,11 +57,11 @@ Los sprites de Pokémon y de objetos incluidos en el archivo provienen del repos
 
 ## Contacto y errores
 
-Si encontrás un error o tenés una sugerencia, abrí un *issue* en este repositorio o escribí a **[tu contacto]**.
+Si encontrás un error o tenés una sugerencia, abrí un *issue* en este repositorio o escribí a **proximamente**.
 
 ## Créditos
 
-Creado por **[tu nombre]**.
+Creado por **Kolo**.
 
 Los sprites de los líderes de gimnasio (pantalla de Medallas) provienen del desensamblado público [pret/pokered](https://github.com/pret/pokered) (`gfx/trainers`), recoloreados, y pertenecen a Nintendo y Game Freak.
 
