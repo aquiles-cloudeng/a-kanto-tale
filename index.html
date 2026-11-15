@@ -232,6 +232,9 @@ body[data-siren-calm] #siren::before,body[data-siren-calm] #siren::after{animati
  border:1px solid color-mix(in srgb,var(--c) 60%,#0000);
  box-shadow:0 3px 0 color-mix(in srgb,var(--c) 38%,#050a12),0 8px 14px #0005,inset 0 1px 0 #ffffff22;
  transition:transform .14s cubic-bezier(.34,1.56,.64,1),box-shadow .14s,filter .14s}
+.act.gold{border-color:#f5c542;box-shadow:0 0 0 1px #f5c542cc,0 0 16px #f5c54266,0 4px 0 color-mix(in srgb,var(--c) 38%,#050a12);animation:goldp 2.6s ease-in-out infinite}
+@keyframes goldp{50%{box-shadow:0 0 0 2px #ffe08a,0 0 24px #f5c54299,0 4px 0 color-mix(in srgb,var(--c) 38%,#050a12)}}
+@media (prefers-reduced-motion:reduce){.act.gold{animation:none}}
 .act::after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,#ffffff12 50%,transparent 60%);transform:translateX(-120%);transition:transform .55s ease;pointer-events:none}
 .act:hover:not(.dis){transform:translateY(-2px);filter:brightness(1.12);box-shadow:0 5px 0 color-mix(in srgb,var(--c) 38%,#050a12),0 12px 20px #0006,0 0 18px color-mix(in srgb,var(--c) 45%,#0000),inset 0 1px 0 #ffffff33}
 .act:hover:not(.dis)::after{transform:translateX(120%)}
@@ -376,6 +379,7 @@ body[data-siren-calm] #siren::before,body[data-siren-calm] #siren::after{animati
 .rlogo{vertical-align:-3px}
 .scp.k-rain{border-radius:1px;height:calc(var(--s)*11);width:var(--s);opacity:0}
 .scp.k-rain.an-fall{animation-duration:calc(var(--d)*.16)}
+.gfl{margin:0;padding-left:18px;display:grid;gap:7px;font-size:14px;line-height:1.4}.gfl b{color:#f5c542}
 .rgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .rg{position:relative;overflow:hidden;isolation:isolate;display:flex;flex-direction:column;gap:5px;text-align:left;padding:13px 12px 12px;border-radius:14px;border:1px solid color-mix(in srgb,var(--rc) 60%,#000);background:linear-gradient(160deg,color-mix(in srgb,var(--rc) 44%,#0d1220),#10172a 82%);color:var(--tx);font:inherit;cursor:pointer;box-shadow:0 3px 0 #0a1220,0 6px 10px #0004;transition:transform .2s cubic-bezier(.34,1.8,.5,1),border-color .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .rg:before{content:"";position:absolute;right:-18px;top:-18px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,var(--rc),transparent 66%);opacity:.3;z-index:-1}
@@ -490,7 +494,7 @@ const SEAS=['Primavera','Verano','Otoño','Invierno'];
 const SEAS_I=['🌱','☀️','🍂','❄️'];
 const MAXT=100,STAT_CAP=20;
 const SHIP_PW=460;
-const LEAGUE_AGE=22,GIO_PW=550,ROCKET_MAX=60,FAME_MAX=24,PW_ADJ=40,PUB_REQ=[{rp:22,dex:40,ing:9},{rp:52,dex:85,ing:14},{rp:92,dex:115,ing:18}],EVENT_P=0.5;
+const LEAGUE_AGE=22,GIO_PW=650,ROCKET_MAX=72,FAME_MAX=24,PW_ADJ=40,PUB_REQ=[{rp:22,dex:40,ing:9},{rp:52,dex:85,ing:14},{rp:92,dex:115,ing:18}],EVENT_P=0.5;
 const TES={Normal:'Normal',Fire:'Fuego',Water:'Agua',Electric:'Eléctrico',Grass:'Planta',Ice:'Hielo',Fighting:'Lucha',Poison:'Veneno',Ground:'Tierra',Flying:'Volador',Psychic:'Psíquico',Bug:'Bicho',Rock:'Roca',Ghost:'Fantasma',Dragon:'Dragón',Dark:'Siniestro',Steel:'Acero',Fairy:'Hada'};
 const TCOL={Normal:'#8a8a73',Fire:'#e0622a',Water:'#4a7fe0',Electric:'#d4a90f',Grass:'#4aa845',Ice:'#5cb8b8',Fighting:'#b0302a',Poison:'#9a3fa0',Ground:'#b8964a',Flying:'#7f8fe0',Psychic:'#e04a80',Bug:'#8aa01a',Rock:'#9a8530',Ghost:'#6a4a8a',Dragon:'#5a30e0',Dark:'#5a4a3e',Steel:'#8a8aa0',Fairy:'#e07aa8'};
 const age=s=>10+Math.floor(s.t/4);
@@ -536,7 +540,7 @@ const ORIGINS=[
 const STARTERS=['Bulbasaur','Charmander','Squirtle','Pikachu'];
 const startersFor=id=>{const o=ORIGINS.find(x=>x.id===id);return (o&&o.starters)||STARTERS;};
 const VOCS={
- campeon:{name:'Aspirante a Campeón',hint:'+2 Valor · ventaja en gimnasios y en la Liga. Más adelante podés fundar tu propio gimnasio',st:{valor:2}},
+ campeon:{name:'Aspirante a Campeón',hint:'+2 Valor · ventaja en gimnasios y en la Liga. Más adelante podés elegir un camino alternativo: fundar tu propio gimnasio (la partida sigue)',st:{valor:2}},
  coleccionista:{name:'Coleccionista',hint:'+2 Cuidado · más encuentros, más raros y shinies, zonas con 2 medallas menos',st:{cuidado:2}},
  picaro:{name:'Aspirante a Rocket',hint:'+2 Sigilo · las ofertas del Equipo Rocket te llegan antes y más seguido. Robos, cacerías y ascensos; a cambio, gimnasios y Liga quedan lejos',st:{sigilo:2}},
  profesor:{name:'Aspirante a Profesor',hint:'+2 Ingenio · estudiar y hacer trabajo de campo te llevan a ser Profesor Pokémon',st:{ingenio:2}}
@@ -626,7 +630,7 @@ function addMonX(s,sp,shiny){
   s.box.push(m);s.dex[sp]=1;if(shiny)s.shinyDex[sp]=1;
   s.counters.caught=(s.counters.caught||0)+1;
   let up=false;
-  const cur=teamMons(s).find(x=>x.sp===sp&&x.id!==m.id);
+  const cur=gymDupOk(s,m)?null:teamMons(s).find(x=>x.sp===sp&&x.id!==m.id);
   if(cur){if(pwT(m)>pwT(cur)&&(m.shiny||!cur.shiny)){s.team=s.team.map(id=>id===cur.id?m.id:id);up=true;}} // un shiny en el equipo no lo desplaza uno normal
   else if(s.team.length<6)s.team.push(m.id);
   return {m,up};
@@ -641,9 +645,23 @@ function teamPower(s){const t=teamMons(s);return t.length?t.reduce((a,m)=>a+pw(m
 // especies DISTINTAS que tenés en total (no solo en el equipo), contadas por tipo
 function boxTypes(s){const sp=new Set(s.box.map(m=>m.sp)),c={};for(const n of sp)for(const t of mon(n).types)c[t]=(c[t]||0)+1;return c;}
 function topBoxType(s){const c=boxTypes(s);let b=null,bn=0;for(const t in c)if(c[t]>bn){b=t;bn=c[t];}return {type:b,n:bn};}
-const GYM_OFFER_T=50,GYM_OFFER_N=6;
+// Gimnasio propio: acción que aparece con 3 medallas, GYM_FOUND_T estaciones y GYM_FOUND_N Pokémon (copias incluidas, de al menos GYM_FOUND_SP especies) de un mismo tipo
+const GYM_FOUND_T=60,GYM_FOUND_N=6,GYM_FOUND_SP=3,GYM_TEAM_MIN=4;
+function gymTypeCounts(s){const c={};for(const m of s.box){const ts=mon(m.sp).types;for(const t of ts){const e=c[t]||(c[t]={n:0,sp:new Set()});e.n++;e.sp.add(m.sp);}}return c;}
+function gymFoundTypes(s){const c=gymTypeCounts(s);return Object.keys(c).filter(t=>c[t].n>=GYM_FOUND_N&&c[t].sp.size>=GYM_FOUND_SP).map(t=>({type:t,n:c[t].n,sp:c[t].sp.size})).sort((a,b)=>b.n-a.n);}
+const gymFoundOk=s=>!s.rocket&&!s.gymOwner&&s.badges.length>=3&&s.t>=GYM_FOUND_T&&gymFoundTypes(s).length>0;
+const GYM_END_PW=520; // poder de equipo mínimo para consagrarte Líder (además de la fama)
+const gymTeamN=s=>s.gymType?teamMons(s).filter(m=>mon(m.sp).types.includes(s.gymType)).length:0;
+const gymDupOk=(s,m)=>!!s.gymOwner&&mon(m.sp).types.includes(s.gymType); // en tu gimnasio podés repetir especies del tipo elegido
+function gymAutoTeam(s){
+  const mine=s.box.filter(m=>mon(m.sp).types.includes(s.gymType)).sort((a,b)=>pwT(b)-pwT(a)).slice(0,6);
+  const ids=new Set(mine.map(m=>m.id)),sps=new Set(mine.map(m=>m.sp));
+  const rest=[...s.box].sort((a,b)=>pwT(b)-pwT(a));
+  for(const m of rest){if(ids.size>=6)break;if(ids.has(m.id)||sps.has(m.sp))continue;ids.add(m.id);sps.add(m.sp);mine.push(m);}
+  s.team=mine.map(m=>m.id);
+}
 function topType(s){const c=teamTypes(s);let b=null,bn=0;for(const t in c)if(c[t]>bn){b=t;bn=c[t];}return {type:b,n:bn};}
-const RK_RANKS=[[0,'Recluta'],[8,'Soldado'],[16,'Agente'],[30,'Teniente'],[48,'Comandante'],[60,'Alto mando']];
+const RK_RANKS=[[0,'Recluta'],[8,'Soldado'],[16,'Agente'],[30,'Teniente'],[48,'Comandante'],[ROCKET_MAX,'Alto mando']];
 const rocketRank=s=>{if(s.rocketBoss)return 'Líder del Equipo Rocket';let r=RK_RANKS[0][1];for(const x of RK_RANKS)if(s.rocketPts>=x[0])r=x[1];return r;};
 const rocketNext=s=>{if(s.rocketBoss||s.rocketPts>=ROCKET_MAX)return null;const n=RK_RANKS.find(x=>x[0]>s.rocketPts);return n?{at:n[0],name:n[1]}:null;};
 const shinyChance=s=>0.015*(s.items.shiny_charm?3:1)+(s.voc==='coleccionista'?0.005:0);
@@ -673,23 +691,24 @@ function stacks(s){ // un grupo por especie y por variante (los shiny van aparte
 }
 function bestOf(s,sp){let b=null;for(const m of s.box)if(m.sp===sp&&(!b||pwT(m)>pwT(b)))b=m;return b;}
 function autoTeam(s){ // el mejor ejemplar de cada especie (normal o shiny, el que más poder tenga)
+  if(s.gymOwner){gymAutoTeam(s);return;}
   const by=new Map();for(const e of stacks(s)){const c=by.get(e.sp);if(!c||pwT(e.best)>pwT(c))by.set(e.sp,e.best);}
   s.team=[...by.values()].sort((a,b)=>pwT(b)-pwT(a)).slice(0,6).map(m=>m.id);
 }
 function normalizeTeam(s){
   const seen=new Map();
-  for(const id of s.team){const m=s.box.find(x=>x.id===id);if(!m)continue;const c=seen.get(m.sp);if(!c||pwT(m)>pwT(c))seen.set(m.sp,m);}
+  for(const id of s.team){const m=s.box.find(x=>x.id===id);if(!m)continue;const k=gymDupOk(s,m)?'#'+m.id:m.sp;const c=seen.get(k);if(!c||pwT(m)>pwT(c))seen.set(k,m);}
   s.team=[...seen.values()].map(m=>m.id).slice(0,6);
   if(!s.team.length)autoTeam(s);
 }
 function teamAdd(s,sp){
   if(s.team.length>=6)return false;
-  if(teamMons(s).some(m=>m.sp===sp))return false;
+  if(!(s.gymOwner&&mon(sp).types.includes(s.gymType))&&teamMons(s).some(m=>m.sp===sp))return false;
   const b=bestOf(s,sp);if(!b)return false;s.team.push(b.id);return true;
 }
 function teamAddMon(s,id){ // pone a ese ejemplar en el equipo; si ya había otro de la misma especie, lo reemplaza
   const m=s.box.find(x=>x.id===id);if(!m)return false;
-  const cur=teamMons(s).find(x=>x.sp===m.sp);
+  const cur=gymDupOk(s,m)?null:teamMons(s).find(x=>x.sp===m.sp);
   if(cur){s.team=s.team.map(i=>i===cur.id?m.id:i);return true;}
   if(s.team.length>=6)return false;s.team.push(m.id);return true;
 }
@@ -1052,7 +1071,6 @@ function applyFx(s,fx){
   if(fx.loseMon){const m=loseOne(s);if(m)L.push('💔 Perdiste a '+mon(m.sp).name);}
   if(fx.time){s.pendingTime+=fx.time;L.push('⏳ Perdés '+fx.time+(fx.time===1?' estación':' estaciones')+' recuperándote');}
   if(fx.commit==='rocket'){s.rocket=true;s.rocketPts=1;L.push('🅡 Ahora sos parte del Equipo Rocket. Gimnasios y Liga quedan fuera de tu alcance.');}
-  if(fx.commit==='gymowner'){s.gymOwner=true;s.gymType=topBoxType(s).type||'Normal';L.push('🏟️ Fundaste tu gimnasio de tipo '+TES[s.gymType]+'. Gimnasios y Liga quedan atrás.');}
   if(fx.end){s.forcedEnd=fx.end;}
   return L;
 }
@@ -1194,7 +1212,8 @@ function getActions(s){
     A.push({id:'rkmission',icon:'🅡',title:'Misiones del Equipo Rocket',desc:'Rango actual: '+rocketRank(s)+' ('+s.rocketPts+'/'+ROCKET_MAX+'; Recluta, Soldado, Agente, Teniente, Comandante, Alto mando y, al final, Líder). Elegís el tipo: trabajo sucio (rango), robar Pokémon, robar objetos, cacería o mercado negro. Con Heat 5 te arrestan.',ok:true});
     A.push({id:'rklay',icon:'🫥',title:'Mantener un perfil bajo',desc:'Te escondés unos meses. Heat -2.',ok:s.heat>0,why:'No tenés Heat'});
   }
-  if(s.gymOwner)A.push({id:'gymwork',icon:'🏟️',title:'Atender tu gimnasio',desc:'Retadores, inspecciones y fama. Llegá a '+FAME_MAX+' de fama ('+s.fame+'/'+FAME_MAX+').',ok:true});
+  if(gymFoundOk(s))A.push({id:'gymfound',icon:'🏟️',title:'Fundar tu propio gimnasio',desc:'Camino alternativo: no termina el juego, la partida sigue. Tenés Pokémon de '+gymFoundTypes(s).length+' tipo(s) para elegir. Tocá para ver todo antes de decidir.',ok:true});
+  if(s.gymOwner){const tn=gymTeamN(s);const okT=tn>=GYM_TEAM_MIN;A.push({id:'gymwork',icon:'🏟️',title:'Atender tu gimnasio',desc:'Tu camino: retadores, inspecciones y torneos dan fama. Con '+FAME_MAX+' de fama y un equipo de poder '+GYM_END_PW+' o más (hoy '+Math.round(teamPower(s))+') te consagrás Líder de gimnasio ('+s.fame+'/'+FAME_MAX+'). Necesitás al menos '+GYM_TEAM_MIN+' Pokémon de tipo '+TES[s.gymType]+' en tu equipo (hoy: '+tn+').',ok:okT,why:okT?'':'Tu equipo tiene '+tn+' Pokémon de tipo '+TES[s.gymType]+' y hacen falta '+GYM_TEAM_MIN+'. Armalo desde el botón de la Poké Ball.'});}
   A.forEach(a=>{if(PRAC[a.id])a.prac=PRAC[a.id];if(a.id==='market'){a.prac='carisma';a.pracNote='por cada cambio que cierres';}});
   return A;
 }
@@ -1226,6 +1245,11 @@ function runActionCore(s,id,arg){
     case 'rkmission':{const k=rkKind(arg,s);return {title:k.title,lines:[],pool:k.pool,seasons:1};}
     case 'rklay':s.heat=Math.max(0,s.heat-2);return {title:'Perfil bajo',lines:['Te escondés unos meses. Heat: '+s.heat+'/5.'],seasons:1};
     case 'gymwork':return {title:'Atender tu gimnasio',lines:[],pool:'gymown',seasons:1};
+    case 'gymfound':{
+      const opt=gymFoundTypes(s).find(x=>x.type===arg);if(!opt||s.gymOwner)throw new Error('Gimnasio no disponible');
+      s.gymOwner=true;s.gymType=arg;gymAutoTeam(s);
+      return {title:'Fundaste tu gimnasio de tipo '+TES[arg],seasons:1,lines:['🏟️ Fundaste tu gimnasio de tipo '+TES[arg]+'. Los gimnasios y la Liga quedan atrás: la partida sigue por este camino.','➡️ Ahora «Atender tu gimnasio» es tu acción principal. Retadores, inspecciones y torneos te dan fama, pero solo si en tu equipo hay al menos '+GYM_TEAM_MIN+' Pokémon de tipo '+TES[arg]+' (podés repetir especies). Al llegar a '+FAME_MAX+' de fama cerrás como Líder de gimnasio.','Armamos tu equipo con tus mejores Pokémon de tipo '+TES[arg]+' ('+gymTeamN(s)+' de 6).']};
+    }
     case 'market':return {title:'Mercado de intercambio',lines:arg||[],seasons:1};
   }
   throw new Error('Acción desconocida '+id);
@@ -1289,13 +1313,6 @@ const EV=[
  opts:[
   S('Aceptar el trabajo','Te ponés el uniforme. Ya no hay vuelta atrás.',{commit:'rocket'},{irrev:true,hint:'Punto sin retorno: se cierran los gimnasios y la Liga; se abren las misiones Rocket'}),
   S('Rechazar','Te alejás sin mirar atrás. Sentís sus ojos en la nuca.',{flag:{rocketSeen:true},inc:{declRocket:1}})]},
-{id:'gym_offer',pool:'random',kind:'Oferta',w:9,
- req:s=>!s.rocket&&!s.gymOwner&&s.badges.length>=3&&(s.counters.declGym||0)<2&&s.t>=GYM_OFFER_T&&topBoxType(s).n>=GYM_OFFER_N,
- title:'Un gimnasio sin líder',
- text:s=>'Una ciudad pequeña se quedó sin líder de gimnasio, y la gente notó que tenés '+topBoxType(s).n+' especies distintas de tipo '+TES[topBoxType(s).type]+' entre todos tus Pokémon. Te ofrecen el puesto.',
- opts:[
-  S('Aceptar y fundar tu gimnasio','Colgás el cartel de tu propio gimnasio.',{commit:'gymowner'},{irrev:true,hint:'Punto sin retorno: dejás de viajar (sin más gimnasios ni Liga). Llegá a '+FAME_MAX+' de fama'}),
-  S('Seguir de viaje','Todavía no es tu momento.',{inc:{declGym:1}})]},
 {id:'mew_final',pool:'story',kind:'Historia',forced:true,once:true,req:s=>dexN(s)>=150&&!s.dex[151],title:'El rumor era verdad',
  text:()=>'Con tu Pokédex casi completa, el viejo investigador te busca: encontró el lugar exacto donde vio a un Pokémon pequeño y rosado. Te lleva hasta una cueva escondida y, entre la niebla, algo flota esperándote.',
  opts:[S('Acercarte despacio','Te mira con curiosidad y se deja capturar. Es Mew: la especie que te faltaba.',{gain:['Mew']})]},
@@ -1993,7 +2010,7 @@ function endOffers(s){
   const o=[];
   if(s.leagueWon)o.push('champion');
   if(s.rocketBoss)o.push('rocket_boss');
-  if(s.fame>=FAME_MAX)o.push('gym_leader');
+  if(s.gymOwner&&s.fame>=FAME_MAX&&teamPower(s)>=GYM_END_PW&&gymTeamN(s)>=GYM_TEAM_MIN)o.push('gym_leader');
   if(dexN(s)>=151)o.push('dex_complete');
   if(s.pubs>=3&&dexN(s)>=PUB_REQ[2].dex&&!s.rocket)o.push('profesor');
   return END_PRIO.filter(k=>o.includes(k));
@@ -2029,7 +2046,8 @@ function endSeason(s,seasons){
 }
 
 // ===================== Puntaje, logros y epílogo =====================
-const RK_OPS_PTS=45,RK_OPS_CAP=12,RK_RANK_PTS=20; // cada operación de mando exitosa (Teniente en adelante) suma al puntaje de quien sigue el camino Rocket
+const RK_OPS_PTS=60,RK_OPS_CAP=12,RK_RANK_PTS=30; // cada operación de mando exitosa (Teniente en adelante) suma al puntaje de quien sigue el camino Rocket
+const SC={dex:3,shiny:6,medal:35,spare:10,pub:60,fame:12,ach:30}; // puntos por: especie, shiny, medalla, estación sobrante, publicación (Profesor), punto de fama (gimnasio propio), logro
 const END_FLAT=600; // mismo puntaje base para todos los finales: así nadie fuerza uno solo por el puntaje
 const END_BASE=Object.fromEntries(Object.keys(ENDINGS).map(k=>[k,END_FLAT]));
 const ALL_TYPES=[...new Set(MON.flatMap(m=>m.types))];
@@ -2095,23 +2113,25 @@ function scoreOf(s){
   const goal=s.t<MAXT&&s.ending&&s.ending!=='arrested';
   const parts=[
     ['Final: '+(ENDINGS[s.ending]?ENDINGS[s.ending].t:'—'),END_BASE[s.ending]||0],
-    ['Pokédex ('+dexN(s)+(dexN(s)===1?' especie':' especies')+' × 4)',dexN(s)*4],
-    ['Shinies ('+shinyN(s)+(shinyN(s)===1?' especie':' especies')+' × 10)',shinyN(s)*10],
-    ['Medallas ('+s.badges.length+' × 25)',s.badges.length*25],
+    ['Pokédex ('+dexN(s)+(dexN(s)===1?' especie':' especies')+' × '+SC.dex+')',dexN(s)*SC.dex],
+    ['Shinies ('+shinyN(s)+(shinyN(s)===1?' especie':' especies')+' × '+SC.shiny+')',shinyN(s)*SC.shiny],
+    ['Medallas ('+s.badges.length+' × '+SC.medal+')',s.badges.length*SC.medal],
     ['Stats ('+sumSt+' puntos; los 10 iniciales no cuentan)',Math.max(0,(sumSt-10)*3)],
     ['Poder del equipo ('+Math.round(tp)+')',Math.max(0,Math.round((tp-300)*0.8))],
-    ['Logros ('+ach.length+(ach.length===1?' logro':' logros')+' × 40)',ach.length*40]
+    ['Logros ('+ach.length+(ach.length===1?' logro':' logros')+' × '+SC.ach+')',ach.length*SC.ach]
   ];
   if(s.rocket){
     const n=Math.min(RK_OPS_CAP,s.counters.rkOps||0);parts.splice(parts.length-1+0,0,['Operaciones de mando ('+n+' × '+RK_OPS_PTS+')',n*RK_OPS_PTS]);
     const rr=RK_RANKS.filter(r=>r[0]>0&&s.rocketPts>=r[0]).length+(s.rocketBoss?1:0);
     parts.splice(parts.length-1+0,0,['Rangos del Rocket ('+rr+' × '+RK_RANK_PTS+')',rr*RK_RANK_PTS]);
   }
-  if(goal)parts.push(['Final antes de tiempo ('+(MAXT-s.t)+' estaciones sobrantes × 3)',(MAXT-s.t)*3]);
+  if(SC.pub&&s.pubs>0)parts.splice(parts.length-1,0,['Publicaciones científicas ('+s.pubs+' × '+SC.pub+')',s.pubs*SC.pub]);
+  if(SC.fame&&s.gymOwner&&s.fame>0)parts.splice(parts.length-1,0,['Fama de tu gimnasio ('+Math.min(s.fame,FAME_MAX)+' × '+SC.fame+')',Math.min(s.fame,FAME_MAX)*SC.fame]);
+  if(goal)parts.push(['Final antes de tiempo ('+(MAXT-s.t)+' estaciones sobrantes × '+SC.spare+')',(MAXT-s.t)*SC.spare]);
   const total=parts.reduce((a,p)=>a+p[1],0);
   return {total,parts,ach};
 }
-const GRADES=[[2400,'S'],[2000,'A'],[1700,'B'],[1300,'C'],[0,'D']];
+const GRADES=[[2250,'S'],[1900,'A'],[1600,'B'],[1250,'C'],[0,'D']];
 const gradeOf=t=>GRADES.find(g=>t>=g[0])[1];
 function epilogue(s){
   const P=[];const o=ORIGINS.find(x=>x.id===s.origin)||{name:'tu pueblo',mon:'Rattata'};
@@ -2217,7 +2237,7 @@ EV.push(
 const END_COND={
  champion:'Ganar la Liga Pokémon (8 medallas, 22 años o más y vencer a los 5 rivales seguidos).',
  rocket_boss:'Llegar al rango de Alto mando del Equipo Rocket y vencer a Giovanni.',
- gym_leader:'Fundar tu gimnasio y llegar a '+FAME_MAX+' de fama.',
+ gym_leader:'Fundar tu gimnasio (camino alternativo, la partida sigue), llegar a '+FAME_MAX+' de fama y tener un equipo de poder '+GYM_END_PW+' o más con al menos '+GYM_TEAM_MIN+' Pokémon del tipo del gimnasio.',
  dex_complete:'Registrar las 151 especies.',
  profesor:'Tener las 3 publicaciones científicas (que piden Pokédex de 40, 85 y 115 especies, e Ingenio 9, 14 y 18), no ser del Equipo Rocket y aceptar el puesto. Completar la Pokédex solo no alcanza: eso da el final de Maestro Pokémon.',
  arrested:'Llegar a 5 de Heat. Es inmediato.',
@@ -2276,11 +2296,11 @@ function guideSections(){
    '<b>Pase libre:</b> te salva una vez del arresto (se consume, Heat baja a 2) y vence a los '+PASE_HASTA+' años.',
    '<b>Giovanni:</b> al llegar al Alto mando podés desafiarlo. Si ganás, la organización es tuya. Si perdés podés prepararte y volver a intentarlo.'])}`]);
   S.push(['🔬 Profesor y 🏟️ gimnasio propio',`<p><b>Profesor:</b> con la vocación Aspirante a Profesor, el trabajo de campo da <i>puntos de investigación</i>. Cada publicación pide tres cosas a la vez:</p>${li(PUB_REQ.map((r,i)=>`Publicación ${i+1}: ${r.rp} puntos de investigación, ${r.dex} especies y Ingenio ${r.ing}`))}<p>Con las 3, aparece la oferta del puesto de Profesor.</p>
-  <p><b>Gimnasio propio:</b> después de las ${GYM_OFFER_T} estaciones y con ${GYM_OFFER_N} especies distintas del mismo tipo (entre todos tus Pokémon, no solo el equipo), puede aparecer la oferta de un gimnasio sin líder. Al aceptar dejás atrás los gimnasios y la Liga. Atendiéndolo juntás fama; con ${FAME_MAX} sos Líder consagrado.</p>`]);
+  <p><b>Gimnasio propio:</b> a partir de la estación ${GYM_FOUND_T}, con al menos 3 medallas y ${GYM_FOUND_N} Pokémon de un mismo tipo (las copias cuentan, de al menos ${GYM_FOUND_SP} especies), aparece en el menú la acción dorada «Fundar gimnasio». Ahí elegís el tipo entre los que tenés disponibles. <b>No termina el juego: es un camino alternativo.</b> Se cierran los gimnasios y la Liga (ya no podés ser Campeón) y «Atender tu gimnasio» pasa a ser tu acción principal: retadores, inspecciones y torneos te dan fama. <b>Para atender el gimnasio necesitás al menos ${GYM_TEAM_MIN} Pokémon del tipo elegido en tu equipo</b> (podés repetir especies). Con ${FAME_MAX} de fama <b>y un equipo de poder ${GYM_END_PW} o más</b> (entrenar sube el poder) cerrás como Líder de gimnasio; también podés cerrar con la Pokédex completa, y si llegás a las ${MAXT} estaciones antes, terminás como dueño de un gimnasio pequeño.</p>`]);
   S.push(['⭐ Reputación, conciencia y Heat',`${li(['<b>Reputación</b> (de −10 a 20): sube cuando ayudás o resolvés bien frente a otros, baja cuando fallás o hacés el ridículo. Suma o resta hasta +10 / −6 puntos en los eventos sociales. A los 5, 10 y 15 la gente te hace un regalo (una piedra, un Pokémon y el Amuleto de la Suerte). Rangos: '+REP_RANKS.slice().reverse().map(r=>r[1]).join(', ')+'.','<b>Conciencia</b> (de −10 a 10): sube con decisiones buenas y baja con robos y trabajos turbios. Abre algunas ofertas (como la del Equipo Rocket) y cuenta en la historia final.','<b>Heat</b> (de 0 a 5): ver Equipo Rocket.'])}`]);
   S.push(['🎒 Objetos',li(Object.keys(ITEMS).filter(k=>!ITEMS[k].stone&&k!=='corona').map(k=>`<b>${esc(ITEMS[k].name)}</b>: ${esc(ITEMS[k].desc)}`))+`<p><b>Piedras evolutivas</b> (Fuego, Hoja, Lunar, Trueno, Agua): hacen evolucionar a ciertos Pokémon. Las encontrás explorando, en eventos y en el mercado. Se usan desde la Mochila.</p>`]);
   S.push(['🏁 Finales',`<p>Cuando cumplís la condición de uno o más finales, el juego te deja <b>elegir cuál cerrar</b> (o seguir jugando por otro). No depende de tu vocación. Si llegás a las ${MAXT} estaciones, se cierra solo el de mayor prioridad entre los que cumplís: Campeón, jefe Rocket, Líder de gimnasio, Maestro Pokémon, Profesor.</p>`+li(Object.keys(ENDINGS).map(k=>`<b>${ENDINGS[k].e} ${esc(ENDINGS[k].t)}</b>: ${esc(END_COND[k]||'')}`))]);
-  S.push(['⭐ Puntaje y logros',`<p>Al terminar recibís un puntaje que se suma así:</p>${li(['Final: '+END_FLAT+' puntos, los mismos para todos los finales (ninguno vale más que otro; lo que suma es cómo jugaste)','4 puntos por especie en la Pokédex','10 por especie shiny','25 por medalla','3 por cada punto de stat por encima de los 10 iniciales','Poder del equipo: (poder − 300) × 0,8','40 por logro',RK_OPS_PTS+' por cada operación de mando exitosa del Equipo Rocket (hasta '+RK_OPS_CAP+' operaciones)','Equipo Rocket: '+RK_RANK_PTS+' por cada rango alcanzado después de Recluta (y uno más por ser Líder)','3 por cada estación que te sobra si cerrás antes del tiempo límite'])}<p>Calificación: ${GRADES.slice(0,-1).map(g=>g[1]+' desde '+g[0]).join(' · ')}.</p><p><b>Logros</b> (se guardan en tu navegador):</p>`+li(ACHS.filter(a=>!a.hid).map(a=>`${achIc(a,22)} <b>${esc(a.n)}</b>: ${esc(a.d)}`))+`<p>Además hay <b>${ACH_HID} logros ocultos</b>: difíciles y específicos, que no muestran su condición hasta que los conseguís (solo una pista). Cuentan igual para el puntaje.</p>`]);
+  S.push(['⭐ Puntaje y logros',`<p>Al terminar recibís un puntaje que se suma así:</p>${li(['Final: '+END_FLAT+' puntos, los mismos para todos los finales (ninguno vale más que otro; lo que suma es cómo jugaste)',SC.dex+' puntos por especie en la Pokédex',SC.shiny+' por especie shiny',SC.medal+' por medalla','3 por cada punto de stat por encima de los 10 iniciales','Poder del equipo: (poder − 300) × 0,8',SC.ach+' por logro',SC.pub+' por publicación científica del Profesor (hasta 3)',SC.fame+' por cada punto de fama de tu gimnasio (hasta '+FAME_MAX+')',RK_OPS_PTS+' por cada operación de mando exitosa del Equipo Rocket (hasta '+RK_OPS_CAP+' operaciones)','Equipo Rocket: '+RK_RANK_PTS+' por cada rango alcanzado después de Recluta (y uno más por ser Líder)',SC.spare+' por cada estación que te sobra si cerrás antes del tiempo límite'])}<p>Calificación: ${GRADES.slice(0,-1).map(g=>g[1]+' desde '+g[0]).join(' · ')}.</p><p><b>Logros</b> (se guardan en tu navegador):</p>`+li(ACHS.filter(a=>!a.hid).map(a=>`${achIc(a,22)} <b>${esc(a.n)}</b>: ${esc(a.d)}`))+`<p>Además hay <b>${ACH_HID} logros ocultos</b>: difíciles y específicos, que no muestran su condición hasta que los conseguís (solo una pista). Cuentan igual para el puntaje.</p>`]);
   S.push(['📖 Glosario',li([
    '<b>Estación:</b> una unidad de tiempo (3 meses). El juego dura '+MAXT+'.',
    '<b>Poder:</b> la fuerza de un Pokémon o de tu equipo (promedio).',
@@ -2301,7 +2321,7 @@ function guideSections(){
 // ===================== INTERFAZ =====================
 const $=id=>document.getElementById(id);
 // Botones flotantes en pantallas largas: volver (si la pantalla tiene un "volver") y subir, sin tener que scrollear hasta abajo
-const FNAV_BACK={zone:'G.back()',trainmode:'G.back()',trainpick:"G.act('train')",study:'G.back()',rkmenu:'G.back()',market:'G.back()',mkstone:'G.back()',mkoffer:'G.back()',gymprev:'G.back()',leagueprev:'G.back()',giovprev:'G.back()'};
+const FNAV_BACK={gymfound:'G.back()',zone:'G.back()',trainmode:'G.back()',trainpick:"G.act('train')",study:'G.back()',rkmenu:'G.back()',market:'G.back()',mkstone:'G.back()',mkoffer:'G.back()',gymprev:'G.back()',leagueprev:'G.back()',giovprev:'G.back()'};
 function fnavUpdate(){
   const el=$('fnav');if(!el)return;
   const long=document.documentElement.scrollHeight>window.innerHeight+400;
@@ -2439,7 +2459,7 @@ const stIc=(k,sz)=>`<img class="spr" width="${sz}" height="${sz}" alt="" src="${
 const STC={valor:'#ff6b6b',ingenio:'#5aa9ff',carisma:'#ffcb3d',cuidado:'#4ade80',sigilo:'#b48cff'};
 const FLI3={"explore": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#ffffff\"><path d=\"M128 32a96 96 0 1 0 96 96a96 96 0 0 0-96-96m16 112l-64 32l32-64l64-32Z\" opacity=\".2\"/><path d=\"M128 24a104 104 0 1 0 104 104A104.11 104.11 0 0 0 128 24m0 192a88 88 0 1 1 88-88a88.1 88.1 0 0 1-88 88m44.42-143.16l-64 32a8.05 8.05 0 0 0-3.58 3.58l-32 64A8 8 0 0 0 80 184a8.1 8.1 0 0 0 3.58-.84l64-32a8.05 8.05 0 0 0 3.58-3.58l32-64a8 8 0 0 0-10.74-10.74M138 138l-40.11 20.11L118 118l40.15-20.07Z\"/></g></svg>", "train": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#ffffff\"><path d=\"M96 64v128a8 8 0 0 1-8 8H64a8 8 0 0 1-8-8V64a8 8 0 0 1 8-8h24a8 8 0 0 1 8 8m96-8h-24a8 8 0 0 0-8 8v128a8 8 0 0 0 8 8h24a8 8 0 0 0 8-8V64a8 8 0 0 0-8-8\" opacity=\".2\"/><path d=\"M248 120h-8V88a16 16 0 0 0-16-16h-16v-8a16 16 0 0 0-16-16h-24a16 16 0 0 0-16 16v56h-48V64a16 16 0 0 0-16-16H64a16 16 0 0 0-16 16v8H32a16 16 0 0 0-16 16v32H8a8 8 0 0 0 0 16h8v32a16 16 0 0 0 16 16h16v8a16 16 0 0 0 16 16h24a16 16 0 0 0 16-16v-56h48v56a16 16 0 0 0 16 16h24a16 16 0 0 0 16-16v-8h16a16 16 0 0 0 16-16v-32h8a8 8 0 0 0 0-16M32 168V88h16v80Zm56 24H64V64h24zm104 0h-24V64h24zm32-24h-16V88h16Z\"/></g></svg>", "study": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#ffffff\"><path d=\"M216 113.07v53.22a8 8 0 0 1-2 5.31c-11.3 12.59-38.9 36.4-86 36.4s-74.68-23.81-86-36.4a8 8 0 0 1-2-5.31v-53.22L128 160Z\" opacity=\".2\"/><path d=\"m251.76 88.94l-120-64a8 8 0 0 0-7.52 0l-120 64a8 8 0 0 0 0 14.12L32 117.87v48.42a15.9 15.9 0 0 0 4.06 10.65C49.16 191.53 78.51 216 128 216a130 130 0 0 0 48-8.76V240a8 8 0 0 0 16 0v-40.49a115.6 115.6 0 0 0 27.94-22.57a15.9 15.9 0 0 0 4.06-10.65v-48.42l27.76-14.81a8 8 0 0 0 0-14.12M128 200c-43.27 0-68.72-21.14-80-33.71V126.4l76.24 40.66a8 8 0 0 0 7.52 0L176 143.47v46.34c-12.6 5.88-28.48 10.19-48 10.19m80-33.75a97.8 97.8 0 0 1-16 14.25v-45.57l16-8.53Zm-20-47.31l-.22-.13l-56-29.87a8 8 0 0 0-7.52 14.12L171 128l-43 22.93L25 96l103-54.93L231 96Z\"/></g></svg>", "ship": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#ffffff\"><path d=\"m240 176l-29.6 37a8 8 0 0 1-6.24 3H51.84a8 8 0 0 1-6.24-3L16 176ZM136 8L32 136h104Z\" opacity=\".2\"/><path d=\"M247.21 172.53A8 8 0 0 0 240 168h-96v-24h72a8 8 0 0 0 5.92-13.38L144 44.91V8a8 8 0 0 0-14.21-5l-104 128A8 8 0 0 0 32 144h96v24H16a8 8 0 0 0-6.25 13l29.6 37a15.93 15.93 0 0 0 12.49 6h152.32a15.93 15.93 0 0 0 12.49-6l29.6-37a8 8 0 0 0 .96-8.47M197.92 128H144V68.69Zm-149.11 0L128 30.53V128Zm155.35 80H51.84l-19.2-24h190.72Z\"/></g></svg>", "field": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#ffffff\"><path d=\"M208 216H48a8 8 0 0 1-6.86-12.12l30.48-50.8c13.23-2.48 32-1.41 56.37 10.92c32.25 16.33 54.75 12.91 67.5 7.65l19.34 32.23A8 8 0 0 1 208 216\" opacity=\".2\"/><path d=\"M221.69 199.77L160 96.92V40h8a8 8 0 0 0 0-16H88a8 8 0 0 0 0 16h8v56.92L34.31 199.77A16 16 0 0 0 48 224h160a16 16 0 0 0 13.72-24.23Zm-110.83-96.52a7.93 7.93 0 0 0 1.14-4.11V40h32v59.14a7.93 7.93 0 0 0 1.14 4.11L183.36 167c-12 2.37-29.07 1.37-51.75-10.11c-15.91-8.05-31.05-12.32-45.22-12.81ZM48 208l28.54-47.58c14.25-1.73 30.31 1.85 47.82 10.72c19 9.61 35 12.88 48 12.88a69.9 69.9 0 0 0 19.55-2.7L208 208Z\"/></g></svg>", "gym": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#ffffff\"><path d=\"M176 96a48 48 0 1 1-48-48a48 48 0 0 1 48 48\" opacity=\".2\"/><path d=\"M216 96a88 88 0 1 0-144 67.83V240a8 8 0 0 0 11.58 7.16L128 225l44.43 22.21a8.1 8.1 0 0 0 3.57.79a8 8 0 0 0 8-8v-76.17A87.85 87.85 0 0 0 216 96M56 96a72 72 0 1 1 72 72a72.08 72.08 0 0 1-72-72m112 131.06l-36.43-18.21a8 8 0 0 0-7.16 0L88 227.06v-52.69a87.89 87.89 0 0 0 80 0ZM128 152a56 56 0 1 0-56-56a56.06 56.06 0 0 0 56 56m0-96a40 40 0 1 1-40 40a40 40 0 0 1 40-40\"/></g></svg>", "league": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#ffffff\"><path d=\"M200 48v63.1c0 39.7-31.75 72.6-71.45 72.9A72 72 0 0 1 56 112V48Z\" opacity=\".2\"/><path d=\"M232 64h-24V48a8 8 0 0 0-8-8H56a8 8 0 0 0-8 8v16H24A16 16 0 0 0 8 80v16a40 40 0 0 0 40 40h3.65A80.13 80.13 0 0 0 120 191.61V216H96a8 8 0 0 0 0 16h64a8 8 0 0 0 0-16h-24v-24.42c31.94-3.23 58.44-25.64 68.08-55.58H208a40 40 0 0 0 40-40V80a16 16 0 0 0-16-16M48 120a24 24 0 0 1-24-24V80h24v32q0 4 .39 8Zm144-8.9c0 35.52-29 64.64-64 64.9a64 64 0 0 1-64-64V56h128ZM232 96a24 24 0 0 1-24 24h-.5a82 82 0 0 0 .5-8.9V80h24Z\"/></g></svg>", "giovanni": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#ffffff\"><path d=\"m216.71 99.73l-15.6 93.59a8 8 0 0 1-7.89 6.68H62.78a8 8 0 0 1-7.89-6.68l-15.6-93.59h.08a19.8 19.8 0 0 0 9.22-4.16L88 144l32-73.65a20 20 0 0 0 15.92 0L168 144l39.39-48.48a19.8 19.8 0 0 0 9.22 4.16Z\" opacity=\".2\"/><path d=\"M248 80a28 28 0 1 0-51.12 15.77l-26.79 33L146 73.4a28 28 0 1 0-36.06 0l-24.03 55.34l-26.79-33a28 28 0 1 0-26.6 12L47 194.63A16 16 0 0 0 62.78 208h130.44A16 16 0 0 0 209 194.63l14.47-86.85A28 28 0 0 0 248 80M128 40a12 12 0 1 1-12 12a12 12 0 0 1 12-12M24 80a12 12 0 1 1 12 12a12 12 0 0 1-12-12m169.22 112H62.78l-13.92-83.48L81.79 149a8 8 0 0 0 6.21 3a8 8 0 0 0 1.08-.07a8 8 0 0 0 6.26-4.74l29.3-67.4a27 27 0 0 0 6.72 0l29.3 67.4a8 8 0 0 0 6.26 4.74a8 8 0 0 0 1.08.07a8 8 0 0 0 6.21-3l32.93-40.52ZM220 92a12 12 0 1 1 12-12a12 12 0 0 1-12 12\"/></g></svg>", "help": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#ffffff\"><path d=\"m200 152l-40 40l-64-16l-56-40l32.68-65.37L128 56l55.32 14.63l.28 1.37H144l-45.66 44.29a8 8 0 0 0 1.38 12.42C117.23 139.9 141 139.13 160 120Z\" opacity=\".2\"/><path d=\"m254.3 107.91l-25.52-51.06a16 16 0 0 0-21.47-7.15l-24.87 12.43l-52.39-13.86a8.14 8.14 0 0 0-4.1 0L73.56 62.13L48.69 49.7a16 16 0 0 0-21.47 7.15L1.7 107.9a16 16 0 0 0 7.15 21.47l27 13.51l55.49 39.63a8.1 8.1 0 0 0 2.71 1.25l64 16a8 8 0 0 0 7.6-2.1l55.07-55.08l26.42-13.21a16 16 0 0 0 7.15-21.46Zm-54.89 33.37L165 113.72a8 8 0 0 0-10.68.61C136.51 132.27 116.66 130 104 122l43.24-42h31.81l27.21 54.41ZM41.53 64L62 74.22l-25.57 51.05L16 115.06Zm116 119.13l-58.11-14.52l-49.2-35.14l28-56L128 64.28l9.8 2.59l-45 43.68l-.08.09a16 16 0 0 0 2.72 24.81c20.56 13.13 45.37 11 64.91-5L188 152.66Zm62-57.87l-25.52-51L214.47 64L240 115.06Zm-87.75 92.67a8 8 0 0 1-7.75 6.06a8 8 0 0 1-1.95-.24l-41.67-10.42a7.9 7.9 0 0 1-2.71-1.25l-26.35-18.82a8 8 0 0 1 9.3-13l25.11 17.94L126 208.24a8 8 0 0 1 5.82 9.7Z\"/></g></svg>", "market": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#ffffff\"><path d=\"M224 96v16a32 32 0 0 1-64 0V96H96v16a32 32 0 0 1-64 0V96l14.34-50.2A8 8 0 0 1 54 40h148a8 8 0 0 1 7.69 5.8Z\" opacity=\".2\"/><path d=\"M231.69 93.81L217.35 43.6A16.07 16.07 0 0 0 202 32H54a16.07 16.07 0 0 0-15.35 11.6L24.31 93.81A8 8 0 0 0 24 96v16a40 40 0 0 0 16 32v72a8 8 0 0 0 8 8h160a8 8 0 0 0 8-8v-72a40 40 0 0 0 16-32V96a8 8 0 0 0-.31-2.19M54 48h148l11.42 40H42.61Zm98 56v8a24 24 0 0 1-48 0v-8ZM51.06 132.2A24 24 0 0 1 40 112v-8h48v8a24 24 0 0 1-35.12 21.26a8 8 0 0 0-1.82-1.06M200 208H56v-56.8a40.6 40.6 0 0 0 8 .8a40 40 0 0 0 32-16a40 40 0 0 0 64 0a40 40 0 0 0 32 16a40.6 40.6 0 0 0 8-.8Zm16-96a24 24 0 0 1-11.07 20.2a8 8 0 0 0-1.8 1.05A24 24 0 0 1 168 112v-8h48Z\"/></g></svg>", "gymwork": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#ffffff\"><path d=\"M136 32v184H40V85.35a8 8 0 0 1 3.56-6.66l80-53.33A8 8 0 0 1 136 32\" opacity=\".2\"/><path d=\"M240 208h-16V96a16 16 0 0 0-16-16h-64V32a16 16 0 0 0-24.88-13.32L39.12 72A16 16 0 0 0 32 85.34V208H16a8 8 0 0 0 0 16h224a8 8 0 0 0 0-16M208 96v112h-64V96ZM48 85.34L128 32v176H48ZM112 112v16a8 8 0 0 1-16 0v-16a8 8 0 1 1 16 0m-32 0v16a8 8 0 0 1-16 0v-16a8 8 0 1 1 16 0m0 56v16a8 8 0 0 1-16 0v-16a8 8 0 0 1 16 0m32 0v16a8 8 0 0 1-16 0v-16a8 8 0 0 1 16 0\"/></g></svg>", "shady": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#ffffff\"><path d=\"M104 180a28 28 0 1 1-28-28a28 28 0 0 1 28 28m76-28a28 28 0 1 0 28 28a28 28 0 0 0-28-28M166.11 51.29a8 8 0 0 0-12.7-.29l-12.94 15a16 16 0 0 1-24.94 0l-12.94-15a8 8 0 0 0-12.7.29L40 120h176Z\" opacity=\".2\"/><path d=\"M248 112h-27.92l-47.5-65.41a16 16 0 0 0-25.31-.72l-12.85 14.9l-.2.23a7.95 7.95 0 0 1-12.44 0l-.2-.23l-12.85-14.9a16 16 0 0 0-25.31.72L35.92 112H8a8 8 0 0 0 0 16h240a8 8 0 0 0 0-16M96.34 56l.19.24l12.85 14.89a24 24 0 0 0 37.24 0l12.85-14.89c.06-.08.1-.16.17-.24l40.66 56H55.69ZM180 144a36 36 0 0 0-35.77 32h-32.46a36 36 0 1 0-1.83 16h36.12A36 36 0 1 0 180 144M76 200a20 20 0 1 1 20-20a20 20 0 0 1-20 20m104 0a20 20 0 1 1 20-20a20 20 0 0 1-20 20\"/></g></svg>", "rkmission": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#ffffff\"><path d=\"M184 120v61.65a8 8 0 0 1-2.34 5.65l-34.35 34.35a8 8 0 0 1-13.57-4.53L128 176Zm-48-48H74.35a8 8 0 0 0-5.65 2.34l-34.35 34.35a8 8 0 0 0 4.53 13.57L80 128ZM40 216c37.65 0 50.69-19.69 54.56-28.18l-26.38-26.38C59.69 165.31 40 178.35 40 216\" opacity=\".2\"/><path d=\"M223.85 47.12a16 16 0 0 0-15-15c-12.58-.75-44.73.4-71.41 27.07L132.69 64H74.36A15.9 15.9 0 0 0 63 68.68L28.7 103a16 16 0 0 0 9.07 27.16l38.47 5.37l44.21 44.21l5.37 38.49a15.94 15.94 0 0 0 10.78 12.92a16.1 16.1 0 0 0 5.1.83a15.9 15.9 0 0 0 11.3-4.68l34.32-34.3a15.9 15.9 0 0 0 4.68-11.36v-58.33l4.77-4.77c26.68-26.68 27.83-58.83 27.08-71.42M74.36 80h42.33l-39.53 39.52L40 114.34Zm74.41-9.45a76.65 76.65 0 0 1 59.11-22.47a76.46 76.46 0 0 1-22.42 59.16L128 164.68L91.32 128ZM176 181.64L141.67 216l-5.19-37.17L176 139.31Zm-74.16 9.5C97.34 201 82.29 224 40 224a8 8 0 0 1-8-8c0-42.29 23-57.34 32.86-61.85a8 8 0 0 1 6.64 14.56c-6.43 2.93-20.62 12.36-23.12 38.91c26.55-2.5 36-16.69 38.91-23.12a8 8 0 1 1 14.56 6.64Z\"/></g></svg>", "rklay": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#ffffff\"><path d=\"M224 104c-16.81 20.81-47.63 48-96 48s-79.19-27.19-96-48c16.81-20.81 47.63-48 96-48s79.19 27.19 96 48\" opacity=\".2\"/><path d=\"M228 175a8 8 0 0 1-10.92-3l-19-33.2A123.2 123.2 0 0 1 162 155.46l5.87 35.22a8 8 0 0 1-6.58 9.21a8.4 8.4 0 0 1-1.29.11a8 8 0 0 1-7.88-6.69l-5.77-34.58a133 133 0 0 1-36.68 0l-5.77 34.58A8 8 0 0 1 96 200a8.4 8.4 0 0 1-1.32-.11a8 8 0 0 1-6.58-9.21l5.9-35.22a123.2 123.2 0 0 1-36.06-16.69L39 172a8 8 0 1 1-13.94-8l20-35a153.5 153.5 0 0 1-19.3-20a8 8 0 1 1 12.46-10c16.6 20.54 45.64 45 89.78 45s73.18-24.49 89.78-45a8 8 0 1 1 12.44 10a153.5 153.5 0 0 1-19.3 20l20 35a8 8 0 0 1-2.92 11\"/></g></svg>"};
 const actIc=(k,sz)=>`<img class="spr" width="${sz}" height="${sz}" alt="" src="${'data:image/svg+xml;utf8,'+encodeURIComponent(FLI3[k])}">`;
-const ACT_COL={explore:'#2fa36b',train:'#d6454d',study:'#4a86e8',ship:'#1fb5c9',field:'#27b38f',gym:'#e0a91c',league:'#f0861f',giovanni:'#b3283b',help:'#1fa39b',market:'#3d8fd9',gymwork:'#d4a017',shady:'#8b5cf6',rkmission:'#c53030',rklay:'#64748b'};
+const ACT_COL={explore:'#2fa36b',train:'#d6454d',study:'#4a86e8',ship:'#1fb5c9',field:'#27b38f',gym:'#e0a91c',league:'#f0861f',giovanni:'#b3283b',help:'#1fa39b',market:'#3d8fd9',gymwork:'#d4a017',gymfound:'#f0b400',shady:'#8b5cf6',rkmission:'#c53030',rklay:'#64748b'};
 const FLI={"pack": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#c9a0ff\"><path d=\"M208 96v120a8 8 0 0 1-8 8h-24v-72a16 16 0 0 0-16-16H96a16 16 0 0 0-16 16v72H56a8 8 0 0 1-8-8V96a48 48 0 0 1 48-48h64a48 48 0 0 1 48 48\" opacity=\".2\"/><path d=\"M168 40.58V32a24 24 0 0 0-24-24h-32a24 24 0 0 0-24 24v8.58A56.09 56.09 0 0 0 40 96v120a16 16 0 0 0 16 16h144a16 16 0 0 0 16-16V96a56.09 56.09 0 0 0-48-55.42M112 24h32a8 8 0 0 1 8 8v8h-48v-8a8 8 0 0 1 8-8m56 136H88v-8a8 8 0 0 1 8-8h64a8 8 0 0 1 8 8Zm-80 16h48v8a8 8 0 0 0 16 0v-8h16v40H88Zm112 40h-16v-64a24 24 0 0 0-24-24H96a24 24 0 0 0-24 24v64H56V96a40 40 0 0 1 40-40h64a40 40 0 0 1 40 40zM152 88a8 8 0 0 1-8 8h-32a8 8 0 0 1 0-16h32a8 8 0 0 1 8 8\"/></g></svg>", "book": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#8fc7ff\"><path d=\"M232 56v144h-72a32 32 0 0 0-32 32a32 32 0 0 0-32-32H24V56h72a32 32 0 0 1 32 32a32 32 0 0 1 32-32Z\" opacity=\".2\"/><path d=\"M232 48h-72a40 40 0 0 0-32 16a40 40 0 0 0-32-16H24a8 8 0 0 0-8 8v144a8 8 0 0 0 8 8h72a24 24 0 0 1 24 24a8 8 0 0 0 16 0a24 24 0 0 1 24-24h72a8 8 0 0 0 8-8V56a8 8 0 0 0-8-8M96 192H32V64h64a24 24 0 0 1 24 24v112a39.8 39.8 0 0 0-24-8m128 0h-64a39.8 39.8 0 0 0-24 8V88a24 24 0 0 1 24-24h64Z\"/></g></svg>", "note": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#e8c98a\"><path d=\"M200 176h-96s8 6 8 16a24 24 0 0 1-48 0V64a24 24 0 0 0-24-24h136a24 24 0 0 1 24 24Z\" opacity=\".2\"/><path d=\"M96 104a8 8 0 0 1 8-8h64a8 8 0 0 1 0 16h-64a8 8 0 0 1-8-8m8 40h64a8 8 0 0 0 0-16h-64a8 8 0 0 0 0 16m128 48a32 32 0 0 1-32 32H88a32 32 0 0 1-32-32V64a16 16 0 0 0-32 0c0 5.74 4.83 9.62 4.88 9.66A8 8 0 0 1 24 88a7.9 7.9 0 0 1-4.79-1.61C18.05 85.54 8 77.61 8 64a32 32 0 0 1 32-32h136a32 32 0 0 1 32 32v104h8a8 8 0 0 1 4.8 1.6c1.2.86 11.2 8.79 11.2 22.4M96.26 173.48A8.07 8.07 0 0 1 104 168h88V64a16 16 0 0 0-16-16H67.69A31.7 31.7 0 0 1 72 64v128a16 16 0 0 0 32 0c0-5.74-4.83-9.62-4.88-9.66a7.82 7.82 0 0 1-2.86-8.86M216 192a12.58 12.58 0 0 0-3.23-8h-94a27 27 0 0 1 1.21 8a31.8 31.8 0 0 1-4.29 16H200a16 16 0 0 0 16-16\"/></g></svg>", "trophy": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#ffcb3d\"><path d=\"M200 48v63.1c0 39.7-31.75 72.6-71.45 72.9A72 72 0 0 1 56 112V48Z\" opacity=\".2\"/><path d=\"M232 64h-24V48a8 8 0 0 0-8-8H56a8 8 0 0 0-8 8v16H24A16 16 0 0 0 8 80v16a40 40 0 0 0 40 40h3.65A80.13 80.13 0 0 0 120 191.61V216H96a8 8 0 0 0 0 16h64a8 8 0 0 0 0-16h-24v-24.42c31.94-3.23 58.44-25.64 68.08-55.58H208a40 40 0 0 0 40-40V80a16 16 0 0 0-16-16M48 120a24 24 0 0 1-24-24V80h24v32q0 4 .39 8Zm144-8.9c0 35.52-29 64.64-64 64.9a64 64 0 0 1-64-64V56h128ZM232 96a24 24 0 0 1-24 24h-.5a82 82 0 0 0 .5-8.9V80h24Z\"/></g></svg>", "gear": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#cfeaf2\"><path d=\"m230.1 108.76l-31.85-18.14c-.64-1.16-1.31-2.29-2-3.41l-.12-36A104.6 104.6 0 0 0 162 32l-32 17.89h-4L94 32a104.6 104.6 0 0 0-34.11 19.25l-.16 36c-.7 1.12-1.37 2.26-2 3.41l-31.84 18.1a99.2 99.2 0 0 0 0 38.46l31.85 18.14c.64 1.16 1.31 2.29 2 3.41l.12 36A104.6 104.6 0 0 0 94 224l32-17.87h4L162 224a104.6 104.6 0 0 0 34.08-19.25l.16-36c.7-1.12 1.37-2.26 2-3.41l31.84-18.1a99.2 99.2 0 0 0 .02-38.48M128 168a40 40 0 1 1 40-40a40 40 0 0 1-40 40\" opacity=\".2\"/><path d=\"M128 80a48 48 0 1 0 48 48a48.05 48.05 0 0 0-48-48m0 80a32 32 0 1 1 32-32a32 32 0 0 1-32 32m109.94-52.79a8 8 0 0 0-3.89-5.4l-29.83-17l-.12-33.62a8 8 0 0 0-2.83-6.08a111.9 111.9 0 0 0-36.72-20.67a8 8 0 0 0-6.46.59L128 41.85L97.88 25a8 8 0 0 0-6.47-.6a111.9 111.9 0 0 0-36.68 20.75a8 8 0 0 0-2.83 6.07l-.15 33.65l-29.83 17a8 8 0 0 0-3.89 5.4a106.5 106.5 0 0 0 0 41.56a8 8 0 0 0 3.89 5.4l29.83 17l.12 33.63a8 8 0 0 0 2.83 6.08a111.9 111.9 0 0 0 36.72 20.67a8 8 0 0 0 6.46-.59L128 214.15L158.12 231a7.9 7.9 0 0 0 3.9 1a8.1 8.1 0 0 0 2.57-.42a112.1 112.1 0 0 0 36.68-20.73a8 8 0 0 0 2.83-6.07l.15-33.65l29.83-17a8 8 0 0 0 3.89-5.4a106.5 106.5 0 0 0-.03-41.52m-15 34.91l-28.57 16.25a8 8 0 0 0-3 3c-.58 1-1.19 2.06-1.81 3.06a7.94 7.94 0 0 0-1.22 4.21l-.15 32.25a95.9 95.9 0 0 1-25.37 14.3L134 199.13a8 8 0 0 0-3.91-1h-3.83a8.1 8.1 0 0 0-4.1 1l-28.84 16.1A96 96 0 0 1 67.88 201l-.11-32.2a8 8 0 0 0-1.22-4.22c-.62-1-1.23-2-1.8-3.06a8.1 8.1 0 0 0-3-3.06l-28.6-16.29a90.5 90.5 0 0 1 0-28.26l28.52-16.28a8 8 0 0 0 3-3c.58-1 1.19-2.06 1.81-3.06a7.94 7.94 0 0 0 1.22-4.21l.15-32.25a95.9 95.9 0 0 1 25.37-14.3L122 56.87a8 8 0 0 0 4.1 1h3.64a8 8 0 0 0 4.1-1l28.84-16.1A96 96 0 0 1 188.12 55l.11 32.2a8 8 0 0 0 1.22 4.22c.62 1 1.23 2 1.8 3.06a8.1 8.1 0 0 0 3 3.06l28.6 16.29a90.5 90.5 0 0 1 .05 28.29Z\"/></g></svg>", "vol": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#9fd8e8\"><path d=\"M80 88v80H32a8 8 0 0 1-8-8V96a8 8 0 0 1 8-8Z\" opacity=\".2\"/><path d=\"M155.51 24.81a8 8 0 0 0-8.42.88L77.25 80H32a16 16 0 0 0-16 16v64a16 16 0 0 0 16 16h45.25l69.84 54.31A8 8 0 0 0 160 224V32a8 8 0 0 0-4.49-7.19M32 96h40v64H32Zm112 111.64l-56-43.55V91.91l56-43.55Zm54-106.08a40 40 0 0 1 0 52.88a8 8 0 0 1-12-10.58a24 24 0 0 0 0-31.72a8 8 0 0 1 12-10.58M248 128a79.9 79.9 0 0 1-20.37 53.34a8 8 0 0 1-11.92-10.67a64 64 0 0 0 0-85.33a8 8 0 1 1 11.92-10.67A79.83 79.83 0 0 1 248 128\"/></g></svg>", "hall": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#ffcb3d\"><path d=\"M232 96H24l104-64Z\" opacity=\".2\"/><path d=\"M24 104h24v64H32a8 8 0 0 0 0 16h192a8 8 0 0 0 0-16h-16v-64h24a8 8 0 0 0 4.19-14.81l-104-64a8 8 0 0 0-8.38 0l-104 64A8 8 0 0 0 24 104m40 0h32v64H64Zm80 0v64h-32v-64Zm48 64h-32v-64h32ZM128 41.39L203.74 88H52.26ZM248 208a8 8 0 0 1-8 8H16a8 8 0 0 1 0-16h224a8 8 0 0 1 8 8\"/></g></svg>", "hour": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><g fill=\"#9fd8e8\"><path d=\"M180.92 88L128 128L74.67 88Z\" opacity=\".2\"/><path d=\"M200 75.64V40a16 16 0 0 0-16-16H72a16 16 0 0 0-16 16v36a16.07 16.07 0 0 0 6.4 12.8l52.27 39.2l-52.27 39.2A16.07 16.07 0 0 0 56 180v36a16 16 0 0 0 16 16h112a16 16 0 0 0 16-16v-35.64a16.09 16.09 0 0 0-6.35-12.77L141.27 128l52.38-39.59A16.09 16.09 0 0 0 200 75.64M72 40h112v35.64L178.23 80H77.33L72 76Zm56 78L98.67 96h58.4Zm56 98H72v-36l48-36v24a8 8 0 0 0 16 0v-23.92l48 36.28Z\"/></g></svg>"};
 const flSrc=k=>'data:image/svg+xml;utf8,'+encodeURIComponent(FLI[k]);
 const ICONS_SVG={book:flSrc('book'),diary:flSrc('note'),trophy:flSrc('trophy'),hall:flSrc('hall'),hour:flSrc('hour')};
@@ -2528,7 +2548,7 @@ const itemIc=(k,sz)=>ICONS_IT[k]?`<img class="spr" width="${sz||24}" height="${s
 const iconBall=sz=>`<img width="${sz}" height="${sz}" alt="Equipo" src="${ICON_BALL}">`;
 const iconDex=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Pokédex"><rect x="2" y="1" width="12" height="14" rx="1" fill="#c9383f"/><rect x="2" y="1" width="12" height="14" rx="1" fill="none" stroke="#5b1217"/><rect x="4" y="3" width="8" height="6" fill="#9fd8e8" stroke="#1d3a52"/><rect x="5" y="4" width="3" height="2" fill="#eaf7fb"/><circle cx="5" cy="12" r="1.3" fill="#ffd84a" stroke="#5b1217" stroke-width=".4"/><rect x="8" y="11" width="4" height="1" fill="#5b1217"/><rect x="8" y="13" width="4" height="1" fill="#5b1217"/></svg>`;
 
-const VERSION='5.57'; // se sube en cada entrega y se muestra en el título y en Opciones
+const VERSION='5.62'; // se sube en cada entrega y se muestra en el título y en Opciones
 // ===== Sprites animados y efectos visuales =====
 // Los sprites estáticos están incluidos en el archivo. Las versiones animadas (Gen 5, del repositorio PokeAPI/sprites) se cargan
 // aparte cuando hay conexión; si no cargan, queda el sprite estático. Nada del juego depende de ellas.
@@ -2692,8 +2712,8 @@ function revealFx(r){
 }
 
 // ---------- Menú de acciones de la estación: mosaicos compactos; el detalle sale al pasar el mouse (o con el botón ⓘ) ----------
-const ACT_SHORT={explore:'Explorar',train:'Entrenar',ship:'Viaje en barco',market:'Mercado',gym:'Gimnasio',league:'Liga Pokémon',help:'Ayudar',study:'Estudiar',field:'Trabajo de campo',shady:'Trabajos turbios',giovanni:'Giovanni',rkmission:'Misiones Rocket',rklay:'Perfil bajo',gymwork:'Tu gimnasio'};
-const ACT_GROUPS=[['Crecer',['explore','train','study','ship','field']],['Desafíos',['gym','league','giovanni']],['Gente y negocios',['help','market','gymwork']],['Lado oscuro',['shady','rkmission','rklay']]];
+const ACT_SHORT={explore:'Explorar',train:'Entrenar',ship:'Viaje en barco',market:'Mercado',gym:'Gimnasio',league:'Liga Pokémon',help:'Ayudar',study:'Estudiar',field:'Trabajo de campo',shady:'Trabajos turbios',giovanni:'Giovanni',rkmission:'Misiones Rocket',rklay:'Perfil bajo',gymwork:'Tu gimnasio',gymfound:'Fundar gimnasio'};
+const ACT_GROUPS=[['Crecer',['explore','train','study','ship','field']],['Desafíos',['gym','league','giovanni','gymfound']],['Gente y negocios',['help','market','gymwork']],['Lado oscuro',['shady','rkmission','rklay']]];
 function actMeta(s,a){
   switch(a.id){
     case 'gym':return GYMS[s.badges.length]?GYMS[s.badges.length].city:'8/8 medallas';
@@ -2701,7 +2721,8 @@ function actMeta(s,a){
     case 'field':return s.pubs+'/3 publ.';
     case 'rkmission':return rocketRank(s);
     case 'rklay':return 'Heat '+s.heat+'/5';
-    case 'gymwork':return 'Fama '+s.fame+'/'+FAME_MAX;
+    case 'gymwork':return a.ok?'Fama '+s.fame+'/'+FAME_MAX:'Falta equipo '+TES[s.gymType]+' ('+gymTeamN(s)+'/'+GYM_TEAM_MIN+')';
+    case 'gymfound':return 'Camino alternativo';
     case 'giovanni':return 'Final Rocket';
     default:return '';
   }
@@ -2715,7 +2736,7 @@ function actGone(s,a){
   return false;
 }
 // Orden del menú según tu camino: lo que más te importa va primero
-const ACT_BASE=['explore','train','study','ship','field','gym','league','giovanni','help','market','gymwork','shady','rkmission','rklay'];
+const ACT_BASE=['gymfound','explore','train','study','ship','field','gym','league','giovanni','help','market','gymwork','shady','rkmission','rklay'];
 const ACT_PRIO={
   campeon:['gym','league','train','explore','ship','market'],
   coleccionista:['explore','market','train','ship'],
@@ -2739,7 +2760,7 @@ function menuHtml(s){
     const meta=actMeta(s,a);
     const tip=`<b class="tt">${esc(a.title)}</b>${esc(a.desc)}${a.prac?`<div class="tp">Practicás <b>${SL[a.prac]}</b>${a.pracNote?' '+esc(a.pracNote):''}: ${(s.prac&&s.prac[a.prac])||0}/${pracNeed(s.st[a.prac])} para el próximo punto.</div>`:''}${!a.ok&&a.why?`<div class="tw">${esc(a.why)}</div>`:''}`;
     ctx.tips[a.id]=tip;
-    return `<div class="acw"><button class="act${a.ok?'':' dis'}" style="--c:${ACT_COL[a.id]||'#4a86e8'}" data-tip="${a.id}" ${a.ok?`onclick="G.act('${a.id}')"`:`onclick="G.tipPin(this)" aria-disabled="true"`}><span class="aic">${a.id==='rkmission'?rIc(30):FLI3[a.id]?actIc(a.id,30):a.icon}</span><span class="atx"><span class="at">${esc(ACT_SHORT[a.id]||a.title)}</span><span class="am">${st}${meta?`<span>${esc(meta)}</span>`:''}${a.ok?'':stIc('lock',13)}</span></span></button><button class="ainfo" data-tip="${a.id}" onclick="G.tipPin(this)" aria-label="Qué hace">${stIc('info',17)}</button></div>`;
+    return `<div class="acw"><button class="act${a.ok?'':' dis'}${a.id==='gymfound'?' gold':''}" style="--c:${ACT_COL[a.id]||'#4a86e8'}" data-tip="${a.id}" ${a.ok?`onclick="G.act('${a.id}')"`:`onclick="G.tipPin(this)" aria-disabled="true"`}><span class="aic">${a.id==='rkmission'?rIc(30):FLI3[a.id]?actIc(a.id,30):a.icon}</span><span class="atx"><span class="at">${esc(ACT_SHORT[a.id]||a.title)}</span><span class="am">${st}${meta?`<span>${esc(meta)}</span>`:''}${a.ok?'':stIc('lock',13)}</span></span></button><button class="ainfo" data-tip="${a.id}" onclick="G.tipPin(this)" aria-label="Qué hace">${stIc('info',17)}</button></div>`;
   };
   const order=actOrder(s);
   const L=order.map(i=>by[i]).filter(a=>a&&!actGone(s,a));
@@ -3160,6 +3181,19 @@ function view(){
     <div class="sec">¿Qué estudiás?</div>
     <div class="sgrid">${STATS.map(k=>`<button class="sb" style="--sc:${STC[k]}" onclick="G.stat('${k}')">${stIc(k,40)}<span class="nm">${SL[k]}</span><span class="now">ahora ${s.st[k]}</span><span class="gain">+${g+(y===2&&k==='ingenio'?1:0)}</span></button>`).join('')}</div>
     <button class="btn" onclick="G.back()">← Volver</button>`;
+  }else if(phase==='gymfound'){
+    const opts=gymFoundTypes(s);
+    M.innerHTML=sceneBanner('liga',{h:170,kicker:'Camino alternativo',title:'Fundar tu propio gimnasio',sub:'La partida SIGUE: no es el final del juego',spr:''})+`<div class="card scn-card"><ul class="gfl">
+      <li><b>No termina el juego.</b> Es otra forma de jugar, con su propio final.</li>
+      <li><b>Dejás de viajar:</b> se cierran los gimnasios y la Liga, así que ya no podés ser Campeón.</li>
+      <li><b>Atendés tu gimnasio:</b> retadores, inspecciones, torneos y más eventos te dan fama. Podés seguir explorando, entrenando y usando el mercado.</li>
+      <li><b>Tu equipo tiene que ser del tipo que elijas:</b> para ganar fama necesitás al menos ${GYM_TEAM_MIN} Pokémon de ese tipo en el equipo. Se pueden repetir especies.</li>
+      <li><b>Finales posibles:</b> ${FAME_MAX} de fama = Líder de gimnasio; Pokédex completa; o, si llegás a las ${MAXT} estaciones, dueño de un gimnasio pequeño.</li>
+      <li><b>No se deshace:</b> el tipo y el camino no se pueden cambiar después.</li></ul></div>
+    <h3 class="mb" style="margin:10px 2px">¿De qué tipo es tu gimnasio?</h3>
+    <div class="rgrid">${opts.map(o=>`<button class="rg" style="--rc:${TCOL[o.type]}" onclick="G.foundGym('${o.type}')"><span class="ic">${ICONS_TY[o.type.toLowerCase()]?`<img alt="" width="30" height="30" src="${ICONS_TY[o.type.toLowerCase()]}">`:'🏟️'}</span><span class="t">${esc(TES[o.type])}</span><span class="d">${o.n} Pokémon de este tipo (${o.sp} especies)</span></button>`).join('')}</div>
+    <p class="sub" style="margin:8px 2px">Si más adelante juntás ${GYM_FOUND_N} Pokémon de otro tipo (con copias, de al menos ${GYM_FOUND_SP} especies), ese tipo también aparece acá.</p>
+    <button class="btn" onclick="G.back()">← Todavía no, sigo de viaje</button>`;
   }else if(phase==='gymprev'){
     const gym=GYMS[s.badges.length];
     const pv=gymPreview(s,gym);
@@ -3216,7 +3250,7 @@ function view(){
   }else if(phase==='event'){
     const ev=ctx.ev;
     const esn=(ev.id||'').startsWith('sh_')?'turbio':(/^rk/.test(ev.pool||'')||ev.pool==='rocket'||(ev.id||'').startsWith('rk'))?'rocket':null;
-    const etx=esc(typeof ev.text==='function'?ev.text(s):ev.text);
+    const etx=esc(typeof ev.text==='function'?ev.text(s):ev.text).replace(/\n\n/g,'<br><br>');
     const evT=(ev.title||'')+' '+(typeof ev.text==='function'?ev.text(s):ev.text||'');const hasGio=/Giovanni/.test(evT),hasOak=!hasGio&&!esn&&/\bOak\b/.test(evT);
     let vocHtml=null;
     if(ev.id==='vocacion'){
@@ -3381,7 +3415,7 @@ function modal(kind){
     }
     h+=`<p class="sub" style="margin-top:8px">En el juego, tu Pokémon ataca con su mejor tipo; si el rival tiene dos tipos, los efectos se multiplican. Eso se refleja en las líneas «Ventaja de tipos» y «Defensa de tipos» de cada combate.</p>`;
   }else if(kind==='fame'){
-    h=`<h3>🏟️ Fama de tu gimnasio: ${s.fame}/${FAME_MAX}</h3><div class="tbar"><i style="width:${Math.min(100,s.fame/FAME_MAX*100)}%"></i></div><p class="sub">La fama sube atendiendo tu gimnasio: retadores, inspecciones y eventos. Al llegar a ${FAME_MAX} completás ese camino.</p>`;
+    h=`<h3>🏟️ Fama de tu gimnasio: ${s.fame}/${FAME_MAX}</h3><div class="tbar"><i style="width:${Math.min(100,s.fame/FAME_MAX*100)}%"></i></div><p class="sub">Elegiste el camino del gimnasio propio (tipo ${esc(TES[s.gymType])}): tu partida sigue hasta que cierres como Líder. Para atender el gimnasio necesitás al menos ${GYM_TEAM_MIN} Pokémon de ese tipo en tu equipo (hoy: ${gymTeamN(s)}). La fama sube atendiendo tu gimnasio (retadores, inspecciones, torneos y eventos). Al llegar a ${FAME_MAX} (y con un equipo de poder ${GYM_END_PW} o más; hoy ${Math.round(teamPower(s))}) podés cerrar tu historia como Líder de gimnasio; si llegás a las 100 estaciones sin esa fama, terminás como dueño de un gimnasio pequeño.</p>`;
   }else if(kind==='research'){
     const nx=nextPub(s);const ck=(v,need,l)=>`<div><span>${v>=need?'✅':'❌'} ${l}: <b>${v}</b>/${need}</span></div>`;
     h=`<h3>🔬 Investigación: ${s.rp} · 📄 ${s.pubs}/3</h3>`+(s.pubs>=3?'<p class="sub">Ya tenés las 3 publicaciones. Aceptá el puesto de Profesor cuando aparezca la oferta.</p>':`<p class="sub mb">Publicación ${s.pubs+1} de 3. Hacen falta las tres cosas a la vez:</p><div class="lines">${ck(s.rp,nx.rp,'Investigación')}${ck(dexN(s),nx.dex,'Pokédex')}${ck(s.st.ingenio,nx.ing,'Ingenio')}</div><p class="sub" style="margin-top:8px">El trabajo de campo suma investigación; la Pokédex se llena explorando; el Ingenio sube estudiando.</p>`);
@@ -3445,6 +3479,7 @@ const G={
     if(id==='explore'){phase='zone';view();return;}
     if(id==='train'){phase='trainmode';view();window.scrollTo(0,0);return;}
     if(id==='study'){ctx.years=1;phase='study';view();return;}
+    if(id==='gymfound'){phase='gymfound';view();window.scrollTo(0,0);return;}
     if(id==='gym'){phase='gymprev';view();return;}
     if(id==='league'){phase='leagueprev';view();return;}
     if(id==='giovanni'){phase='giovprev';view();window.scrollTo(0,0);return;}
@@ -3463,6 +3498,7 @@ const G={
     if(kind==='gym'){G.exec('gym');return;} // el gimnasio ya mostró sus probabilidades: sin segunda confirmación
     ask(kind==='league'?'¿Entrar a la Liga ahora?':kind==='giovanni'?'¿Desafiar a Giovanni ahora?':'¿Desafiar el gimnasio ahora?',esc(txt),'Sí, desafiar',()=>G.exec(kind));
   },
+  foundGym(ty){const ts=TES[ty];ask('¿Fundar tu gimnasio de tipo '+ts+'?','<b>Es un camino alternativo, no el final del juego.</b> Se cierran los gimnasios y la Liga (ya no podés ser Campeón) y tu equipo pasa a ser de tipo '+ts+'. Para ganar fama necesitás al menos <b>'+GYM_TEAM_MIN+'</b> Pokémon de ese tipo en el equipo. El tipo no se puede cambiar después. La partida sigue hasta que llegues a '+FAME_MAX+' de fama (o a otro final).','Sí, fundar gimnasio de '+ts,()=>G.exec('gymfound',ty));},
   confirmYes(){const f=ctx.confirmFn;ctx.confirmFn=null;$('modal').classList.remove('on');if(f)f();},
   confirmNo(){ctx.confirmFn=null;$('modal').classList.remove('on');},
   share(){const s=S_;const info=ctx.endInfo;if(!info)return;const t=shareText(s,info);const msg=$('shmsg');
