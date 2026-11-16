@@ -160,7 +160,7 @@ img[src^="data:image/svg"]{image-rendering:auto}
 @media (max-width:380px){.stat .n{font-size:16px}.chip{font-size:12px}.se{width:26px}}
 
 /* ===== Efectos visuales ===== */
-/* Sirena de policía cuando el Heat está alto (3 a 5): destellos rojo y azul en los bordes */
+/* Sirena de policía cuando el Heat está alto (4 o más): destellos rojo y azul en los bordes */
 #siren{position:fixed;inset:0;pointer-events:none;z-index:14;opacity:0;transition:opacity .8s;mix-blend-mode:screen;--si:.2;--sp:1.8s}
 #siren::before,#siren::after{content:"";position:absolute;top:0;bottom:0;width:60%;opacity:0}
 #siren::before{left:0;background:radial-gradient(ellipse 100% 70% at 0% 50%,rgba(255,40,60,.9),transparent 70%);animation:sirR var(--sp) ease-in-out infinite}
@@ -400,7 +400,7 @@ body[data-siren-calm] #siren::before,body[data-siren-calm] #siren::after{animati
 .evt .btn.armed{border-color:var(--bad);background:#3a1a22}
 .rg .bgs{position:absolute;right:4px;bottom:4px;display:flex;gap:0;opacity:.2;z-index:-1;pointer-events:none;filter:saturate(.8)}.rg .bgs .spr{width:34px;height:34px}
 .clamp4{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
-.heat{display:inline-flex;gap:3px;vertical-align:middle}.heat i{width:9px;height:12px;border-radius:2px;background:#ffffff26}.heat i.on{background:linear-gradient(#ffb04a,#ff3b3b);box-shadow:0 0 5px #ff5a3a}
+.heat{display:inline-flex;gap:3px;vertical-align:middle}.heat i{width:7px;height:12px;border-radius:2px;background:#ffffff26}.heat i.on{background:linear-gradient(#ffb04a,#ff3b3b);box-shadow:0 0 5px #ff5a3a}
 /* ===== chips clickeables y modales de info ===== */
 .chip.clk{cursor:pointer;transition:border-color .15s,transform .15s}.chip.clk:hover,.chip.clk:focus-visible{border-color:var(--acc);outline:none;transform:translateY(-1px)}
 .tbar{height:10px;border-radius:99px;background:#0006;border:1px solid var(--line);overflow:hidden;margin:6px 0 10px}.tbar i{display:block;height:100%;background:linear-gradient(90deg,#ffcb3d,#ff9a3d);border-radius:99px}
@@ -508,7 +508,7 @@ const PASE_HASTA=18;
 const ITEMS={
   lucky_charm:{name:'Amuleto de la Suerte',desc:'+5% de resultados buenos en los eventos y +3% de captura.'},
   shiny_charm:{name:'Shiny Charm',desc:'Triplica la chance de encontrar un Pokémon shiny. Nunca se pierde.'},
-  pase_libre:{name:'Pase libre',desc:'La primera vez que te arresten, te dejan ir: se consume y tu Heat baja a 2. Vence cuando cumplís 18 años. No se pierde por eventos.'},
+  pase_libre:{name:'Pase libre',desc:'La primera vez que te arresten, te dejan ir: se consume y tu Heat baja a 4. Vence cuando cumplís 18 años. No se pierde por eventos.'},
   piedra_dura:{name:'Piedra Dura',desc:'Herencia de las minas: +2 encuentros al explorar cuevas (Monte Moon, cuevas heladas y Cueva Celeste) y +10% de chance de hallar una piedra evolutiva al explorar.'},
   pepita:{name:'Pepita de oro',desc:'Para negociar como en el puerto: +1 cambio de Pokémon y +1 cambio de piedra en cada visita al Mercado.'},
   ss_ticket:{name:'Ticket S.S. (barco)',desc:'Un viaje único en barco: un año (4 estaciones) con 4 combates y 3 regalos que rinde más que entrenar y explorar por separado. Se habilita con 3 medallas o poder de equipo '+SHIP_PW+'. Se consume al usarlo.'},
@@ -674,6 +674,20 @@ const REP_RANKS=[[15,'Leyenda local'],[10,'Admirado'],[5,'Respetado'],[2,'Conoci
 const repRank=s=>REP_RANKS.find(r=>s.rep>=r[0])[1];
 const REP_GIFTS=[5,10,15];
 const repMod=s=>clamp(s.rep,-6,10);
+// Conciencia (moral, de -10 a 10): rango con nombre, efecto en chances de eventos, Heat y combates
+const MORAL_RANKS=[[8,'Muy tranquila'],[3,'Tranquila'],[-2,'Normal'],[-6,'Pesada'],[-99,'Endurecida']];
+const moralRank=s=>MORAL_RANKS.find(r=>s.moral>=r[0])[1];
+const moralOptType=opt=>{if(!opt||opt.sure||!opt.out||!opt.out.g||!opt.out.g[1])return 0;const m=opt.out.g[1].moral||0;return m>0?1:m<0?-1:0;}; // 1 = ayuda, -1 = turbia
+const moralMod=(s,opt)=>{const ty=moralOptType(opt);if(!ty)return 0;{const v=Math.round(ty*s.moral*0.5);return ty>0?clamp(v,-3,5):clamp(v,-3,2);}};
+const HEAT_MAX=10,HEAT_NOISE_PTS=2; // al llegar a HEAT_MAX te arrestan; un golpe de HEAT_NOISE_PTS o más puntos suma +1 // al llegar acá te arrestan
+// Etapas del Heat: [desde, nombre, puntos que resta en opciones turbias]
+const HEAT_STAGES=[[8,'Cercado',8],[6,'Perseguido',5],[4,'Buscado',3],[2,'Vigilado',1],[0,'Limpio',0]];
+const heatStage=s=>HEAT_STAGES.find(r=>s.heat>=r[0]);
+const heatBlocked=s=>s.heat>=8; // Cercado: no podés hacer trabajos turbios ni misiones hasta bajar el Heat
+const heatOptShady=opt=>{if(!opt||opt.sure||!opt.out||!opt.out.g||!opt.out.g[1])return false;const f=opt.out.g[1];return (f.moral||0)<0||(f.rocketPts||0)>0;};
+const heatMod=(s,opt)=>heatOptShady(opt)?-heatStage(s)[2]:0;
+const MORAL_COLD=-4,MORAL_CALM=5; // umbral de sangre fría (Heat) y de tranquilidad (el Heat se enfría más rápido)
+const moralGym=s=>clamp((s.moral-2)*0.6,0,4); // puntos de chance en gimnasios, Liga y Giovanni: «tus Pokémon confían en vos»
 function repGifts(s){ // a las 5, 10 y 15 de reputación la gente te hace un regalo (una sola vez cada uno)
   const L=[];
   for(const at of REP_GIFTS){
@@ -1015,6 +1029,8 @@ function modList(s,opt){
     else if(k==='r'){const v=repMod(s);if(v)L.push(['Reputación '+s.rep+' ('+repRank(s)+')',v]);}
     else if(k==='dex'){const v=Math.min(12,Math.floor(dexN(s)/10)*m[1]);if(v)L.push(['Pokédex '+dexN(s),v]);}
   }
+  {const hm=heatMod(s,opt);if(hm)L.push(['Heat '+s.heat+' ('+heatStage(s)[1]+'): la policía te vigila',hm]);}
+  {const mm=moralMod(s,opt);if(mm)L.push(['Conciencia '+s.moral+' ('+moralRank(s)+') en una opción '+(moralOptType(opt)>0?'de ayuda':'turbia'),mm]);}
   if(s.items.corona&&!opt.sure&&(opt.mods||[]).some(m=>m[0]==='r'))L.push(['Corona de la familia',3]);
   if(s.items.lucky_charm&&!opt.sure)L.push(['Amuleto de la Suerte',5]);
   return L.map(x=>[x[0],Math.round(x[1])]).filter(x=>x[1]!==0);
@@ -1047,7 +1063,8 @@ function applyFx(s,fx){
   if(fx.st)for(const k in fx.st){const o=s.st[k];s.st[k]=clamp(o+fx.st[k],1,STAT_CAP);if(s.st[k]!==o)L.push((s.st[k]>o?'+':'')+(s.st[k]-o)+' '+SL[k]);}
   if(fx.rep){s.rep=clamp(s.rep+fx.rep,-10,20);L.push((fx.rep>0?'⭐ +':'⭐ ')+fx.rep+' Reputación (ahora '+s.rep+' · '+repRank(s)+')');if(fx.rep>0)L.push(...repGifts(s));}
   if(fx.moral){s.moral=clamp(s.moral+fx.moral,-10,10);L.push(fx.moral>0?'Tu conciencia está más tranquila':'Tu conciencia pesa un poco más');}
-  if(fx.heat){s.heat=Math.min(5,Math.max(0,s.heat+fx.heat));L.push(fx.heat>0?'🚨 La policía te tiene más en la mira (Heat '+s.heat+'/5)':'Heat baja a '+s.heat+'/5');}
+  if(fx.heat){let hd=fx.heat;let cold=false;if(hd>=3&&s.moral<=MORAL_COLD){hd--;cold=true;}s.heat=Math.min(HEAT_MAX,Math.max(0,s.heat+hd));L.push(hd>0?'🚨 La policía te tiene más en la mira (Heat '+s.heat+'/'+HEAT_MAX+')'+(cold?' · 🧊 Sangre fría: tu conciencia endurecida te hizo cometer menos errores (-1 Heat)':''):'Heat baja a '+s.heat+'/'+HEAT_MAX);}
+  if(s.rocket&&fx.rocketPts>=HEAT_NOISE_PTS&&!fx.heat){s.heat=Math.min(HEAT_MAX,s.heat+1);L.push('🚨 Un golpe así no pasa desapercibido (Heat '+s.heat+'/'+HEAT_MAX+')');} // los golpes grandes dejan rastro
   if(fx.rocketPts){s.rocketPts=clamp(s.rocketPts+fx.rocketPts,0,ROCKET_MAX);L.push('Rango Rocket: '+rocketRank(s)+' ('+s.rocketPts+'/'+ROCKET_MAX+')');}
   if(fx.fame){s.fame=Math.max(0,s.fame+fx.fame);L.push((fx.fame>0?'+':'')+fx.fame+' Fama del gimnasio ('+s.fame+'/'+FAME_MAX+')');}
   if(fx.rp){s.rp=Math.max(0,s.rp+fx.rp);L.push('🔬 '+(fx.rp>0?'+':'')+fx.rp+' puntos de investigación ('+s.rp+')');}
@@ -1123,6 +1140,7 @@ function gymPreview(s,gym){
   parts.push(['Tamaño del equipo ('+mons.length+')',clamp(mons.length*1.5-4.5,-4.5,4.5)]);
   parts.push(['Valor '+s.st.valor,clamp((s.st.valor-4)*0.6,-5,8)]);
   if(s.items.lucky_charm)parts.push(['Amuleto de la Suerte',3]);
+  {const mg=moralGym(s);if(mg>=0.5)parts.push(['Tus Pokémon confían en vos (conciencia '+s.moral+')',mg]);}
   if(s.voc==='campeon')parts.push(['Vocación: Campeón',3]);
   if(s.boost)parts.push(['Ventaja del Carisma máximo (un solo uso)',s.boost]);
   const retry=(s.gymRetry[gym.id]||0);if(retry)parts.push(['Experiencia de intentos anteriores',retry]);
@@ -1211,11 +1229,11 @@ function getActions(s){
     const all=s.rp>=nx.rp&&dexN(s)>=nx.dex&&s.st.ingenio>=nx.ing;
     A.push({id:'field',icon:'🔬',title:'Trabajo de campo para el laboratorio',desc:s.pubs>=3?'Ya tenés las 3 publicaciones. Aceptá el puesto de Profesor cuando aparezca la oferta.':'Publicación '+(s.pubs+1)+' de 3. Hacen falta las tres cosas a la vez: '+ck(s.rp,nx.rp,'Investigación')+' · '+ck(dexN(s),nx.dex,'Pokédex')+' · '+ck(s.st.ingenio,nx.ing,'Ingenio')+'.'+(all?' Todo listo: la publicación aparece al terminar tu próxima acción.':' El trabajo de campo suma investigación; la Pokédex se llena explorando; el Ingenio sube estudiando.'),ok:s.studied>=1,why:'Primero estudiá al menos un año en la academia'});
   }
-  if(!s.rocket)A.push({id:'shady',icon:'🕶️',title:'Hacer trabajos turbios',desc:'+Sigilo y botín, pero tu conciencia y la policía lo notan. Puede abrirte puertas oscuras.',ok:true});
+  if(!s.rocket)A.push({id:'shady',icon:'🕶️',title:'Hacer trabajos turbios',desc:'+Sigilo y botín, pero tu conciencia y la policía lo notan. Puede abrirte puertas oscuras.',ok:!heatBlocked(s),why:'Estás cercado por la policía (Heat '+s.heat+'): bajá el Heat antes'});
   if(s.rocket){
     if(s.rocketPts>=ROCKET_MAX&&!s.rocketBoss)A.push({id:'giovanni',icon:'👑',title:'Desafiar a Giovanni',desc:'Llegaste a Alto mando. Un último combate contra el jefe: si lo vencés, el Equipo Rocket es tuyo. Primero ves las probabilidades. Si perdés, podés prepararte y volver a intentarlo.',ok:true});
-    A.push({id:'rkmission',icon:'🅡',title:'Misiones del Equipo Rocket',desc:'Rango actual: '+rocketRank(s)+' ('+s.rocketPts+'/'+ROCKET_MAX+'; Recluta, Soldado, Agente, Teniente, Comandante, Alto mando y, al final, Líder). Elegís el tipo: trabajo sucio (rango), robar Pokémon, robar objetos, cacería o mercado negro. Con Heat 5 te arrestan.',ok:true});
-    A.push({id:'rklay',icon:'🫥',title:'Mantener un perfil bajo',desc:'Te escondés unos meses. Heat -2.',ok:s.heat>0,why:'No tenés Heat'});
+    A.push({id:'rkmission',icon:'🅡',title:'Misiones del Equipo Rocket',desc:'Rango actual: '+rocketRank(s)+' ('+s.rocketPts+'/'+ROCKET_MAX+'; Recluta, Soldado, Agente, Teniente, Comandante, Alto mando y, al final, Líder). Elegís el tipo: trabajo sucio (rango), robar Pokémon, robar objetos, cacería o mercado negro. Con Heat '+HEAT_MAX+' te arrestan.',ok:!heatBlocked(s),why:'Estás cercado por la policía (Heat '+s.heat+'): mantené un perfil bajo antes'});
+    A.push({id:'rklay',icon:'🫥',title:'Mantener un perfil bajo',desc:'Te escondés unos meses. Heat -3.',ok:s.heat>0,why:'No tenés Heat'});
   }
   if(gymFoundOk(s))A.push({id:'gymfound',icon:'🏟️',title:'Fundar tu propio gimnasio',desc:'Camino alternativo: no termina el juego, la partida sigue. Tenés Pokémon de '+gymFoundTypes(s).length+' tipo(s) para elegir. Tocá para ver todo antes de decidir.',ok:true});
   if(s.gymOwner){const tn=gymTeamN(s);const okT=tn>=GYM_TEAM_MIN;A.push({id:'gymwork',icon:'🏟️',title:'Atender tu gimnasio',desc:'Tu camino: retadores, inspecciones y torneos dan fama. Con '+FAME_MAX+' de fama y un equipo de poder '+GYM_END_PW+' o más (hoy '+Math.round(teamPower(s))+') te consagrás Líder de gimnasio ('+s.fame+'/'+FAME_MAX+'). Necesitás al menos '+GYM_TEAM_MIN+' Pokémon de tipo '+TES[s.gymType]+' en tu equipo (hoy: '+tn+').',ok:okT,why:okT?'':'Tu equipo tiene '+tn+' Pokémon de tipo '+TES[s.gymType]+' y hacen falta '+GYM_TEAM_MIN+'. Armalo desde el botón de la Poké Ball.'});}
@@ -1249,7 +1267,7 @@ function runActionCore(s,id,arg){
     case 'shady':return {title:'Trabajos turbios',lines:[],pool:'shady',seasons:1};
     case 'field':return {title:'Trabajo de campo',lines:[],pool:'field',seasons:1};
     case 'rkmission':{const k=rkKind(arg,s);return {title:k.title,lines:[],pool:k.pool,seasons:1};}
-    case 'rklay':s.heat=Math.max(0,s.heat-2);return {title:'Perfil bajo',lines:['Te escondés unos meses. Heat: '+s.heat+'/5.'],seasons:1};
+    case 'rklay':s.heat=Math.max(0,s.heat-3);return {title:'Perfil bajo',lines:['Te escondés unos meses. Heat: '+s.heat+'/'+HEAT_MAX+'.'],seasons:1};
     case 'gymwork':return {title:'Atender tu gimnasio',lines:[],pool:'gymown',seasons:1};
     case 'gymfound':{
       const opt=gymFoundTypes(s).find(x=>x.type===arg);if(!opt||s.gymOwner)throw new Error('Gimnasio no disponible');
@@ -1434,7 +1452,7 @@ const EV=[
  text:()=>'Una gran empresa guarda tecnología que los jefes quieren. Hay que entrar disfrazado.',
  opts:[O('Entrar como empleado',[35,30,35],[['s','sigilo',2],['s','ingenio',2]],['Cruzás los pasillos sin mirar atrás. Tu nombre llega a los jefes.',{rocketPts:3,gainWild:1,moral:-1}],['Conseguís poco, pero salís entero.',{rocketPts:1}],['Te detectan y debés huir.',{heat:2,rocketPts:-1}]),
   O('Distraer a los guardias',[30,35,35],[['s','carisma',2],['s','valor',1]],['Todos miran hacia otro lado. Todo sale perfecto.',{rocketPts:3,moral:-1}],['Hacés el ruido justo.',{rocketPts:1}],['Se dan cuenta del truco.',{heat:2}])]},
-{id:'rk_redada',pool:'rocket',kind:'Redada',w:4,req:s=>s.rocket&&s.heat>=2,title:'Redada en el escondite',
+{id:'rk_redada',pool:'rocket',kind:'Redada',w:s=>2+s.heat,req:s=>s.rocket&&s.heat>=2,title:'Redada en el escondite',
  text:()=>'Suenan sirenas cerca del escondite. La policía está haciendo una redada y tenés pocos segundos.',
  opts:[O('Escabullirte por los techos',[40,30,30],[['s','sigilo',3]],['Escapás sin que nadie te vea. Los jefes lo notan.',{heat:-1,rocketPts:1}],['Salís, pero dejás cosas atrás.',{loseItem:1}],['Te ven correr y empieza una persecución.',{heat:3}]),
   O('Negociar con el oficial',[30,30,40],[['s','carisma',3]],['Lo convencés de que es un malentendido.',{heat:-1},],['Te deja ir con una advertencia.',{rocketPts:-1}],['Te lleva un rato a la comisaría.',{heat:3}],{esc:true})]},
@@ -2029,7 +2047,7 @@ const END_OFFER_TEXT={
   profesor:['Aceptar el puesto de Profesor del Profesor Oak','Tus 3 publicaciones y tu Pokédex avanzada convencen a Oak: te cede su propio laboratorio.']};
 function checkEnding(s){
   if(s.forcedEnd)return s.forcedEnd;
-  if(s.heat>=5)return 'arrested';
+  if(s.heat>=HEAT_MAX)return 'arrested';
   if(s.t>=MAXT){const o=endOffers(s);return o.length?o[0]:softEnding(s);}
   return null;
 }
@@ -2040,20 +2058,21 @@ function endSeason(s,seasons){
     s.notice='⌛ Cumpliste '+PASE_HASTA+' años y tu Pase libre venció sin que lo usaras. De ahora en más, si te atrapan, vas preso.';
   }
   let usedPass=false;
-  if(s.heat>=5&&s.items.pase_libre){
-    usedPass=true;delete s.items.pase_libre;s.heat=2;
-    s.notice='🔓 La policía te atrapó, pero tu Pase libre te sacó de la comisaría. Se consumió, y tu Heat bajó a 2. La próxima vez no habrá segunda oportunidad.';
+  if(s.heat>=HEAT_MAX&&s.items.pase_libre){
+    usedPass=true;delete s.items.pase_libre;s.heat=4;
+    s.notice='🔓 La policía te atrapó, pero tu Pase libre te sacó de la comisaría. Se consumió, y tu Heat bajó a 4. La próxima vez no habrá segunda oportunidad.';
   }
   // primero se revisa el final (con el Heat que dejó esta estación) y recién después se enfría
   const e=checkEnding(s);
   if(e){s.ending=e;return e;}
-  if(!usedPass&&s.heat>0&&(!s.rocket||s.t%2===0))s.heat--; // la estación del pase, el Heat queda en 2 tal como se avisa
+  {const per=s.heat>=6?3:(s.rocket?2:1);if(!usedPass&&s.heat>0&&s.t%per===0)s.heat--;} // perseguido: se enfría más lento
+  if(s.moral>=MORAL_CALM&&s.heat>=4)s.heat--; // conciencia tranquila: la policía te deja en paz antes // la estación del pase, el Heat queda en 2 tal como se avisa
   return null;
 }
 
 // ===================== Puntaje, logros y epílogo =====================
 const RK_OPS_PTS=60,RK_OPS_CAP=12,RK_RANK_PTS=30; // cada operación de mando exitosa (Teniente en adelante) suma al puntaje de quien sigue el camino Rocket
-const SC={dex:3,shiny:6,medal:35,spare:10,pub:140,fame:12,ach:30}; // puntos por: especie, shiny, medalla, estación sobrante, publicación (Profesor), punto de fama (gimnasio propio), logro
+const SC={dex:3,shiny:6,medal:35,spare:10,pub:140,fame:12,ach:30,moral:8}; // puntos por: especie, shiny, medalla, estación sobrante, publicación (Profesor), punto de fama (gimnasio propio), logro
 const END_FLAT=600; // mismo puntaje base para todos los finales: así nadie fuerza uno solo por el puntaje
 const END_BASE=Object.fromEntries(Object.keys(ENDINGS).map(k=>[k,END_FLAT]));
 const ALL_TYPES=[...new Set(MON.flatMap(m=>m.types))];
@@ -2133,6 +2152,7 @@ function scoreOf(s){
   }
   if(SC.pub&&s.pubs>0)parts.splice(parts.length-1,0,['Publicaciones científicas ('+s.pubs+' × '+SC.pub+')',s.pubs*SC.pub]);
   if(SC.fame&&s.gymOwner&&s.fame>0)parts.splice(parts.length-1,0,['Fama de tu gimnasio ('+Math.min(s.fame,FAME_MAX)+' × '+SC.fame+')',Math.min(s.fame,FAME_MAX)*SC.fame]);
+  if(SC.moral&&s.moral>0)parts.splice(parts.length-1,0,['Conciencia tranquila ('+s.moral+' × '+SC.moral+')',s.moral*SC.moral]);
   if(goal)parts.push(['Final antes de tiempo ('+(MAXT-s.t)+' estaciones sobrantes × '+SC.spare+')',(MAXT-s.t)*SC.spare]);
   const total=parts.reduce((a,p)=>a+p[1],0);
   return {total,parts,ach};
@@ -2298,22 +2318,22 @@ function guideSections(){
   S.push(['🅡 Equipo Rocket',`<p>Podés unirte por una oferta (aparece con ciertas condiciones: conciencia baja, vocación Aspirante a Rocket, origen Carmín o Familia, entre otras). <b>Una vez adentro no podés irte</b>, y gimnasios, Liga y «ayudar a la gente» quedan fuera de tu alcance sin importar tu vocación.</p>
   ${li(['<b>Rangos:</b> '+RK_RANKS.map(r=>r[1]+' ('+r[0]+')').join(' · ')+'. El máximo es '+ROCKET_MAX+' puntos.',
    '<b>Misiones:</b> trabajo sucio (el que más rango da; desde Teniente, a los 30 puntos de rango, pasan a ser <b>operaciones de mando</b>: asaltos dirigidos, bandas rivales, funcionarios, disputas en la cúpula y, desde Comandante, golpes enormes. Cada operación exitosa suma 35 puntos al puntaje final, hasta 12), robar Pokémon (muchos comunes o pocos raros), robar objetos, cacería ilegal y mercado negro (necesitás un Pokémon repetido).',
-   '<b>Heat:</b> es lo que sabe la policía de vos. Con 5 te arrestan y el juego termina. Baja 1 por estación (en Rocket, 1 cada 2). «Mantener un perfil bajo» lo baja en 2.',
-   '<b>Pase libre:</b> te salva una vez del arresto (se consume, Heat baja a 2) y vence a los '+PASE_HASTA+' años.',
+   '<b>Heat:</b> es lo que sabe la policía de vos (0 a '+HEAT_MAX+'). Con '+HEAT_MAX+' te arrestan y el juego termina. Desde 2 hay etapas que castigan: Vigilado (2-3, -1% en opciones turbias), Buscado (4-5, -3% y más redadas), Perseguido (6-7, -5%, más redadas y se enfría 3 veces más lento) y Cercado (8-9, -8% y no podés hacer trabajos turbios ni misiones hasta bajar). Baja 1 por estación (en Rocket, 1 cada 2; desde 6, 1 cada 3). «Mantener un perfil bajo» lo baja en 3.',
+   '<b>Pase libre:</b> te salva una vez del arresto (se consume, Heat baja a 4) y vence a los '+PASE_HASTA+' años.',
    '<b>Giovanni:</b> al llegar al Alto mando podés desafiarlo. Si ganás, la organización es tuya. Si perdés podés prepararte y volver a intentarlo.'])}`]);
   S.push(['🔬 Profesor y 🏟️ gimnasio propio',`<p><b>Profesor:</b> con la vocación Aspirante a Profesor, el trabajo de campo da <i>puntos de investigación</i>. Cada publicación pide tres cosas a la vez:</p>${li(PUB_REQ.map((r,i)=>`Publicación ${i+1}: ${r.rp} puntos de investigación, ${r.dex} especies y Ingenio ${r.ing}`))}<p>Con las 3, aparece la oferta del puesto de Profesor.</p>
   <p><b>Gimnasio propio:</b> a partir de la estación ${GYM_FOUND_T}, con al menos 3 medallas y ${GYM_FOUND_N} Pokémon de un mismo tipo (las copias cuentan, de al menos ${GYM_FOUND_SP} especies), aparece en el menú la acción dorada «Fundar gimnasio». Ahí elegís el tipo entre los que tenés disponibles. <b>No termina el juego: es un camino alternativo.</b> Se cierran los gimnasios y la Liga (ya no podés ser Campeón) y «Atender tu gimnasio» pasa a ser tu acción principal: retadores, inspecciones y torneos te dan fama. <b>Para atender el gimnasio necesitás al menos ${GYM_TEAM_MIN} Pokémon del tipo elegido en tu equipo</b> (podés repetir especies). Con ${FAME_MAX} de fama <b>y un equipo de poder ${GYM_END_PW} o más</b> (entrenar sube el poder) cerrás como Líder de gimnasio; también podés cerrar con la Pokédex completa, y si llegás a las ${MAXT} estaciones antes, terminás como dueño de un gimnasio pequeño.</p>`]);
-  S.push(['⭐ Reputación, conciencia y Heat',`${li(['<b>Reputación</b> (de −10 a 20): sube cuando ayudás o resolvés bien frente a otros, baja cuando fallás o hacés el ridículo. Suma o resta hasta +10 / −6 puntos en los eventos sociales. A los 5, 10 y 15 la gente te hace un regalo (una piedra, un Pokémon y el Amuleto de la Suerte). Rangos: '+REP_RANKS.slice().reverse().map(r=>r[1]).join(', ')+'.','<b>Conciencia</b> (de −10 a 10): sube con decisiones buenas y baja con robos y trabajos turbios. Abre algunas ofertas (como la del Equipo Rocket) y cuenta en la historia final.','<b>Heat</b> (de 0 a 5): ver Equipo Rocket.'])}`]);
+  S.push(['⭐ Reputación, conciencia y Heat',`${li(['<b>Reputación</b> (de −10 a 20): sube cuando ayudás o resolvés bien frente a otros, baja cuando fallás o hacés el ridículo. Suma o resta hasta +10 / −6 puntos en los eventos sociales. A los 5, 10 y 15 la gente te hace un regalo (una piedra, un Pokémon y el Amuleto de la Suerte). Rangos: '+REP_RANKS.slice().reverse().map(r=>r[1]).join(', ')+'.','<b>Conciencia</b> (de −10 a 10, con indicador en el menú): sube con decisiones buenas y baja con robos y trabajos turbios. Mejora las chances de las opciones de ayuda (y las de las turbias si es baja), ayuda a enfriar el Heat o a ganarlo con sangre fría, da hasta +4% de chance en gimnasios, Liga y Giovanni, suma puntos al final, abre ofertas como la del Equipo Rocket y cuenta en la historia final. Tocá el indicador para ver el detalle.','<b>Heat</b> (de 0 a 5): ver Equipo Rocket.'])}`]);
   S.push(['🎒 Objetos',li(Object.keys(ITEMS).filter(k=>!ITEMS[k].stone&&k!=='corona').map(k=>`<b>${esc(ITEMS[k].name)}</b>: ${esc(ITEMS[k].desc)}`))+`<p><b>Piedras evolutivas</b> (Fuego, Hoja, Lunar, Trueno, Agua): hacen evolucionar a ciertos Pokémon. Las encontrás explorando, en eventos y en el mercado. Se usan desde la Mochila.</p>`]);
   S.push(['🏁 Finales',`<p>Cuando cumplís la condición de uno o más finales, el juego te deja <b>elegir cuál cerrar</b> (o seguir jugando por otro). No depende de tu vocación. Si llegás a las ${MAXT} estaciones, se cierra solo el de mayor prioridad entre los que cumplís: Campeón, jefe Rocket, Líder de gimnasio, Maestro Pokémon, Profesor.</p>`+li(Object.keys(ENDINGS).map(k=>`<b>${ENDINGS[k].e} ${esc(ENDINGS[k].t)}</b>: ${esc(END_COND[k]||'')}`))]);
-  S.push(['⭐ Puntaje y logros',`<p>Al terminar recibís un puntaje que se suma así:</p>${li(['Final: '+END_FLAT+' puntos, los mismos para todos los finales (ninguno vale más que otro; lo que suma es cómo jugaste)',SC.dex+' puntos por especie en la Pokédex',SC.shiny+' por especie shiny',SC.medal+' por medalla','3 por cada punto de stat por encima de los 10 iniciales','Poder del equipo: (poder − 300) × 0,8',SC.ach+' por logro',SC.pub+' por publicación científica del Profesor (hasta 3)',SC.fame+' por cada punto de fama de tu gimnasio (hasta '+FAME_MAX+')',RK_OPS_PTS+' por cada operación de mando exitosa del Equipo Rocket (hasta '+RK_OPS_CAP+' operaciones)','Equipo Rocket: '+RK_RANK_PTS+' por cada rango alcanzado después de Recluta (y uno más por ser Líder)',SC.spare+' por cada estación que te sobra si cerrás antes del tiempo límite'])}<p>Calificación: ${GRADES.slice(0,-1).map(g=>g[1]+' desde '+g[0]).join(' · ')}.</p><p><b>Logros</b> (se guardan en tu navegador):</p>`+li(ACHS.filter(a=>!a.hid).map(a=>`${achIc(a,22)} <b>${esc(a.n)}</b>: ${esc(a.d)}`))+`<p>Además hay <b>${ACH_HID} logros ocultos</b>: difíciles y específicos, que no muestran su condición hasta que los conseguís (solo una pista). Cuentan igual para el puntaje.</p>`]);
+  S.push(['⭐ Puntaje y logros',`<p>Al terminar recibís un puntaje que se suma así:</p>${li(['Final: '+END_FLAT+' puntos, los mismos para todos los finales (ninguno vale más que otro; lo que suma es cómo jugaste)',SC.dex+' puntos por especie en la Pokédex',SC.shiny+' por especie shiny',SC.medal+' por medalla','3 por cada punto de stat por encima de los 10 iniciales','Poder del equipo: (poder − 300) × 0,8',SC.ach+' por logro',SC.pub+' por publicación científica del Profesor (hasta 3)',SC.fame+' por cada punto de fama de tu gimnasio (hasta '+FAME_MAX+')',SC.moral+' por cada punto de Conciencia positiva (hasta '+(10*SC.moral)+')',RK_OPS_PTS+' por cada operación de mando exitosa del Equipo Rocket (hasta '+RK_OPS_CAP+' operaciones)','Equipo Rocket: '+RK_RANK_PTS+' por cada rango alcanzado después de Recluta (y uno más por ser Líder)',SC.spare+' por cada estación que te sobra si cerrás antes del tiempo límite'])}<p>Calificación: ${GRADES.slice(0,-1).map(g=>g[1]+' desde '+g[0]).join(' · ')}.</p><p><b>Logros</b> (se guardan en tu navegador):</p>`+li(ACHS.filter(a=>!a.hid).map(a=>`${achIc(a,22)} <b>${esc(a.n)}</b>: ${esc(a.d)}`))+`<p>Además hay <b>${ACH_HID} logros ocultos</b>: difíciles y específicos, que no muestran su condición hasta que los conseguís (solo una pista). Cuentan igual para el puntaje.</p>`]);
   S.push(['📖 Glosario',li([
    '<b>Estación:</b> una unidad de tiempo (3 meses). El juego dura '+MAXT+'.',
    '<b>Poder:</b> la fuerza de un Pokémon o de tu equipo (promedio).',
    '<b>Talento:</b> lo que se aleja un ejemplar de la fuerza normal de su especie, entre −10% y +10%.',
    '<b>Entrenamiento:</b> poder extra que ganan los Pokémon al entrenar (hasta +'+XP_CAP+').',
    '<b>Cobertura de tipos:</b> qué tan bien tus tipos le pegan a los del rival.',
-   '<b>Heat:</b> la atención policial sobre vos (0 a 5).',
+   '<b>Heat:</b> la atención policial sobre vos (0 a '+HEAT_MAX+'), con etapas que restan chances.',
    '<b>Medalla:</b> premio de un gimnasio; hay 8.',
    '<b>Pokédex:</b> las especies que registraste, de 151.',
    '<b>Shiny:</b> variante de color muy rara. Cuenta aparte en la colección.',
@@ -2555,7 +2575,7 @@ const itemIc=(k,sz)=>ICONS_IT[k]?`<img class="spr" width="${sz||24}" height="${s
 const iconBall=sz=>`<img width="${sz}" height="${sz}" alt="Equipo" src="${ICON_BALL}">`;
 const iconDex=sz=>`<svg width="${sz}" height="${sz}" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="Pokédex"><rect x="2" y="1" width="12" height="14" rx="1" fill="#c9383f"/><rect x="2" y="1" width="12" height="14" rx="1" fill="none" stroke="#5b1217"/><rect x="4" y="3" width="8" height="6" fill="#9fd8e8" stroke="#1d3a52"/><rect x="5" y="4" width="3" height="2" fill="#eaf7fb"/><circle cx="5" cy="12" r="1.3" fill="#ffd84a" stroke="#5b1217" stroke-width=".4"/><rect x="8" y="11" width="4" height="1" fill="#5b1217"/><rect x="8" y="13" width="4" height="1" fill="#5b1217"/></svg>`;
 
-const VERSION='5.72'; // se sube en cada entrega y se muestra en el título y en Opciones
+const VERSION='5.74'; // se sube en cada entrega y se muestra en el título y en Opciones
 // ===== Sprites animados y efectos visuales =====
 // Los sprites estáticos están incluidos en el archivo. Las versiones animadas (Gen 5, del repositorio PokeAPI/sprites) se cargan
 // aparte cuando hay conexión; si no cargan, queda el sprite estático. Nada del juego depende de ellas.
@@ -2727,7 +2747,7 @@ function actMeta(s,a){
     case 'study':return s.studied+'/2 veces';
     case 'field':return s.pubs+'/3 publ.';
     case 'rkmission':return rocketRank(s);
-    case 'rklay':return 'Heat '+s.heat+'/5';
+    case 'rklay':return 'Heat '+s.heat+'/'+HEAT_MAX;
     case 'gymwork':return a.ok?'Fama '+s.fame+'/'+FAME_MAX:'Falta equipo '+TES[s.gymType]+' ('+gymTeamN(s)+'/'+GYM_TEAM_MIN+')';
     case 'gymfound':return 'Camino alternativo';
     case 'giovanni':return 'Final Rocket';
@@ -3044,9 +3064,10 @@ function head(){
   const K=(k,tip)=>` class="chip clk" role="button" tabindex="0" title="${esc(tip)}" onclick="G.modal('${k}')"`;
   let c=(s.name?`<span class="chip">👤 <b>${esc(s.name)}</b></span>`:'')+`<span${K('dex','Ver la Pokédex')}>${iconDex(16)} <b>${dexN(s)}</b>/151</span><span${K('medals','Ver el progreso de medallas')}>${s.badges.length?s.badges.map(id=>badgeIc(GYMS.findIndex(g=>g.id===id),18)).join(''):'🏅'} <b>${s.badges.length}</b>/8</span><span${K('shiny','Ver tus shinies')}>✨ <b>${shinyN(s)}</b></span><span${K('time','Ver el tiempo que pasó y el que falta')}>⏳ <b>${Math.max(0,MAXT-s.t)}</b> estaciones</span>`;
   c+=`<span${K('rep','Tocá para ver cómo funciona')}>⭐ Reputación <b>${s.rep}</b> · ${repRank(s)}</span>`;
+  c+=`<span${K('moral','Tocá para ver cómo funciona')}>🕊️ Conciencia <b>${s.moral>0?'+':''}${s.moral}</b> · ${moralRank(s)}</span>`;
   if(s.voc)c+=`<span${K('voc','Ver tu vocación')}>${esc(VOCS[s.voc].name)}</span>`;
-  if(s.rocket)c+=`<span class="chip clk ${s.heat>=3?'warn':''}" role="button" tabindex="0" title="Ver rango y Heat" onclick="G.modal('rk')">${rIc(16)} ${rocketRank(s)} · Heat <b>${s.heat}</b>/5</span>`;
-  else if(s.heat>0)c+=`<span class="chip clk ${s.heat>=3?'warn':''}" role="button" tabindex="0" title="Ver qué es el Heat" onclick="G.modal('rk')">🚨 Heat <b>${s.heat}</b>/5</span>`;
+  if(s.rocket)c+=`<span class="chip clk ${s.heat>=4?'warn':''}" role="button" tabindex="0" title="Ver rango y Heat" onclick="G.modal('rk')">${rIc(16)} ${rocketRank(s)} · Heat <b>${s.heat}</b>/${HEAT_MAX}</span>`;
+  else if(s.heat>0)c+=`<span class="chip clk ${s.heat>=4?'warn':''}" role="button" tabindex="0" title="Ver qué es el Heat" onclick="G.modal('rk')">🚨 Heat <b>${s.heat}</b>/${HEAT_MAX}</span>`;
   if(s.gymOwner)c+=`<span${K('fame','Ver tu fama')}>🏟️ Fama <b>${s.fame}</b>/${FAME_MAX}</span>`;
   if(s.voc==='profesor')c+=`<span${K('research','Ver el progreso de publicaciones')}>🔬 Investigación <b>${s.rp}</b> · 📄 <b>${s.pubs}</b>/3</span>`;
   for(const k in s.items)if(!ITEMS[k].stone)c+=`<span${K('item:'+k,ITEMS[k].desc)}>${itemIc(k,18)} ${esc(ITEMS[k].name)}</span>`;
@@ -3117,7 +3138,7 @@ function spin(r){
 }
 function sirenUpdate(){
   const s=S_,b=document.body;
-  const lv=(s&&!s.ending&&phase!=='title'&&phase!=='name'&&phase!=='origin'&&phase!=='starter'&&s.heat>=3)?Math.min(5,s.heat):0;
+  const lv=(s&&!s.ending&&phase!=='title'&&phase!=='name'&&phase!=='origin'&&phase!=='starter'&&s.heat>=4)?(s.heat>=8?5:s.heat>=6?4:3):0;
   if(!document.getElementById('siren')){const d=document.createElement('div');d.id='siren';d.setAttribute('aria-hidden','true');b.appendChild(d);}
   if(lv)b.dataset.siren=lv;else delete b.dataset.siren;
   if(lv&&fxLevel()==='off')b.dataset.sirenCalm='1';else delete b.dataset.sirenCalm;
@@ -3160,7 +3181,7 @@ function view(){
     M.innerHTML=(s.notice?`<div class="card" style="border-color:var(--acc)"><p>${esc(s.notice)}</p></div>`:'')+menuHtml(s);
   }else if(phase==='rkmenu'){
     const hasDup=dupes(s).length>0;const nx=rocketNext(s);const RC={work:'#c8323f',pokemon:'#8a4fd0',items:'#e08a2a',hunt:'#3aa05a',black:'#1fa3a0'};
-    const heat=`<span class="heat">${[1,2,3,4,5].map(i=>`<i class="${i<=s.heat?'on':''}"></i>`).join('')}</span>`;
+    const heat=`<span class="heat">${Array.from({length:HEAT_MAX},(_,k)=>`<i class="${k<s.heat?'on':''}"></i>`).join('')}</span>`;
     M.innerHTML=sceneBanner('rocket',{h:160,kicker:'Equipo Rocket',title:'¿Qué misión tomás?',sub:`<div class="mkchips"><span>${rIc(14)} ${esc(rocketRank(s))} · ${s.rocketPts}/${ROCKET_MAX}</span><span>Heat ${heat}</span>${nx?`<span>Próximo: ${esc(nx.name)} (${nx.at})</span>`:''}</div>`,spr:''})+`<div class="card scn-card"><p class="sub">Cada misión ocupa una estación y termina en un evento. Solo el trabajo sucio sube mucho el rango; el resto te trae botín.</p></div>
     <div class="rgrid">`+
       RK_KINDS.map(k0=>{const k=rkKind(k0.id,s);const capped=s.rocketPts>=ROCKET_MAX;const ok=k0.id==='black'?hasDup:k0.id==='work'?!capped:true;return `<button class="rg${k0.id==='work'?' wide':''}" style="--rc:${RC[k0.id]}" ${ok?'':'disabled'} onclick="G.rk('${k0.id}')"><span class="ic">${k.icon==='🅡'?rIc(30):k.icon}</span><span class="t">${esc(k.title)}</span><span class="d">${esc(k.desc)}</span><span class="rw"><b>🎁</b><span>${esc(k.gain)}</span></span><span class="rw"><b>⚠</b><span>${esc(k.risk)}</span></span><span class="schip pr" style="--sc:${STC[k.prac]}" title="Practicás ${SL[k.prac]}">${stIc(k.prac,13)}${SL[k.prac]} ${(s.prac&&s.prac[k.prac])||0}/${pracNeed(s.st[k.prac])}</span>${ok?'':`<span class="why">${k0.id==='work'?'Ya estás en el máximo rango: ahora podés desafiar a Giovanni':'Necesitás Pokémon repetidos para ofrecer'}</span>`}</button>`;}).join('')+`</div><button class="btn" onclick="G.back()">← Volver</button>`;
@@ -3391,6 +3412,18 @@ function modal(kind){
     <div><b>Regalos:</b> al llegar a 5, 10 y 15 de reputación, la gente te regala una piedra evolutiva, un Pokémon y el Amuleto de la Suerte (una vez cada uno).${nx?` Próximo: a los <b>${nx}</b>.`:' Ya recibiste los tres.'}</div>
     <div><b>Rangos:</b> Mala fama (menos de -2) · Desconocido (-2 a 1) · Conocido (2 a 4) · Respetado (5 a 9) · Admirado (10 a 14) · Leyenda local (15+).</div>
     <div class="sub">No cuenta en los trabajos turbios ni en las misiones del Equipo Rocket.</div></div>`;
+  }else if(kind==='moral'){
+    const mo=s.moral;const mh=clamp(Math.round(mo*0.5),-3,5),ms=clamp(Math.round(-mo*0.5),-3,2);
+    h=`<h3>🕊️ Conciencia: ${mo>0?'+':''}${mo} · ${moralRank(s)}</h3>
+    <p class="sub mb">Es cómo te sentís con lo que hiciste. Sube cuando ayudás, rescatás o devolvés cosas; baja cuando robás, estafás o te unís a los turbios. Va de -10 a 10.</p>
+    <div class="lines mb">
+    <div><span><b>Chances en eventos:</b> en las opciones de <b>ayuda</b> (rescatar, cuidar, devolver) cada 2 puntos de conciencia suman 1% (hasta +5%, o hasta -3% si la tenés pesada). En las opciones <b>turbias</b> (robar, estafar, sobornar) pasa al revés: una conciencia endurecida ayuda (hasta +2%) y una tranquila complica (hasta -3%). Hoy: ayuda <b>${mh>0?'+':''}${mh}%</b>, turbias <b>${ms>0?'+':''}${ms}%</b>.</span></div>
+    <div><span><b>Heat:</b> con conciencia de <b>${MORAL_COLD}</b> o menos, cada vez que una acción te daría 3 o más de Heat, recibís 1 menos (sangre fría). Con <b>${MORAL_CALM}</b> o más, si tenés Heat 3 o más, se enfría 1 extra por estación.</span></div>
+    <div><span><b>Combates:</b> con conciencia de 3 o más, tus Pokémon confían en vos y ganás hasta +4% de chance en gimnasios, Liga y Giovanni (hoy: <b>+${Math.round(moralGym(s)*10)/10}%</b>).</span></div>
+    <div><span><b>Puntaje:</b> cada punto de conciencia positiva suma ${SC.moral} puntos al final (hoy: <b>${mo>0?mo*SC.moral:0}</b>).</span></div>
+    <div><span><b>Equipo Rocket:</b> con conciencia baja (-1 o menos) es más probable que te llegue la oferta para unirte.</span></div>
+    <div><span><b>Logros:</b> «Conciencia limpia» (terminar con 8 o más) y uno oculto que se consigue ganando la Liga con la conciencia muy tranquila.</span></div>
+    <div><span><b>Rangos:</b> Endurecida (menos de -6) · Pesada (-6 a -3) · Normal (-2 a 2) · Tranquila (3 a 7) · Muy tranquila (8+).</span></div></div>`;
   }else if(kind==='medals'){
     const TE={Roca:'Rock',Agua:'Water','Eléctrico':'Electric',Planta:'Grass',Veneno:'Poison','Psíquico':'Psychic',Fuego:'Fire',Tierra:'Ground'};
     const nb=s.badges.length;
@@ -3414,7 +3447,7 @@ function modal(kind){
     else h=`<h3>${itemIc(k,36)} ${esc(it.name)}</h3><p class="mb">${esc(it.desc)}</p><div class="lines"><div>${k==='shiny_charm'||k==='pase_libre'?'🔒 Este objeto no se pierde por eventos.':'⚠ Algunos eventos malos pueden hacerte perder un objeto.'}</div></div>`;
   }else if(kind==='rk'){
     const nx=rocketNext(s);
-    h=`<h3>${s.rocket?rIc(26)+' Equipo Rocket':'🚨 Heat'}</h3>`+(s.rocket?`<p class="sub mb">Rango: <b>${esc(rocketRank(s))}</b> · ${s.rocketPts}/${ROCKET_MAX} puntos${nx?` · próximo: <b>${esc(nx.name)}</b> a los ${nx.at}`:s.rocketBoss?'':' · llegaste al máximo: podés desafiar a Giovanni'}</p><div class="tbar"><i style="width:${Math.min(100,s.rocketPts/ROCKET_MAX*100)}%"></i></div><div class="lines mb">${RK_RANKS.map(r=>`<div><span>${s.rocketPts>=r[0]?'✅':'⬜'} <b>${esc(r[1])}</b> · desde ${r[0]} puntos</span></div>`).join('')}<div><span>${s.rocketBoss?'✅':'⬜'} <b>Líder del Equipo Rocket</b> · vencer a Giovanni</span></div></div>`:'')+`<p class="sub mb">Heat: <b>${s.heat}</b>/5</p><div class="heat" style="margin-bottom:8px">${[1,2,3,4,5].map(i=>`<i class="${i<=s.heat?'on':''}"></i>`).join('')}</div><div class="lines"><div>Es lo que sabe la policía de vos. Con 5 te arrestan y el juego termina.</div><div>Baja 1 por estación (en el Rocket, 1 cada 2). «Mantener un perfil bajo» lo baja en 2.</div></div>`;
+    h=`<h3>${s.rocket?rIc(26)+' Equipo Rocket':'🚨 Heat'}</h3>`+(s.rocket?`<p class="sub mb">Rango: <b>${esc(rocketRank(s))}</b> · ${s.rocketPts}/${ROCKET_MAX} puntos${nx?` · próximo: <b>${esc(nx.name)}</b> a los ${nx.at}`:s.rocketBoss?'':' · llegaste al máximo: podés desafiar a Giovanni'}</p><div class="tbar"><i style="width:${Math.min(100,s.rocketPts/ROCKET_MAX*100)}%"></i></div><div class="lines mb">${RK_RANKS.map(r=>`<div><span>${s.rocketPts>=r[0]?'✅':'⬜'} <b>${esc(r[1])}</b> · desde ${r[0]} puntos</span></div>`).join('')}<div><span>${s.rocketBoss?'✅':'⬜'} <b>Líder del Equipo Rocket</b> · vencer a Giovanni</span></div></div>`:'')+`<p class="sub mb">Heat: <b>${s.heat}</b>/${HEAT_MAX}</p><div class="heat" style="margin-bottom:8px">${Array.from({length:HEAT_MAX},(_,k)=>`<i class="${k<s.heat?'on':''}"></i>`).join('')}</div><div class="lines"><div>Es lo que sabe la policía de vos. Con ${HEAT_MAX} te arrestan y el juego termina.</div></div><p class="sub" style="margin:10px 0 6px">Etapas (hoy: <b>${esc(heatStage(s)[1])}</b>)</p><div class="lines">${HEAT_STAGES.slice().reverse().filter(r=>r[2]>0).map((r,i,A2)=>{const hi=(A2[i+1]?A2[i+1][0]-1:HEAT_MAX-1);const cur=heatStage(s)===r;const ex={'Vigilado':'-1% en opciones turbias','Buscado':'-3% en opciones turbias · más redadas','Perseguido':'-5% en opciones turbias · más redadas · se enfría 3 veces más lento','Cercado':'-8% en opciones turbias · no podés hacer trabajos turbios ni misiones hasta bajar el Heat'}[r[1]];return `<div><span>${cur?'👉':'▫️'} <b>${r[1]}</b> (Heat ${r[0]}-${hi}): ${ex}</span></div>`;}).join('')}<div><span>Baja 1 por estación (en el Rocket, 1 cada 2; desde 6, 1 cada 3). «Mantener un perfil bajo» lo baja en 3.</span></div></div>`;
   }else if(kind==='voc'){
     const V=VOCS[s.voc];
     h=V?`<h3>${esc(V.name)}</h3><p class="mb">${esc(V.hint)}</p><div class="lines"><div>Elegiste tu vocación a los 12 años. Da un impulso, pero no te encierra en un solo camino.</div></div>`:'<p class="sub">Todavía no elegiste vocación (a los 12 años).</p>';
@@ -3607,7 +3640,7 @@ window.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('modal').classList.
 $('modal').addEventListener('click',e=>{if(e.target===$('modal')&&ctx.modalKind)G.close();});
 // ===== Aviso de versión nueva (sin tener que apretar F5) =====
 // Consulta cada tanto, con una petición liviana (HEAD), si el archivo publicado cambió. Si cambió y la versión es otra, muestra un aviso; la partida se guarda y recién ahí se recarga, solo si el jugador toca el botón.
-const CHANGELOG=[{"v":"5.72","t":"Arreglos de errores","items":["La Tabla de tipos no se abría desde la pantalla de inicio si todavía no tenías una partida: ahora abre siempre.","En celulares angostos (360 px o menos) la barra de iconos y la pantalla de inicio se salían del ancho y se podía deslizar de costado: ahora entran en pantalla."]},{"v":"5.71","t":"Ícono de la tabla de tipos","items":["La tabla de tipos ahora usa el sprite de una MT (el disco de movimiento) en la barra de iconos, en el título y en su ventana, en lugar del cuadrado naranja anterior."]},{"v":"5.70","t":"Novedades dentro del juego","items":["Nueva sección «Novedades» (desde el título y desde la barra de iconos): muestra qué cambió en cada versión y se marca con «NUEVO» cuando hay una versión que todavía no viste.","Se registra más información anónima de fin de partida (Pokédex, poder del equipo, zonas exploradas) para poder balancear mejor. Se puede desactivar en Opciones."]},{"v":"5.69","t":"Aviso de versión nueva","items":["Si el juego ya estaba abierto y se publica una versión nueva, aparece un aviso con el botón «Actualizar». Se guarda la partida y se recarga solo si lo tocás.","Solo funciona desde esta versión en adelante: quien tenga abierta una anterior necesita recargar la página una vez."]},{"v":"5.68","t":"Más estadísticas anónimas","items":["Cada 5 estaciones se registra la cantidad de Pokémon en la Pokédex, shinies, poder del equipo, stats y equipo. En derrotas de gimnasio y fallos de Liga se registra el poder del equipo. Al final de la partida se registran acciones, exploraciones por zona y especies que faltaban por zona.","No cambia nada del juego. No hay datos personales y se puede desactivar en Opciones."]},{"v":"5.67","t":"Arreglo visual en el final","items":["Se corrigió el cuadrado que aparecía alrededor del Pokémon animado en la pantalla de final: el resplandor dorado ahora es redondo, sin cortes."]},{"v":"5.66","t":"Nueva tipografía","items":["Textos en Nunito y títulos, nombres de acciones y logo en Press Start 2P, para un aspecto más retro sin perder legibilidad.","Las fuentes van incluidas en el archivo (licencia OFL), así que funcionan sin conexión."]},{"v":"5.65","t":"Prueba de tipografía","items":["Versión intermedia con una tipografía de prueba (Pixelify Sans) que se reemplazó en la 5.66."]},{"v":"5.64","t":"Profesor mejor recompensado","items":["Cada publicación científica del Profesor ahora suma 140 puntos al puntaje final, porque es un camino con menos acciones disponibles."]},{"v":"5.63","t":"Nuevo nombre","items":["El juego pasa a llamarse «A Kanto Tale» (antes «Mi aventura Pokémon»)."]},{"v":"5.62","t":"Giovanni y gimnasio más difíciles","items":["Equipo Rocket: el Alto mando se alcanza a los 72 puntos y el equipo de Giovanni es más fuerte (poder 650).","Gimnasio propio: para cerrar tu historia como líder hacen falta 24 de fama, un equipo de poder 520 o más y al menos 4 Pokémon de tu tipo."]},{"v":"5.61","t":"Equipo Rocket","items":["Las misiones y los rangos del Equipo Rocket dan más puntos de puntaje final."]},{"v":"5.60","t":"Puntaje más parejo","items":["Se rebalanceó el puntaje para que el Coleccionista no domine: Pokédex 3 puntos por especie, shiny 6, medalla 35, logro 30 y fama de gimnasio 12 por punto (hasta 24).","Terminar antes de tiempo da más puntos: 10 por cada estación sobrante."]},{"v":"5.59","t":"Fundar tu propio gimnasio","items":["Nueva acción dorada «Fundar gimnasio»: aparece desde la estación 60, con 3 medallas y 6 Pokémon de un mismo tipo (copias incluidas, de al menos 3 especies). Elegís el tipo entre los que tengas.","No termina el juego: es un camino alternativo con su propio final. Tu equipo del tipo elegido es obligatorio para atender el gimnasio, y se pueden repetir especies de ese tipo."]},{"v":"5.58","t":"Dueño de gimnasio más claro","items":["Se aclararon los textos y requisitos del camino de dueño de gimnasio."]}];
+const CHANGELOG=[{"v":"5.74","t":"Heat reworkeado","items":["El Heat ahora llega hasta 10 (te arrestan con 10) y tiene etapas con consecuencias reales.","En el Equipo Rocket, cada golpe grande (2 o más puntos de rango) suma +1 de Heat: antes casi nunca subía, ahora tenés que administrarlo.","Vigilado (2-3): -1% en opciones turbias. Buscado (4-5): -3% y más redadas. Perseguido (6-7): -5%, más redadas y se enfría 3 veces más lento. Cercado (8-9): -8% y no podés hacer trabajos turbios ni misiones del Rocket hasta bajar el Heat.","«Mantener un perfil bajo» ahora baja 3 de Heat. El Pase libre te deja en Heat 4. Con conciencia 5 o más el Heat se enfría 1 extra desde Heat 4.","Los eventos muestran la penalización de Heat en el desglose de chances, y la ventana de Heat explica las etapas."]},{"v":"5.73","t":"La Conciencia ahora importa","items":["Se ve en la pantalla principal (🕊️ Conciencia ±N con su rango) y al tocarla explica todos sus efectos con tus valores actuales.","Eventos: en las opciones de ayuda, una conciencia tranquila suma chances (hasta +5%) y una pesada resta (hasta -3%); en las opciones turbias pasa al revés (la ayuda de una conciencia endurecida llega hasta +2%).","Heat: con conciencia -4 o menos recibís 1 menos de Heat en acciones que darían 3 o más (sangre fría); con 5 o más y Heat 3+, se enfría 1 extra por estación.","Combates: con conciencia 3+ tus Pokémon confían en vos y ganás hasta +4% en gimnasios, Liga y Giovanni.","Puntaje: cada punto de conciencia positiva suma 8 puntos al final."]},{"v":"5.72","t":"Arreglos de errores","items":["La Tabla de tipos no se abría desde la pantalla de inicio si todavía no tenías una partida: ahora abre siempre.","En celulares angostos (360 px o menos) la barra de iconos y la pantalla de inicio se salían del ancho y se podía deslizar de costado: ahora entran en pantalla."]},{"v":"5.71","t":"Ícono de la tabla de tipos","items":["La tabla de tipos ahora usa el sprite de una MT (el disco de movimiento) en la barra de iconos, en el título y en su ventana, en lugar del cuadrado naranja anterior."]},{"v":"5.70","t":"Novedades dentro del juego","items":["Nueva sección «Novedades» (desde el título y desde la barra de iconos): muestra qué cambió en cada versión y se marca con «NUEVO» cuando hay una versión que todavía no viste.","Se registra más información anónima de fin de partida (Pokédex, poder del equipo, zonas exploradas) para poder balancear mejor. Se puede desactivar en Opciones."]},{"v":"5.69","t":"Aviso de versión nueva","items":["Si el juego ya estaba abierto y se publica una versión nueva, aparece un aviso con el botón «Actualizar». Se guarda la partida y se recarga solo si lo tocás.","Solo funciona desde esta versión en adelante: quien tenga abierta una anterior necesita recargar la página una vez."]},{"v":"5.68","t":"Más estadísticas anónimas","items":["Cada 5 estaciones se registra la cantidad de Pokémon en la Pokédex, shinies, poder del equipo, stats y equipo. En derrotas de gimnasio y fallos de Liga se registra el poder del equipo. Al final de la partida se registran acciones, exploraciones por zona y especies que faltaban por zona.","No cambia nada del juego. No hay datos personales y se puede desactivar en Opciones."]},{"v":"5.67","t":"Arreglo visual en el final","items":["Se corrigió el cuadrado que aparecía alrededor del Pokémon animado en la pantalla de final: el resplandor dorado ahora es redondo, sin cortes."]},{"v":"5.66","t":"Nueva tipografía","items":["Textos en Nunito y títulos, nombres de acciones y logo en Press Start 2P, para un aspecto más retro sin perder legibilidad.","Las fuentes van incluidas en el archivo (licencia OFL), así que funcionan sin conexión."]},{"v":"5.65","t":"Prueba de tipografía","items":["Versión intermedia con una tipografía de prueba (Pixelify Sans) que se reemplazó en la 5.66."]},{"v":"5.64","t":"Profesor mejor recompensado","items":["Cada publicación científica del Profesor ahora suma 140 puntos al puntaje final, porque es un camino con menos acciones disponibles."]},{"v":"5.63","t":"Nuevo nombre","items":["El juego pasa a llamarse «A Kanto Tale» (antes «Mi aventura Pokémon»)."]},{"v":"5.62","t":"Giovanni y gimnasio más difíciles","items":["Equipo Rocket: el Alto mando se alcanza a los 72 puntos y el equipo de Giovanni es más fuerte (poder 650).","Gimnasio propio: para cerrar tu historia como líder hacen falta 24 de fama, un equipo de poder 520 o más y al menos 4 Pokémon de tu tipo."]},{"v":"5.61","t":"Equipo Rocket","items":["Las misiones y los rangos del Equipo Rocket dan más puntos de puntaje final."]},{"v":"5.60","t":"Puntaje más parejo","items":["Se rebalanceó el puntaje para que el Coleccionista no domine: Pokédex 3 puntos por especie, shiny 6, medalla 35, logro 30 y fama de gimnasio 12 por punto (hasta 24).","Terminar antes de tiempo da más puntos: 10 por cada estación sobrante."]},{"v":"5.59","t":"Fundar tu propio gimnasio","items":["Nueva acción dorada «Fundar gimnasio»: aparece desde la estación 60, con 3 medallas y 6 Pokémon de un mismo tipo (copias incluidas, de al menos 3 especies). Elegís el tipo entre los que tengas.","No termina el juego: es un camino alternativo con su propio final. Tu equipo del tipo elegido es obligatorio para atender el gimnasio, y se pueden repetir especies de ese tipo."]},{"v":"5.58","t":"Dueño de gimnasio más claro","items":["Se aclararon los textos y requisitos del camino de dueño de gimnasio."]}];
 function novSeen(){try{return localStorage.getItem('kt_seen_ver');}catch(e){return VERSION;}}
 function novMark(){try{localStorage.setItem('kt_seen_ver',VERSION);}catch(e){}}
 function novNew(){const v=novSeen();if(v===VERSION)return false;if(v===null){try{if(!readSlots().length){novMark();return false;}}catch(e){}}return true;}

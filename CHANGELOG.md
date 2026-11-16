@@ -2,6 +2,22 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 5.74 — Heat reworkeado
+
+- El Heat ahora llega hasta 10 (te arrestan con 10) y tiene etapas con consecuencias reales.
+- En el Equipo Rocket, cada golpe grande (2 o más puntos de rango) suma +1 de Heat: antes casi nunca subía, ahora tenés que administrarlo.
+- Vigilado (2-3): -1% en opciones turbias. Buscado (4-5): -3% y más redadas. Perseguido (6-7): -5%, más redadas y se enfría 3 veces más lento. Cercado (8-9): -8% y no podés hacer trabajos turbios ni misiones del Rocket hasta bajar el Heat.
+- «Mantener un perfil bajo» ahora baja 3 de Heat. El Pase libre te deja en Heat 4. Con conciencia 5 o más el Heat se enfría 1 extra desde Heat 4.
+- Los eventos muestran la penalización de Heat en el desglose de chances, y la ventana de Heat explica las etapas.
+
+## 5.73 — La Conciencia ahora importa
+
+- Se ve en la pantalla principal (🕊️ Conciencia ±N con su rango) y al tocarla explica todos sus efectos con tus valores actuales.
+- Eventos: en las opciones de ayuda, una conciencia tranquila suma chances (hasta +5%) y una pesada resta (hasta -3%); en las opciones turbias pasa al revés (la ayuda de una conciencia endurecida llega hasta +2%).
+- Heat: con conciencia -4 o menos recibís 1 menos de Heat en acciones que darían 3 o más (sangre fría); con 5 o más y Heat 3+, se enfría 1 extra por estación.
+- Combates: con conciencia 3+ tus Pokémon confían en vos y ganás hasta +4% en gimnasios, Liga y Giovanni.
+- Puntaje: cada punto de conciencia positiva suma 8 puntos al final.
+
 ## 5.72 — Arreglos de errores
 
 - La Tabla de tipos no se abría desde la pantalla de inicio si todavía no tenías una partida: ahora abre siempre.
