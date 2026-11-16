@@ -2,6 +2,15 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 5.76 — Heat más exigente
+
+- En el Equipo Rocket el Heat se enfría solo 1 cada 3 estaciones (antes, 1 cada 2); desde Heat 6, 1 cada 4. Fuera del Rocket sigue igual: 1 por estación (1 cada 3 desde Heat 6).
+- Los golpes grandes del Rocket (3 o más puntos de rango, como las operaciones de mando) ahora suman +2 de Heat; los de 2 puntos siguen sumando +1.
+
+## 5.75 — Corrección en la guía
+
+- La lista de finales de la guía decía que el arresto ocurre con 5 de Heat; ahora dice 10, que es lo correcto desde la 5.74.
+
 ## 5.74 — Heat reworkeado
 
 - El Heat ahora llega hasta 10 (te arrestan con 10) y tiene etapas con consecuencias reales.
