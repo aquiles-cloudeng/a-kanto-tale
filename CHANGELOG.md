@@ -2,6 +2,11 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 5.78 — Orígenes legibles y arrepentirse en el Mercado
+
+- En la pantalla de orígenes, cada tarjeta ahora muestra el nombre del ítem inicial con una descripción corta: ya no se corta el texto.
+- Mercado: si entrás y no cerraste ningún trato, hay un botón «Me arrepentí» para volver al menú sin gastar la estación. Una vez que cerraste un trato, el botón desaparece.
+
 ## 5.77 — Cercado ya no bloquea
 
 - Con Heat 8-9 (Cercado) ya no se bloquean las misiones ni los trabajos turbios: podés seguir, pero con -8% de chances y cada golpe del Rocket suma +1 de Heat extra. Quien no vigila el Heat puede terminar arrestado.
