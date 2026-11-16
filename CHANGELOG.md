@@ -2,6 +2,25 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 5.83 — Cuevas heladas más exigentes
+
+- Las Cuevas heladas y cumbres suben de nivel: ahora piden 7 medallas o poder de equipo 530 (antes 6 medallas o 505).
+
+## 5.82 — Dratini y Dragonair se mudan
+
+- Dratini y Dragonair ya no aparecen en la Zona Safari: ahora se encuentran en las Cuevas heladas y cumbres (Dragonair ya estaba ahí; se suma Dratini).
+
+## 5.81 — Shinies menos frecuentes y más fuertes
+
+- La chance base de shiny baja de 1,5% a 1,0% por Pokémon conseguido (el bonus de Coleccionista, de +0,5% a +0,4%). El Shiny Charm sigue triplicando la base.
+- Un shiny ahora siempre nace con la mejor calidad posible: +10% de poder sobre un ejemplar de calidad media (y hasta +22% sobre el peor). Vale también para el que se vuelve shiny por un evento.
+
+## 5.80 — Blue ya no es sorpresa
+
+- Un año antes de cada duelo con Blue, el menú muestra un aviso con cuántas estaciones faltan.
+- Cuando el duelo es inminente (salta al terminar tu próxima acción) el aviso se marca en rojo.
+- Desde el aviso podés ver el equipo de Blue (con tipos), su poder y tu chance de ganar con el equipo de ahora. Verlo no gasta estaciones, y el duelo tampoco cuesta una estación extra.
+
 ## 5.79 — Recompensas acordes a tu equipo
 
 - Los Pokémon que ganás en eventos (por ejemplo «Un Pokémon salvaje enfurecido»), regalos y robos del Rocket ya no son tan débiles frente a tu equipo: se evita dar algo por debajo de la mitad del poder base mediano de tu equipo.
