@@ -2,6 +2,10 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 5.77 — Cercado ya no bloquea
+
+- Con Heat 8-9 (Cercado) ya no se bloquean las misiones ni los trabajos turbios: podés seguir, pero con -8% de chances y cada golpe del Rocket suma +1 de Heat extra. Quien no vigila el Heat puede terminar arrestado.
+
 ## 5.76 — Heat más exigente
 
 - En el Equipo Rocket el Heat se enfría solo 1 cada 3 estaciones (antes, 1 cada 2); desde Heat 6, 1 cada 4. Fuera del Rocket sigue igual: 1 por estación (1 cada 3 desde Heat 6).
