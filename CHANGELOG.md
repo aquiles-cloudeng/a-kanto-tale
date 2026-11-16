@@ -2,6 +2,17 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 5.85 — Premios más ambiguos y un desafiante misterioso
+
+- Los premios y costos que se muestran en cada opción ahora son ambiguos: dicen qué sube o baja (↑ Reputación, ↓ Ingenio, Un Pokémon, Piedra evolutiva, Perdés tiempo…) pero no cuánto ni cuál.
+- Nuevo evento único, secreto: cuando tu equipo llega a poder 600, un entrenador con gorra roja y un Pikachu en el hombro te desafía a un combate (Venusaur, Charizard, Blastoise, Snorlax, Lapras y Pikachu). Aparece una sola vez; si ganás, la recompensa es grande. Si lo rechazás, no vuelve.
+- Nuevo logro oculto: «Sin una palabra».
+
+## 5.84 — Eventos con tres caminos: más riesgo, más premio
+
+- Cada opción de un evento ahora muestra, antes de elegir, qué te da si sale bien y qué te cuesta si sale mal (un Pokémon, una piedra, un stat, reputación, perder una estación o un objeto…). Las opciones seguras muestran su resultado, y las que son solo «dejarlo pasar» muestran qué te estás perdiendo.
+- Piloto: 15 eventos comunes pasan a tener tres opciones con la misma lógica: una segura (premio chico, poco que perder), una intermedia y una arriesgada (poca chance, pero el premio es claramente mayor y el costo de fallar también). Son: Tormenta eléctrica, Un Pokémon herido, Cueva derrumbada, ¡Ladrón!, El puente colgante, Un acertijo en el camino, Un campamento de viajeros, Un novato pide consejo, Un cazador furtivo, Incendio en el bosque, Torneo de pesca, Una cumbre sin escalar, Concurso de captura, Festival del pueblo y Tu Pokémon se lastima.
+
 ## 5.83 — Cuevas heladas más exigentes
 
 - Las Cuevas heladas y cumbres suben de nivel: ahora piden 7 medallas o poder de equipo 530 (antes 6 medallas o 505).
