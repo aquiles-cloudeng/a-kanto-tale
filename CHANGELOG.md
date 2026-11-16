@@ -2,6 +2,11 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 5.79 — Recompensas acordes a tu equipo
+
+- Los Pokémon que ganás en eventos (por ejemplo «Un Pokémon salvaje enfurecido»), regalos y robos del Rocket ya no son tan débiles frente a tu equipo: se evita dar algo por debajo de la mitad del poder base mediano de tu equipo.
+- Con menos de 3 Pokémon en el equipo no cambia nada, para no regalar poder al principio.
+
 ## 5.78 — Orígenes legibles y arrepentirse en el Mercado
 
 - En la pantalla de orígenes, cada tarjeta ahora muestra el nombre del ítem inicial con una descripción corta: ya no se corta el texto.
