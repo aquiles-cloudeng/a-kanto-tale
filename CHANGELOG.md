@@ -2,6 +2,11 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 5.96 — Pasar tu progreso entre dispositivos
+
+- Nueva sección en ⚙️ Opciones: «Pasar tu progreso». Generás un código con tus logros, finales, Salón de la Fama y, si querés, tus partidas en curso, lo copiás y lo pegás en otro navegador, otro dispositivo o una dirección nueva del juego.
+- Al importar, el contenido se suma a lo que ya tenés: no se borra ni se pisa nada. Si ya tenías 5 partidas guardadas, las que no entren se avisan.
+
 ## 5.95 — Ícono nuevo y contacto
 
 - Nuevo ícono del juego para la pestaña del navegador y para cuando lo guardás en la pantalla de inicio del celular.
