@@ -2,6 +2,10 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 6.00 — Más endurecido contra códigos inventados
+
+- Al importar un código de progreso, un campo con caracteres sueltos ya no puede quedar sin limpiar en pantallas como el Salón de la Fama.
+
 ## 5.99 — Aviso de derechos
 
 - La pantalla de inicio ahora incluye un aviso de derechos sobre el código, los textos y el diseño del juego.
