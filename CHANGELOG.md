@@ -2,6 +2,16 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 5.90 — Rocket: menos puntaje por operación, más botín al robar
+
+- Cada operación de mando exitosa del Equipo Rocket ahora suma 50 puntos al puntaje final (antes 60; el tope sigue en 12 operaciones).
+- Robar Pokémon: los éxitos dan un Pokémon más (de 4 o 5 a 5 o 6 comunes, y de 1 o 2 a 2 o 3 raros). Robar objetos: los éxitos dan una piedra evolutiva más, y el Ticket S.S. ahora viene con una piedra. Los resultados neutros y los fallos no cambian.
+
+## 5.89 — Blue: primeros dos duelos más suaves
+
+- Los poderes fijos de Blue pasan de 390, 520, 575 y 595 a 290, 460, 575 y 595. Los dos primeros duelos eran demasiado fuertes para el poder real que tienen los equipos en esas estaciones (según los datos de uso: ~305 en la estación 8 y ~478 en la 28). Los duelos 3 y 4 no cambian.
+- La telemetría anónima ahora registra cada duelo con Blue (cuál fue, si ganaste y el poder de tu equipo) para poder calibrarlo mejor con datos reales. Hay que actualizar el script de la planilla para que lo reciba.
+
 ## 5.88 — Blue con poder fijo
 
 - Antes el poder de Blue se calculaba a partir del de tu equipo (siempre entre el tuyo y +14), así que entrenar más no te preparaba mejor. Ahora cada duelo tiene un poder fijo e igual para todos: 390, 520, 575 y 595.
