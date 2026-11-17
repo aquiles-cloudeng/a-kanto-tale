@@ -2,6 +2,17 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 5.87 — Equipo y mochila a la vista en el celular
+
+- En pantallas chicas (donde el equipo y la mochila no están de costado) aparecen dos botones grandes entre tus stats y las opciones de la estación: Equipo, con tus Pokémon y tu poder, y Mochila, con tus objetos y piedras. Antes solo estaban como íconos chicos arriba.
+- El tutorial de la primera partida ahora señala esos botones grandes cuando se ven.
+
+## 5.86 — Tutorial en la primera partida
+
+- Al empezar tu primera partida aparece un tutorial corto de 8 pasos que oscurece la pantalla y resalta lo importante: el tiempo, el equipo, la mochila, los stats, la reputación y la conciencia, qué hacer en cada estación y la guía. Funciona también en el celular, donde el equipo y la mochila son los botones de arriba.
+- Se puede saltar en cualquier momento (botón «Saltar» o Esc) y volver a verlo desde ⚙️ Opciones → «Ver el tutorial de nuevo».
+- Solo aparece solo si es tu primera partida en este navegador: no se muestra si ya tenés otras partidas guardadas o terminadas.
+
 ## 5.85 — Premios más ambiguos y un desafiante misterioso
 
 - Los premios y costos que se muestran en cada opción ahora son ambiguos: dicen qué sube o baja (↑ Reputación, ↓ Ingenio, Un Pokémon, Piedra evolutiva, Perdés tiempo…) pero no cuánto ni cuál.
