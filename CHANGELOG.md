@@ -9,13 +9,12 @@ Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedade
 
 ## 5.89 — Blue: primeros dos duelos más suaves
 
-- Los poderes fijos de Blue pasan de 390, 520, 575 y 595 a 290, 460, 575 y 595. Los dos primeros duelos eran demasiado fuertes para el poder real que tienen los equipos en esas estaciones (según los datos de uso: ~305 en la estación 8 y ~478 en la 28). Los duelos 3 y 4 no cambian.
-- La telemetría anónima ahora registra cada duelo con Blue (cuál fue, si ganaste y el poder de tu equipo) para poder calibrarlo mejor con datos reales. Hay que actualizar el script de la planilla para que lo reciba.
+- Los poderes fijos de Blue pasan de 390, 520, 575 y 595 a 290, 460, 575 y 595. Los dos primeros duelos eran demasiado fuertes para el poder real que tienen los equipos en esas estaciones. Los duelos 3 y 4 no cambian.
 
 ## 5.88 — Blue con poder fijo
 
 - Antes el poder de Blue se calculaba a partir del de tu equipo (siempre entre el tuyo y +14), así que entrenar más no te preparaba mejor. Ahora cada duelo tiene un poder fijo e igual para todos: 390, 520, 575 y 595.
-- Si te preparás, tu chance sube; si llegás con el equipo flojo, baja. Los valores se eligieron para que la chance mediana de los bots se mantenga casi igual que antes. El aviso previo (ver su equipo y tu chance) sigue igual y ahora muestra siempre el mismo poder.
+- Si te preparás, tu chance sube; si llegás con el equipo flojo, baja. El aviso previo (ver su equipo y tu chance) sigue igual y ahora muestra siempre el mismo poder.
 
 ## 5.87 — Equipo y mochila a la vista en el celular
 
