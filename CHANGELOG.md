@@ -2,6 +2,14 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 5.92 — Legendarios: el requisito ahora se ve
+
+- En la pantalla de zonas, cada legendario bloqueado muestra en la misma tarjeta qué necesita para aparecer (medallas, o rango del Equipo Rocket) y cuánto te falta. Antes esa información solo aparecía al apoyar el cursor, así que en el celular no se veía.
+
+## 5.91 — Mercado: filtros para los repetidos
+
+- En el Mercado de intercambio, la sección de Pokémon repetidos ahora tiene buscador por nombre, filtro por tipo y orden (poder de mayor a menor o de menor a mayor, número de Pokédex, nombre o cantidad de repetidos), igual que al armar el equipo.
+
 ## 5.90 — Rocket: menos puntaje por operación, más botín al robar
 
 - Cada operación de mando exitosa del Equipo Rocket ahora suma 50 puntos al puntaje final (antes 60; el tope sigue en 12 operaciones).
