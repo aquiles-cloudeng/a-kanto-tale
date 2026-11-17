@@ -2,6 +2,14 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 5.98 — Pantalla de inicio más limpia
+
+- Se quitaron los Pokémon que aparecían debajo del banner en la pantalla de inicio.
+
+## 5.97 — Nuevo título en la pantalla de inicio
+
+- La pantalla de inicio estrena un banner con el título «A Kanto Tale» sobre un paisaje de Kanto, en lugar del texto anterior.
+
 ## 5.96 — Pasar tu progreso entre dispositivos
 
 - Nueva sección en ⚙️ Opciones: «Pasar tu progreso». Generás un código con tus logros, finales, Salón de la Fama y, si querés, tus partidas en curso, lo copiás y lo pegás en otro navegador, otro dispositivo o una dirección nueva del juego.
