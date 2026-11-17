@@ -2,6 +2,10 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 5.99 — Aviso de derechos
+
+- La pantalla de inicio ahora incluye un aviso de derechos sobre el código, los textos y el diseño del juego.
+
 ## 5.98 — Pantalla de inicio más limpia
 
 - Se quitaron los Pokémon que aparecían debajo del banner en la pantalla de inicio.
