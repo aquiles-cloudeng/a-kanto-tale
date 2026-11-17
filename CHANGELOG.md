@@ -2,6 +2,11 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 5.95 — Ícono nuevo y contacto
+
+- Nuevo ícono del juego para la pestaña del navegador y para cuando lo guardás en la pantalla de inicio del celular.
+- En ⚙️ Opciones hay una sección de Contacto con el mail para avisar errores o dejar ideas: akantotale@gmail.com.
+
 ## 5.92 — Legendarios: el requisito ahora se ve
 
 - En la pantalla de zonas, cada legendario bloqueado muestra en la misma tarjeta qué necesita para aparecer (medallas, o rango del Equipo Rocket) y cuánto te falta. Antes esa información solo aparecía al apoyar el cursor, así que en el celular no se veía.
