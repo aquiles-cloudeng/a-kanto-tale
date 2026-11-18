@@ -2,6 +2,16 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 6.02 — Completar la Pokédex ahora cuesta más
+
+- Para el Coleccionista, los Pokémon que ya tenés vuelven a aparecer con la misma frecuencia que los que te faltan: completar los 151 lleva bastante más tiempo.
+- El Coleccionista puede cerrar 1 cambio de Pokémon repetidos por visita al Mercado (antes 2). La pepita sigue sumando 1. Las demás vocaciones no cambian.
+
+## 6.01 — Final Coleccionista legendario, más difícil
+
+- Ahora hace falta más Pokédex para terminar como «Coleccionista legendario» (antes 120 especies, ahora 140).
+- Si llegaste a las 8 medallas pero no ganaste la Liga, el final ya no te lo tapa el de Coleccionista: te queda «Casi Campeón», que es el que corresponde a esa partida.
+
 ## 6.00 — Más endurecido contra códigos inventados
 
 - Al importar un código de progreso, un campo con caracteres sueltos ya no puede quedar sin limpiar en pantallas como el Salón de la Fama.
