@@ -2,6 +2,10 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 6.03 — Sangre fría contra Giovanni
+
+- Contra Giovanni, una conciencia endurecida también te da ventaja: con conciencia de -3 o menos sumás hasta +4% de chance (igual que el bono de conciencia tranquila, pero al revés). El bono de conciencia tranquila sigue valiendo para gimnasios, Liga y Giovanni.
+
 ## 6.02 — Completar la Pokédex ahora cuesta más
 
 - Para el Coleccionista, los Pokémon que ya tenés vuelven a aparecer con la misma frecuencia que los que te faltan: completar los 151 lleva bastante más tiempo.
