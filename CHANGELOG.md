@@ -2,6 +2,11 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 6.04 — Menos encuentros al explorar
+
+- Explorar ahora da 5 encuentros base (antes 7). El Coleccionista sigue sumando 4 y el Aspirante a Profesor suma 2, así que su ventaja se nota más.
+- Completar la Pokédex con todas las especies es bastante más largo que antes, sea cual sea tu vocación.
+
 ## 6.03 — Sangre fría contra Giovanni
 
 - Contra Giovanni, una conciencia endurecida también te da ventaja: con conciencia de -3 o menos sumás hasta +4% de chance (igual que el bono de conciencia tranquila, pero al revés). El bono de conciencia tranquila sigue valiendo para gimnasios, Liga y Giovanni.
