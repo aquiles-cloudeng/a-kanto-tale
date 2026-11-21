@@ -3460,7 +3460,7 @@ function view(){
   const s=S_;
   if(phase==='title'){
     const slots=readSlots();
-    M.innerHTML=`<div class="card center"><img class="tbanner" src="${TITLE_IMG}" width="1024" height="384" alt="A Kanto Tale"><h2 class="sr">A Kanto Tale</h2>
+    M.innerHTML=`<div class="card center">${ktLangBar()}<img class="tbanner" src="${TITLE_IMG}" width="1024" height="384" alt="A Kanto Tale"><h2 class="sr">A Kanto Tale</h2>
     <p class="mb">Empiezas con 10 años y un solo Pokémon. Cada estación decides qué hacer: explorar, entrenar, desafiar gimnasios, estudiar… o algo peor. Tu carrera dura hasta los 35 años y tus decisiones marcan quién vas a ser.</p>
     <p class="sub mb">Hay puntos sin retorno, probabilidades que dependen de tus stats, tu equipo y tus objetos, y muchos finales posibles.</p>${TRK_URL?'<p class="sub">📊 Se registran estadísticas anónimas de uso (sin datos personales). Puedes desactivarlas en Opciones.</p>':''}</div>
     ${ctx.titleMsg?`<div class="pend">${esc(ctx.titleMsg)}</div>`:''}
@@ -3816,7 +3816,7 @@ function modal(kind){
     const c=AU.cfg;
     h=`<h3>${iconGear(20)} Opciones</h3>
     ${(S_&&!['title','name','origin','starter'].includes(phase))?'<div class="row" style="margin:8px 0 4px"><button class="btn" onclick="tutReplay()">🎓 Ver el tutorial de nuevo</button></div>':''}
-    <div class="row" style="margin:8px 0 4px"><button class="btn" onclick="G.lang()">🌐 Idioma / Language</button></div>
+    <h3 style="margin-top:10px">🌐 Idioma / Language</h3>${ktLangBar()}
     <h3 style="margin-top:10px">${iconSound(18)} Sonido y música</h3>
     <p class="sub mb">La música ambiental y los efectos se generan dentro del juego: no usa archivos ni música con derechos de autor. Los cambios se guardan en este navegador.</p>
     <div class="lines" style="gap:14px">
@@ -3945,7 +3945,7 @@ const G={
   mkTog(id){const mk=ctx.mk;mk.open=mk.open===id?'':id;['evo','stone','mon'].forEach(k=>{const e=document.getElementById('acc-'+k);if(e)e.classList.toggle('open',mk.open===k);});},
   mkf(k,v){const mk=ctx.mk;mk.f=mk.f||{q:'',type:'',sort:'powerDesc'};mk.f[k]=v;mk.open='mon';const y=window.scrollY;view();window.scrollTo(0,y);if(k==='q'){const i=$('mkq');if(i){i.focus();i.setSelectionRange(v.length,v.length);}}},
   mkfClear(){const mk=ctx.mk;mk.f={q:'',type:'',sort:(mk.f&&mk.f.sort)||'powerDesc'};mk.open='mon';const y=window.scrollY;view();window.scrollTo(0,y);},
-  lang(){const n=LANG==='es'?'en':'es';try{if(S_)save();}catch(e){}try{localStorage.setItem('kt_lang',n);}catch(e){}location.reload();},
+  lang(n){n=(n==='en'||n==='es')?n:(LANG==='es'?'en':'es');if(n===LANG)return;try{if(S_)save();}catch(e){}try{localStorage.setItem('kt_lang',n);}catch(e){}location.reload();},
   async xpExport(){const m=$('xpmsg');try{const c=await xpExport(!!($('xpslots')&&$('xpslots').checked));const o=$('xpout');o.style.display='block';o.value=c;$('xpcopyrow').style.display='flex';o.focus();o.select();if(m)m.textContent='Código generado ('+c.length.toLocaleString('es')+' caracteres). Copialo completo.';}catch(e){if(m)m.textContent='No se pudo generar el código en este navegador.';}},
   async xpCopy(){const o=$('xpout'),m=$('xpmsg');if(!o||!o.value)return;try{await navigator.clipboard.writeText(o.value);if(m)m.textContent='Código copiado.';}catch(e){o.focus();o.select();try{document.execCommand('copy');if(m)m.textContent='Código copiado.';}catch(e2){if(m)m.textContent='Selecciona el texto y copialo a mano.';}}},
   async xpImport(){const i=$('xpin'),m=$('xpmsg');if(!i||!m)return;if(!i.value.trim()){m.textContent='Pega primero un código.';return;}
@@ -7005,7 +7005,7 @@ function view(){
   const s=S_;
   if(phase==='title'){
     const slots=readSlots();
-    M.innerHTML=`<div class="card center"><img class="tbanner" src="${TITLE_IMG}" width="1024" height="384" alt="A Kanto Tale"><h2 class="sr">A Kanto Tale</h2>
+    M.innerHTML=`<div class="card center">${ktLangBar()}<img class="tbanner" src="${TITLE_IMG}" width="1024" height="384" alt="A Kanto Tale"><h2 class="sr">A Kanto Tale</h2>
     <p class="mb">You start at age 10 with a single Pokémon. Each season you decide what to do: explore, train, challenge gyms, study… or something worse. Your career lasts until age 35 and your decisions shape who you'll become.</p>
     <p class="sub mb">There are points of no return, odds that depend on your stats, your team, and your items, and many possible endings.</p>${TRK_URL?'<p class="sub">📊 Anonymous usage statistics are collected (no personal data). You can turn them off in Options.</p>':''}</div>
     ${ctx.titleMsg?`<div class="pend">${esc(ctx.titleMsg)}</div>`:''}
@@ -7354,7 +7354,7 @@ function modal(kind){
     const c=AU.cfg;
     h=`<h3>${iconGear(20)} Options</h3>
     ${(S_&&!['title','name','origin','starter'].includes(phase))?'<div class="row" style="margin:8px 0 4px"><button class="btn" onclick="tutReplay()">🎓 Watch the tutorial again</button></div>':''}
-    <div class="row" style="margin:8px 0 4px"><button class="btn" onclick="G.lang()">🌐 Idioma / Language</button></div>
+    <h3 style="margin-top:10px">🌐 Idioma / Language</h3>${ktLangBar()}
     <h3 style="margin-top:10px">${iconSound(18)} Sound and music</h3>
     <p class="sub mb">The ambient music and effects are generated inside the game: it uses no files or copyrighted music. Changes are saved in this browser.</p>
     <div class="lines" style="gap:14px">
@@ -7483,7 +7483,7 @@ const G={
   mkTog(id){const mk=ctx.mk;mk.open=mk.open===id?'':id;['evo','stone','mon'].forEach(k=>{const e=document.getElementById('acc-'+k);if(e)e.classList.toggle('open',mk.open===k);});},
   mkf(k,v){const mk=ctx.mk;mk.f=mk.f||{q:'',type:'',sort:'powerDesc'};mk.f[k]=v;mk.open='mon';const y=window.scrollY;view();window.scrollTo(0,y);if(k==='q'){const i=$('mkq');if(i){i.focus();i.setSelectionRange(v.length,v.length);}}},
   mkfClear(){const mk=ctx.mk;mk.f={q:'',type:'',sort:(mk.f&&mk.f.sort)||'powerDesc'};mk.open='mon';const y=window.scrollY;view();window.scrollTo(0,y);},
-  lang(){const n=LANG==='es'?'en':'es';try{if(S_)save();}catch(e){}try{localStorage.setItem('kt_lang',n);}catch(e){}location.reload();},
+  lang(n){n=(n==='en'||n==='es')?n:(LANG==='es'?'en':'es');if(n===LANG)return;try{if(S_)save();}catch(e){}try{localStorage.setItem('kt_lang',n);}catch(e){}location.reload();},
   async xpExport(){const m=$('xpmsg');try{const c=await xpExport(!!($('xpslots')&&$('xpslots').checked));const o=$('xpout');o.style.display='block';o.value=c;$('xpcopyrow').style.display='flex';o.focus();o.select();if(m)m.textContent=`Code generated (${c.length.toLocaleString('es')} characters). Copy it in full.`;}catch(e){if(m)m.textContent='The code couldn\'t be generated in this browser.';}},
   async xpCopy(){const o=$('xpout'),m=$('xpmsg');if(!o||!o.value)return;try{await navigator.clipboard.writeText(o.value);if(m)m.textContent='Code copied.';}catch(e){o.focus();o.select();try{document.execCommand('copy');if(m)m.textContent='Code copied.';}catch(e2){if(m)m.textContent='Select the text and copy it by hand.';}}},
   async xpImport(){const i=$('xpin'),m=$('xpmsg');if(!i||!m)return;if(!i.value.trim()){m.textContent='Paste a code first.';return;}
@@ -7591,6 +7591,7 @@ new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes){if(n.no
   try{lang=localStorage.getItem(KEY);}catch(e){}
   function run(l){
     window.KT_LANG=l;
+    window.ktLangBar=function(){var q=function(c,n){return '<button class="btn'+(c===l?' primary':'')+'" '+'onclick="G.lang(\''+c+'\')">'+n+'</button>';};return '<div class="row" role="group" aria-label="Idioma / Language" style="margin:0 0 10px">'+q('es','Español')+q('en','English')+'</div>';};
     var el=document.getElementById(l==='en'?'appEN':'appES');
     var s=document.createElement('script');s.textContent=el.textContent;document.body.appendChild(s);
   }
