@@ -2,6 +2,12 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 6.07 — Versión en inglés
+
+- El juego ahora está disponible en inglés. La primera vez que entras eliges el idioma, y puedes cambiarlo cuando quieras desde ⚙️ Opciones → «Idioma / Language».
+- Tus partidas, logros y Shinydex son los mismos en ambos idiomas. Las entradas del diario quedan en el idioma en que se escribieron.
+- La guía del juego ahora indica correctamente que explorar da 5 encuentros base (decía 7).
+
 ## 6.06 — Español neutro
 
 - Todos los textos del juego pasaron a un español neutro: usan «tú» en lugar del voseo («puedes», «tienes», «elige», «toca»…) y sin modismos regionales, para que lo entienda cualquier persona de habla hispana.
