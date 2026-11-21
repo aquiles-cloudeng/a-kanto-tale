@@ -2,6 +2,12 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 6.05 — Shinydex permanente
+
+- Nuevo ✨ Shinydex: junta los shiny de todas tus partidas y no se pierde cuando termina una aventura. Lo encontrás en la pantalla de inicio, en Logros y dentro de la Pokédex.
+- Al estrenarlo se rescatan los shiny de tus partidas abiertas y de los equipos del Salón de la Fama. Las partidas ya terminadas que no estén en el Salón de la Fama no guardaron sus shiny, así que esos no se pueden recuperar.
+- El código de «Pasar tu progreso» ahora también lleva tu Shinydex.
+
 ## 6.04 — Menos encuentros al explorar
 
 - Explorar ahora da 5 encuentros base (antes 7). El Coleccionista sigue sumando 4 y el Aspirante a Profesor suma 2, así que su ventaja se nota más.
