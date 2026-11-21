@@ -2,9 +2,13 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 6.06 — Español neutro
+
+- Todos los textos del juego pasaron a un español neutro: usan «tú» en lugar del voseo («puedes», «tienes», «elige», «toca»…) y sin modismos regionales, para que lo entienda cualquier persona de habla hispana.
+
 ## 6.05 — Shinydex permanente
 
-- Nuevo ✨ Shinydex: junta los shiny de todas tus partidas y no se pierde cuando termina una aventura. Lo encontrás en la pantalla de inicio, en Logros y dentro de la Pokédex.
+- Nuevo ✨ Shinydex: junta los shiny de todas tus partidas y no se pierde cuando termina una aventura. Lo encuentras en la pantalla de inicio, en Logros y dentro de la Pokédex.
 - Al estrenarlo se rescatan los shiny de tus partidas abiertas y de los equipos del Salón de la Fama. Las partidas ya terminadas que no estén en el Salón de la Fama no guardaron sus shiny, así que esos no se pueden recuperar.
 - El código de «Pasar tu progreso» ahora también lleva tu Shinydex.
 
@@ -15,11 +19,11 @@ Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedade
 
 ## 6.03 — Sangre fría contra Giovanni
 
-- Contra Giovanni, una conciencia endurecida también te da ventaja: con conciencia de -3 o menos sumás hasta +4% de chance (igual que el bono de conciencia tranquila, pero al revés). El bono de conciencia tranquila sigue valiendo para gimnasios, Liga y Giovanni.
+- Contra Giovanni, una conciencia endurecida también te da ventaja: con conciencia de -3 o menos sumas hasta +4% de chance (igual que el bono de conciencia tranquila, pero al revés). El bono de conciencia tranquila sigue valiendo para gimnasios, Liga y Giovanni.
 
 ## 6.02 — Completar la Pokédex ahora cuesta más
 
-- Para el Coleccionista, los Pokémon que ya tenés vuelven a aparecer con la misma frecuencia que los que te faltan: completar los 151 lleva bastante más tiempo.
+- Para el Coleccionista, los Pokémon que ya tienes vuelven a aparecer con la misma frecuencia que los que te faltan: completar los 151 lleva bastante más tiempo.
 - El Coleccionista puede cerrar 1 cambio de Pokémon repetidos por visita al Mercado (antes 2). La pepita sigue sumando 1. Las demás vocaciones no cambian.
 
 ## 6.01 — Final Coleccionista legendario, más difícil
@@ -45,12 +49,12 @@ Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedade
 
 ## 5.96 — Pasar tu progreso entre dispositivos
 
-- Nueva sección en ⚙️ Opciones: «Pasar tu progreso». Generás un código con tus logros, finales, Salón de la Fama y, si querés, tus partidas en curso, lo copiás y lo pegás en otro navegador, otro dispositivo o una dirección nueva del juego.
-- Al importar, el contenido se suma a lo que ya tenés: no se borra ni se pisa nada. Si ya tenías 5 partidas guardadas, las que no entren se avisan.
+- Nueva sección en ⚙️ Opciones: «Pasar tu progreso». Generas un código con tus logros, finales, Salón de la Fama y, si quieres, tus partidas en curso, lo copias y lo pegas en otro navegador, otro dispositivo o una dirección nueva del juego.
+- Al importar, el contenido se suma a lo que ya tienes: no se borra ni se pisa nada. Si ya tenías 5 partidas guardadas, las que no entren se avisan.
 
 ## 5.95 — Ícono nuevo y contacto
 
-- Nuevo ícono del juego para la pestaña del navegador y para cuando lo guardás en la pantalla de inicio del celular.
+- Nuevo ícono del juego para la pestaña del navegador y para cuando lo guardas en la pantalla de inicio del celular.
 - En ⚙️ Opciones hay una sección de Contacto con el mail para avisar errores o dejar ideas: akantotale@gmail.com.
 
 ## 5.92 — Legendarios: el requisito ahora se ve
@@ -73,7 +77,7 @@ Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedade
 ## 5.88 — Blue con poder fijo
 
 - Antes el poder de Blue se calculaba a partir del de tu equipo (siempre entre el tuyo y +14), así que entrenar más no te preparaba mejor. Ahora cada duelo tiene un poder fijo e igual para todos: 390, 520, 575 y 595.
-- Si te preparás, tu chance sube; si llegás con el equipo flojo, baja. El aviso previo (ver su equipo y tu chance) sigue igual y ahora muestra siempre el mismo poder.
+- Si te preparas, tu chance sube; si llegas con el equipo flojo, baja. El aviso previo (ver su equipo y tu chance) sigue igual y ahora muestra siempre el mismo poder.
 
 ## 5.87 — Equipo y mochila a la vista en el celular
 
@@ -84,12 +88,12 @@ Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedade
 
 - Al empezar tu primera partida aparece un tutorial corto de 8 pasos que oscurece la pantalla y resalta lo importante: el tiempo, el equipo, la mochila, los stats, la reputación y la conciencia, qué hacer en cada estación y la guía. Funciona también en el celular, donde el equipo y la mochila son los botones de arriba.
 - Se puede saltar en cualquier momento (botón «Saltar» o Esc) y volver a verlo desde ⚙️ Opciones → «Ver el tutorial de nuevo».
-- Solo aparece solo si es tu primera partida en este navegador: no se muestra si ya tenés otras partidas guardadas o terminadas.
+- Solo aparece solo si es tu primera partida en este navegador: no se muestra si ya tienes otras partidas guardadas o terminadas.
 
 ## 5.85 — Premios más ambiguos y un desafiante misterioso
 
-- Los premios y costos que se muestran en cada opción ahora son ambiguos: dicen qué sube o baja (↑ Reputación, ↓ Ingenio, Un Pokémon, Piedra evolutiva, Perdés tiempo…) pero no cuánto ni cuál.
-- Nuevo evento único, secreto: cuando tu equipo llega a poder 600, un entrenador con gorra roja y un Pikachu en el hombro te desafía a un combate (Venusaur, Charizard, Blastoise, Snorlax, Lapras y Pikachu). Aparece una sola vez; si ganás, la recompensa es grande. Si lo rechazás, no vuelve.
+- Los premios y costos que se muestran en cada opción ahora son ambiguos: dicen qué sube o baja (↑ Reputación, ↓ Ingenio, Un Pokémon, Piedra evolutiva, Pierdes tiempo…) pero no cuánto ni cuál.
+- Nuevo evento único, secreto: cuando tu equipo llega a poder 600, un entrenador con gorra roja y un Pikachu en el hombro te desafía a un combate (Venusaur, Charizard, Blastoise, Snorlax, Lapras y Pikachu). Aparece una sola vez; si ganas, la recompensa es grande. Si lo rechazas, no vuelve.
 - Nuevo logro oculto: «Sin una palabra».
 
 ## 5.84 — Eventos con tres caminos: más riesgo, más premio
@@ -114,21 +118,21 @@ Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedade
 
 - Un año antes de cada duelo con Blue, el menú muestra un aviso con cuántas estaciones faltan.
 - Cuando el duelo es inminente (salta al terminar tu próxima acción) el aviso se marca en rojo.
-- Desde el aviso podés ver el equipo de Blue (con tipos), su poder y tu chance de ganar con el equipo de ahora. Verlo no gasta estaciones, y el duelo tampoco cuesta una estación extra.
+- Desde el aviso puedes ver el equipo de Blue (con tipos), su poder y tu chance de ganar con el equipo de ahora. Verlo no gasta estaciones, y el duelo tampoco cuesta una estación extra.
 
 ## 5.79 — Recompensas acordes a tu equipo
 
-- Los Pokémon que ganás en eventos (por ejemplo «Un Pokémon salvaje enfurecido»), regalos y robos del Rocket ya no son tan débiles frente a tu equipo: se evita dar algo por debajo de la mitad del poder base mediano de tu equipo.
+- Los Pokémon que ganas en eventos (por ejemplo «Un Pokémon salvaje enfurecido»), regalos y robos del Rocket ya no son tan débiles frente a tu equipo: se evita dar algo por debajo de la mitad del poder base mediano de tu equipo.
 - Con menos de 3 Pokémon en el equipo no cambia nada, para no regalar poder al principio.
 
 ## 5.78 — Orígenes legibles y arrepentirse en el Mercado
 
 - En la pantalla de orígenes, cada tarjeta ahora muestra el nombre del ítem inicial con una descripción corta: ya no se corta el texto.
-- Mercado: si entrás y no cerraste ningún trato, hay un botón «Me arrepentí» para volver al menú sin gastar la estación. Una vez que cerraste un trato, el botón desaparece.
+- Mercado: si entras y no cerraste ningún trato, hay un botón «Me arrepentí» para volver al menú sin gastar la estación. Una vez que cerraste un trato, el botón desaparece.
 
 ## 5.77 — Cercado ya no bloquea
 
-- Con Heat 8-9 (Cercado) ya no se bloquean las misiones ni los trabajos turbios: podés seguir, pero con -8% de chances y cada golpe del Rocket suma +1 de Heat extra. Quien no vigila el Heat puede terminar arrestado.
+- Con Heat 8-9 (Cercado) ya no se bloquean las misiones ni los trabajos turbios: puedes seguir, pero con -8% de chances y cada golpe del Rocket suma +1 de Heat extra. Quien no vigila el Heat puede terminar arrestado.
 
 ## 5.76 — Heat más exigente
 
@@ -142,8 +146,8 @@ Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedade
 ## 5.74 — Heat reworkeado
 
 - El Heat ahora llega hasta 10 (te arrestan con 10) y tiene etapas con consecuencias reales.
-- En el Equipo Rocket, cada golpe grande (2 o más puntos de rango) suma +1 de Heat: antes casi nunca subía, ahora tenés que administrarlo.
-- Vigilado (2-3): -1% en opciones turbias. Buscado (4-5): -3% y más redadas. Perseguido (6-7): -5%, más redadas y se enfría 3 veces más lento. Cercado (8-9): -8% y no podés hacer trabajos turbios ni misiones del Rocket hasta bajar el Heat.
+- En el Equipo Rocket, cada golpe grande (2 o más puntos de rango) suma +1 de Heat: antes casi nunca subía, ahora tienes que administrarlo.
+- Vigilado (2-3): -1% en opciones turbias. Buscado (4-5): -3% y más redadas. Perseguido (6-7): -5%, más redadas y se enfría 3 veces más lento. Cercado (8-9): -8% y no puedes hacer trabajos turbios ni misiones del Rocket hasta bajar el Heat.
 - «Mantener un perfil bajo» ahora baja 3 de Heat. El Pase libre te deja en Heat 4. Con conciencia 5 o más el Heat se enfría 1 extra desde Heat 4.
 - Los eventos muestran la penalización de Heat en el desglose de chances, y la ventana de Heat explica las etapas.
 
@@ -151,8 +155,8 @@ Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedade
 
 - Se ve en la pantalla principal (🕊️ Conciencia ±N con su rango) y al tocarla explica todos sus efectos con tus valores actuales.
 - Eventos: en las opciones de ayuda, una conciencia tranquila suma chances (hasta +5%) y una pesada resta (hasta -3%); en las opciones turbias pasa al revés (la ayuda de una conciencia endurecida llega hasta +2%).
-- Heat: con conciencia -4 o menos recibís 1 menos de Heat en acciones que darían 3 o más (sangre fría); con 5 o más y Heat 3+, se enfría 1 extra por estación.
-- Combates: con conciencia 3+ tus Pokémon confían en vos y ganás hasta +4% en gimnasios, Liga y Giovanni.
+- Heat: con conciencia -4 o menos recibes 1 menos de Heat en acciones que darían 3 o más (sangre fría); con 5 o más y Heat 3+, se enfría 1 extra por estación.
+- Combates: con conciencia 3+ tus Pokémon confían en ti y ganas hasta +4% en gimnasios, Liga y Giovanni.
 - Puntaje: cada punto de conciencia positiva suma 8 puntos al final.
 
 ## 5.72 — Arreglos de errores
@@ -171,7 +175,7 @@ Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedade
 
 ## 5.69 — Aviso de versión nueva
 
-- Si el juego ya estaba abierto y se publica una versión nueva, aparece un aviso con el botón «Actualizar». Se guarda la partida y se recarga solo si lo tocás.
+- Si el juego ya estaba abierto y se publica una versión nueva, aparece un aviso con el botón «Actualizar». Se guarda la partida y se recarga solo si lo tocas.
 - Solo funciona desde esta versión en adelante: quien tenga abierta una anterior necesita recargar la página una vez.
 
 ## 5.68 — Más estadísticas anónimas
@@ -216,7 +220,7 @@ Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedade
 
 ## 5.59 — Fundar tu propio gimnasio
 
-- Nueva acción dorada «Fundar gimnasio»: aparece desde la estación 60, con 3 medallas y 6 Pokémon de un mismo tipo (copias incluidas, de al menos 3 especies). Elegís el tipo entre los que tengas.
+- Nueva acción dorada «Fundar gimnasio»: aparece desde la estación 60, con 3 medallas y 6 Pokémon de un mismo tipo (copias incluidas, de al menos 3 especies). Eliges el tipo entre los que tengas.
 - No termina el juego: es un camino alternativo con su propio final. Tu equipo del tipo elegido es obligatorio para atender el gimnasio, y se pueden repetir especies de ese tipo.
 
 ## 5.58 — Dueño de gimnasio más claro
