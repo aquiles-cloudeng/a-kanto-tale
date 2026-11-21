@@ -2,6 +2,11 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 6.08 — Arreglos
+
+- Arreglado: el duelo con Blue decía «duelo 31 de 4» en inglés (ahora «duelo 3 de 4»), y lo mismo en otros textos con números (medallas, publicaciones).
+- Arreglado: en un gimnasio, «Defensa de tipos» podía decir «0 de 6 con debilidad» y aun así restar chance; ahora cuenta todos los Pokémon que reciben más daño del normal, que son los que restan.
+
 ## 6.07 — Versión en inglés
 
 - El juego ahora está disponible en inglés. La primera vez que entras eliges el idioma, y puedes cambiarlo cuando quieras desde ⚙️ Opciones → «Idioma / Language».
