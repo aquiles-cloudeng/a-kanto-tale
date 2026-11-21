@@ -54,7 +54,7 @@ Los sprites de Pokémon y de objetos incluidos en el archivo provienen del repos
 
 ## Contacto y errores
 
-Si encontrás un error o tenés una sugerencia, abrí un *issue* en este repositorio o escribí a **proximamente**.
+Si encontrás un error o tenés una sugerencia, abrí un *issue* en este repositorio o escribí a **akantotale@gmail.com**.
 
 ## Créditos
 
