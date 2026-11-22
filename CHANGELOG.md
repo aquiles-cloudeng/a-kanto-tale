@@ -2,6 +2,10 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 6.11 — Reintento en la Liga
+
+- Cada vez que caes en la Liga aprendes: +2% de chance en los cinco combates del siguiente intento, hasta +6% (igual que en los gimnasios). Antes la Liga no tenía bono y había que reintentar muchas veces.
+
 ## 6.10 — Transparencia de datos
 
 - En la pantalla de inicio, junto al aviso de estadísticas anónimas, hay un enlace «Ver qué datos se juntan» con la lista completa de lo que se envía y de lo que no.
