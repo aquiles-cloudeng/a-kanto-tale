@@ -2,6 +2,10 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 6.10 — Transparencia de datos
+
+- En la pantalla de inicio, junto al aviso de estadísticas anónimas, hay un enlace «Ver qué datos se juntan» con la lista completa de lo que se envía y de lo que no.
+
 ## 6.09 — Arreglos
 
 - Versión en inglés: corregidos los íconos de los tipos de evento, el fondo de la pantalla de gimnasio, la explicación de las etapas de Heat y los fuegos artificiales al ser Campeón, que no funcionaban en inglés.
