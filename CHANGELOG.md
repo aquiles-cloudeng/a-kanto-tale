@@ -2,6 +2,12 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 6.09 — Arreglos
+
+- Versión en inglés: corregidos los íconos de los tipos de evento, el fondo de la pantalla de gimnasio, la explicación de las etapas de Heat y los fuegos artificiales al ser Campeón, que no funcionaban en inglés.
+- Versión en inglés: corregidos «a/an» con nombres de Pokémon y objetos («an Eevee»), el decimal del shiny (1.0%) y un texto que decía «turbia».
+- Arreglado en ambos idiomas: el Mercado decía «1 cambios» (ahora «1 cambio»).
+
 ## 6.08 — Arreglos
 
 - Arreglado: el duelo con Blue decía «duelo 31 de 4» en inglés (ahora «duelo 3 de 4»), y lo mismo en otros textos con números (medallas, publicaciones).
