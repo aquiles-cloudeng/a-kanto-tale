@@ -2,6 +2,10 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 6.15 — Familia prestigiosa
+
+- El origen «Familia prestigiosa» ahora empieza con +1 Carisma y +1 Valor (antes +1 Carisma y +1 Ingenio).
+
 ## 6.14 — Nuevo poder de equipo
 
 - El poder del equipo ahora es la suma del poder de tus 6 lugares dividida por 6: un lugar vacío cuenta como 0. Antes era el promedio de los Pokémon que tuvieras, y un solo Pokémon fuerte hacía fuerte a todo el equipo (con un Mewtwo solo ganabas gimnasios y Liga con 60–80%).
