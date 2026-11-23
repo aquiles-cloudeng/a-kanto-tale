@@ -2,6 +2,14 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 6.13 — Ascensos Rocket sin pisar misiones
+
+- Arreglado: los ascensos de rango y los regalos de Giovanni (Shiny Charm, amuleto, piedras) aparecían en lugar del evento de tu misión Rocket, así que la misión se gastaba sin que pudieras elegir nada. Ahora aparecen al final de la misma estación, después del evento, y no cuestan una estación extra.
+
+## 6.12 — Robos de Pokémon sin repetidos
+
+- Arreglado: al robar Pokémon con el Equipo Rocket (y en otros botines de varios ejemplares) podía salir el mismo Pokémon seis veces seguidas. Ahora cada robo trae especies distintas.
+
 ## 6.11 — Reintento en la Liga
 
 - Cada vez que caes en la Liga aprendes: +2% de chance en los cinco combates del siguiente intento, hasta +6% (igual que en los gimnasios). Antes la Liga no tenía bono y había que reintentar muchas veces.
