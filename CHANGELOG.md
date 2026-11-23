@@ -2,6 +2,13 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 6.14 — Nuevo poder de equipo
+
+- El poder del equipo ahora es la suma del poder de tus 6 lugares dividida por 6: un lugar vacío cuenta como 0. Antes era el promedio de los Pokémon que tuvieras, y un solo Pokémon fuerte hacía fuerte a todo el equipo (con un Mewtwo solo ganabas gimnasios y Liga con 60–80%).
+- Con el equipo completo el poder es el mismo que antes, así que la dificultad no cambia. Con menos de 6 Pokémon el poder baja: con 3 o 4 ya no se puede desafiar a Brock, y con 5 queda difícil. Completa el equipo antes del primer gimnasio.
+- Se quitó el bono por tamaño del equipo (ya lo cubre el poder) y se compensó la base de la chance, así que los equipos completos tienen la misma chance de siempre.
+- Aviso «Equipo incompleto» en el panel del equipo y en el detalle de los gimnasios.
+
 ## 6.13 — Ascensos Rocket sin pisar misiones
 
 - Arreglado: los ascensos de rango y los regalos de Giovanni (Shiny Charm, amuleto, piedras) aparecían en lugar del evento de tu misión Rocket, así que la misión se gastaba sin que pudieras elegir nada. Ahora aparecen al final de la misma estación, después del evento, y no cuestan una estación extra.
