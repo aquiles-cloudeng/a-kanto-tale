@@ -2,6 +2,10 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 6.20 — Coleccionista sin desventaja
+
+- Arreglado: el Coleccionista no tenía el empujón hacia especies nuevas que sí tienen las demás vocaciones (las que ya tienes aparecen menos). Era justo lo opuesto a su objetivo: completar la Pokédex. Ahora tiene el mismo empujón que todas.
+
 ## 6.19 — Estaciones gratis que sí son gratis
 
 - Arreglado: el premio «Cronograma perfecto» (las próximas 5 acciones no cuestan estación) no funcionaba: el contador bajaba pero cada acción igual gastaba una estación. Ahora las acciones gratis no avanzan el tiempo.
