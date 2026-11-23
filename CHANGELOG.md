@@ -2,6 +2,10 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 6.16 — Iniciales shiny
+
+- Tu Pokémon inicial y el Pokémon de tu origen ahora pueden salir shiny, con una chance baja de 1% cada uno (la misma que cualquier otro Pokémon). Antes nunca podían. Si sale, te avisa al empezar.
+
 ## 6.15 — Familia prestigiosa
 
 - El origen «Familia prestigiosa» ahora empieza con +1 Carisma y +1 Valor (antes +1 Carisma y +1 Ingenio).
