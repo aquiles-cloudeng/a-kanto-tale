@@ -2,6 +2,10 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 6.19 — Estaciones gratis que sí son gratis
+
+- Arreglado: el premio «Cronograma perfecto» (las próximas 5 acciones no cuestan estación) no funcionaba: el contador bajaba pero cada acción igual gastaba una estación. Ahora las acciones gratis no avanzan el tiempo.
+
 ## 6.18 — Filtro de shiny al entrenar
 
 - La pantalla de entrenamiento específico ahora tiene el filtro «✨ Solo shiny», como el panel de Equipo. El Mercado no lo tiene porque solo ofrece copias repetidas que no son shiny (los shiny no se pueden cambiar).
