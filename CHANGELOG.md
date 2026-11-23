@@ -2,6 +2,14 @@
 
 Lo más nuevo primero. El mismo texto se muestra dentro del juego, en «Novedades».
 
+## 6.18 — Filtro de shiny al entrenar
+
+- La pantalla de entrenamiento específico ahora tiene el filtro «✨ Solo shiny», como el panel de Equipo. El Mercado no lo tiene porque solo ofrece copias repetidas que no son shiny (los shiny no se pueden cambiar).
+
+## 6.17 — Legendarios solo explorando
+
+- Arreglado: los robos del Equipo Rocket en una zona al azar podían traer un legendario (por ejemplo de las Cuevas heladas) cuando la zona no tenía suficientes Pokémon comunes. Ahora las recompensas de eventos, regalos y robos nunca dan legendarios: solo se consiguen explorando la zona, con las medallas o el rango que piden.
+
 ## 6.16 — Iniciales shiny
 
 - Tu Pokémon inicial y el Pokémon de tu origen ahora pueden salir shiny, con una chance baja de 1% cada uno (la misma que cualquier otro Pokémon). Antes nunca podían. Si sale, te avisa al empezar.
